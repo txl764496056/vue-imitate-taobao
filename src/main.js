@@ -6,7 +6,10 @@ import store from './store'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 
+import Vant from 'vant'
+
 Vue.use(VueAxios,axios);
+Vue.use(Vant);
 
 Vue.config.productionTip = false
 
