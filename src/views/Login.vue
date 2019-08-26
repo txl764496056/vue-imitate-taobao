@@ -1,12 +1,13 @@
 <template>
     <div>
-        
+        <img src="/static/logo.jpg" alt="" class="logo">
     </div>
 </template>
 
 <script>
     export default {
-        name:'Login'
+        name:'Login',
+       
     }
 </script>
 
