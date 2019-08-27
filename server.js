@@ -1,6 +1,6 @@
 const jsonServer = require('json-server')
 const server = jsonServer.create();
-const router = jsonServer.router('db.json')
+// const router = jsonServer.router('db.json')
 const middlewares = jsonServer.defaults();
 
 // 设置默认的中间件 (logger, static, cors and no-cache)
@@ -25,7 +25,7 @@ server.get('/login', (req, res) => {
 });
 
 // 使用默认路由
-server.use(router)
+// server.use(router)
 server.listen(3200, () => {
   console.log('JSON Server is running')
 });
