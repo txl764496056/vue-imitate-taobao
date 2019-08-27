@@ -8,10 +8,40 @@ import VueAxios from 'vue-axios'
 
 import Vant from 'vant'
 
+import upperFirst from 'lodash/upperFirst'
+import camelCase from 'lodash/camelCase'
+
+import "./assets/iconfont/iconfont.css"
+
 Vue.use(VueAxios,axios);
 Vue.use(Vant);
 
 Vue.config.productionTip = false
+
+// 组件全局注册
+const requireComponent = require.context(
+  './components/global',
+  false,
+  /\.(vue|js)$/
+);
+
+requireComponent.keys().forEach((fileName) => {
+  const componentConfig = requireComponent(fileName);
+  const componentName = upperFirst(
+    camelCase(
+      fileName
+      .split("/")
+      .pop()
+      .replace(/\.\w+$/,"")
+    )
+  )
+  Vue.component(
+    componentName,
+    componentConfig.default || componentConfig
+    )
+});
+
+
 
 // 路由白名单
 // let witeSite = ['/login'];

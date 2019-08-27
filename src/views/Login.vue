@@ -1,7 +1,7 @@
 <template>
     <div>
-        login
-        <img src="logo.jpg" alt="" class="logo">
+        <back></back>
+        <img src="images/logo.jpg" alt="" class="logo">
     </div>
 </template>
 
@@ -13,8 +13,12 @@
 </script>
 
 <style lang="scss" scoped>
+@import '../css/base.scss';
 .logo{
-    width:100px;height:100px;
-    border:1px solid #ddd;
+    $logo-size:vm(140);
+    width:$logo-size;
+    height:$logo-size;
+    border-radius:50%;
+    margin-top:vm(100);
 }
 </style>
