@@ -4,12 +4,19 @@
     @return ($size/750)*100 + vw;
 }
 
+@function themeColor($num){
+    @return rgba(255,139,90,$num);
+}
+
 /* 颜色组 */
 $color-66:#666666;
+$color-bb:#bbbbbb;
 $color-dd:#dddddd;
+$color-99:#999999;
 $color-ee:#eeeeee;
 $color-33:#333333;
-$color-44:#4444;
+$color-44:#444444;
+$theme-color:#ff8b5a;
 
 $back-size:vm(80); //返回导航高度
 $pd25:vm(25); //pandding值

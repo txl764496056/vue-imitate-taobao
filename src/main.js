@@ -11,10 +11,14 @@ import Vant from 'vant'
 import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
 
+import {APIhttp} from './until.js'
+
 import "./assets/iconfont/iconfont.css"
 
 Vue.use(VueAxios,axios);
 Vue.use(Vant);
+
+Vue.prototype.http = APIhttp;
 
 Vue.config.productionTip = false
 
@@ -40,8 +44,6 @@ requireComponent.keys().forEach((fileName) => {
     componentConfig.default || componentConfig
     )
 });
-
-
 
 // 路由白名单
 // let witeSite = ['/login'];

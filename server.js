@@ -2,6 +2,7 @@ const jsonServer = require('json-server')
 const server = jsonServer.create();
 // const router = jsonServer.router('db.json')
 const middlewares = jsonServer.defaults();
+const countryCallingCode = require("./src/API/json-data.js");
 
 // 设置默认的中间件 (logger, static, cors and no-cache)
 server.use(middlewares)
@@ -11,6 +12,14 @@ server.use(middlewares)
  * 你可以使用JSON Server使用的那个
  */
 server.use(jsonServer.bodyParser)
+
+// 世界国家电话区号
+server.get("/counryCallingcode",(req,res)=>{
+  res.jsonp({
+    code:200,
+    ...countryCallingCode
+  })
+});
 
 // 登录
 server.get('/login', (req, res) => {
