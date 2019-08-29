@@ -32,13 +32,22 @@
                 class="code-btn">{{isTint ? time+"s后重新获取":"获取验证码"}}</button>
             </template>
         </input-item>
-        <button disabled class="red-linear big-btn">登录</button>
+        <button @click="login" :disabled="tell==''||verifyCode.length!=verifyCodeLen" class="red-linear big-btn">登录</button>
+        <toast :isShow="toast!=''" v-on:changeIsShow="changeIsShow">
+            <template>
+                {{toast}}
+            </template>
+        </toast>
     </div>
 </template>
 
 <script>
+import Toast from '@/components/toast.js'
     export default {
         name:'Login',
+        components:{
+            Toast
+        },
         data(){
             return {
                 verifyCode:'',
@@ -48,7 +57,8 @@
                 areaCode:86,
                 isTint:false,
                 time:60, //倒计时,
-                type:'number'
+                type:'number',
+                toast:''
             }
         },
         mounted(){
@@ -60,6 +70,9 @@
             });
         },
         methods:{
+            changeIsShow(data){
+                this.toast = data
+            },
             getCallingCode(){
                 let _this = this;
                 this.axios.get('/counryCallingcode',(res)=>{
@@ -122,6 +135,15 @@
                         _this.isTint = false;
                     }
                 },1000);
+            },
+            /* 登录 */
+            login(){
+                if( !this.checkTell() ){
+                    this.toast = '请输入正确手机号码';
+                    // 跳转
+                }else{
+
+                }
             }
         }
        

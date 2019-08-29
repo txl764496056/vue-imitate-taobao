@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /* 颜色组 */
-.aaa {
-  text-align: center;
+.abs {
+  position: absolute;
 }
 
 * {
@@ -56,4 +56,25 @@ textarea::-webkit-input-placeholder {
   font-size: 4.8vw;
   color: #fff;
   letter-spacing: 1px;
+}
+
+.toast {
+  position: fixed;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  padding: 1.33333vw 2.66667vw;
+  border-radius: 1.06667vw;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 13.33333vw;
+}
+
+.toast.bottom {
+  bottom: 13.33333vw;
+}
+
+.toast.center {
+  top: 50%;
+  transform: translate(-50%);
 }

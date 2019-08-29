@@ -55,3 +55,23 @@
     color:#fff;
     letter-spacing:1px;
   }
+
+// toast
+.toast{
+    position:fixed;
+    z-index:999;
+    background-color:rgba(0,0,0,0.5);
+    color:#fff;
+    padding:vm(10) vm(20);
+    border-radius:vm(8);
+    left:50%;
+    transform:translateX(-50%);
+    top:vm(100);
+    &.bottom{
+        bottom:vm(100);
+    }
+    &.center{
+        top:50%;
+        transform: translate(-50%);
+    }
+}
