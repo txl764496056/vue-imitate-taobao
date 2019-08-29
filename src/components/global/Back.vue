@@ -29,6 +29,9 @@
 
 <style lang="scss" scoped>
 @import "../../css/base.scss";
+.abs{
+    position:absolute;
+}
 .back-nav{
     &::after{
         display:block;

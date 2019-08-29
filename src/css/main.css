@@ -1,0 +1,59 @@
+@charset "UTF-8";
+/* 颜色组 */
+.aaa {
+  text-align: center;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 4vw;
+  font-family: 'Arail','微软雅黑';
+}
+
+input:focus,
+button:focus {
+  outline: none;
+}
+
+:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: #bbbbbb;
+}
+
+::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: #bbbbbb;
+}
+
+input:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+  color: #bbbbbb;
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: #bbbbbb;
+}
+
+.red-linear {
+  background-color: #fff;
+  background-image: linear-gradient(90deg, rgba(253, 121, 64, 0.7), #fd7940);
+}
+
+.red-linear:disabled {
+  background-image: linear-gradient(90deg, rgba(253, 121, 64, 0.6), rgba(253, 121, 64, 0.6));
+}
+
+.big-btn {
+  border: none;
+  display: block;
+  width: 80%;
+  margin: 0 auto;
+  height: 12vw;
+  border-radius: 6vw;
+  font-size: 4.8vw;
+  color: #fff;
+  letter-spacing: 1px;
+}

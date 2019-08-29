@@ -1,11 +1,14 @@
 <template>
     <div class="input-item">
         <slot name="left"></slot>
-        <input 
-        :class="{'focus-color':value!=''}"
-        :value='value' 
-        v-on="inputListeners"
-        v-bind="$attrs"/>
+        <div class="input">
+            <input 
+            :class="{'focus-color':value!=''}"
+            :value='value' 
+            v-on="inputListeners"
+            v-bind="$attrs"/>
+            <i v-if="clearShow" @click="clear" class="clear iconfont icon-cha"></i>
+        </div>
         <slot name="right"></slot>
     </div>
 </template>
@@ -23,6 +26,10 @@
                 type:[String,Number],
                 default:''
             },
+            clearShow:{
+                type:Boolean,
+                default:false
+            }
         },
         data(){
             return {
@@ -45,10 +52,9 @@
             handleInput(evt){
                 this.$emit('input',evt.target.value);
             },
-            // handleFocus(){
-            // },
-            // handleBlur(){
-            // }
+            clear(){
+                this.$emit('input','');
+            }
         }
     }
 </script>
@@ -60,10 +66,24 @@
     border-bottom:1px solid $theme-color;
     height:vm(70);
     align-items:center;
+    .input{
+        flex:1;
+        position:relative;
+        display:flex;
+        align-items:center;
+        height:100%;
+        .clear{
+            display:flex;
+            justify-content: flex-end;
+            align-items:center;
+            flex-shrink:0;
+            color:$txt-gray1;
+        }
+    }
     input{
         width:vm(200);
+        height:100%;
         flex:1;
-        padding:0 vm(15);
         border:none;
         font-size:vm(34);
         &:focus{

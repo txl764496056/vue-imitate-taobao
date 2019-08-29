@@ -14,6 +14,7 @@ import camelCase from 'lodash/camelCase'
 import "./API/mock-data.js"
 
 import "./assets/iconfont/iconfont.css"
+import "./css/main.css";
 
 Vue.use(VueAxios,axios);
 Vue.use(Vant);
