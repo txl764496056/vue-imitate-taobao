@@ -1,7 +1,0 @@
-{
-    "port":3200,
-    "watch":true,
-    "read-only":false,
-    "host":"localhost",
-    "routes":"route.json"
-}

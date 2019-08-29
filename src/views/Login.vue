@@ -19,7 +19,7 @@
         <input-item 
         class="login-unit"
         v-model='verifyCode' 
-        type="number" 
+        type="text" 
         placeholder="请输入验证码">
             <template #right>
                 <button 
@@ -46,19 +46,25 @@
             }
         },
         mounted(){
-            // this.getCallingCode();
+            this.getCallingCode();
+            this.axios.get("/login",(res)=>{
+                console.log(res);
+            }).then((err)=>{
+                console.log(err);
+            });
         },
         methods:{
-            // getCallingCode(){
-            //     let _this = this;
-            //     this.axios.get(_this.http+'/counryCallingcode',(res)=>{
-            //         console.log(res)
-            //     }).then(err=>{
-            //         console.log(err);
-            //     });
-            // },
+            getCallingCode(){
+                let _this = this;
+                this.axios.get('/counryCallingcode',(res)=>{
+                    console.log(res)
+                }).then(err=>{
+                    console.log(err);
+                });
+            },
             handleInput(){
                 let str = this.tell.replace(/\s/g,"");
+                this.verifyCode = str;
                 let len = str.length;
                 let arr = str.split("");
                 if(len<this.tellMax){
@@ -78,11 +84,11 @@
             getVerifyCode(){
                 let _this = this;
                 this.cutdown();
-                this.axios.get(_this.http+'/verifyCode',(res)=>{
-                    console.log(res);
-                }).then(err=>{
-                    console.log(err);
-                })
+                // this.axios.get(_this.http+'/verifyCode',(res)=>{
+                //     console.log(res);
+                // }).then(err=>{
+                //     console.log(err);
+                // })
             },
             cutdown(){
                 let _this = this;
