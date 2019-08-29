@@ -53,7 +53,7 @@
         bottom:0;
         .back-arrow{
             font-size:vm(40);
-            color:$color-44;
+            color:$back-arrow;
             font-weight:bold;
             padding: {
                 left:$pd25;
@@ -66,7 +66,7 @@
         right:0;
         top:0;
         bottom:0;
-        color:$color-33;
+        color:$txt-black;
         font-size:vm(30);
     }
 }

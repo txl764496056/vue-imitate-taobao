@@ -5,8 +5,9 @@
         <input-item 
         class="login-unit"
         v-model='tell' 
-        type="text" 
-        @input="handleInput"
+        type="text"
+        @keydown="handleKeydown"
+        @keyup="handleKeyup"
         placeholder="请输入手机号码">
             <template #left>
                 <div class="area-code">
@@ -42,7 +43,8 @@
                 tellMax:12,
                 areaCode:86,
                 isTint:false,
-                time:60 //倒计时,
+                time:60, //倒计时,
+                type:'number'
             }
         },
         mounted(){
@@ -62,7 +64,11 @@
                     console.log(err);
                 });
             },
-            handleInput(){
+            handleKeyup(evt){
+                this.checkNumber(evt.key);
+            },
+            handleKeydown(evt){
+                this.checkNumber(evt.key);
                 let str = this.tell.replace(/\s/g,"");
                 this.verifyCode = str;
                 let len = str.length;
@@ -77,8 +83,14 @@
                         
                     }
                 }
-
                 this.tell = arr.join("");
+            },
+            checkNumber(key){
+                if( !(/^[0-9]$/.test(key)) ){
+                    console.log(this.tell)
+                    this.tell = this.tell.replace(/\D/g,"")
+                    return ;
+                }
             },
             /* 获取短信验证码 */
             getVerifyCode(){
@@ -131,12 +143,12 @@
     };
     .area-code{
         font-size:vm(32);
-        color:$color-66;
+        color:#666666;
         display:flex;
         align-items: center;
         i{
             font-size:vm(28);margin:0 2px;
-            color:$color-99;
+            color:#999999;
             font-weight:bold;
             &.add{
                 font-size:vm(18);

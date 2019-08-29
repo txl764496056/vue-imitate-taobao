@@ -10,13 +10,12 @@
 
 /* 颜色组 */
 $color-66:#666666;
-$color-bb:#bbbbbb;
-$color-dd:#dddddd;
-$color-99:#999999;
-$color-ee:#eeeeee;
-$color-33:#333333;
-$color-44:#444444;
-$theme-color:#ff8b5a;
+$base-placeholder:#bbbbbb;
+$theme-color:#ff8b5a; //主题色
+$txt-black:#222222; //文本黑色
+$back-arrow:#444444; //导航返回箭头
+
+
 
 $back-size:vm(80); //返回导航高度
 $pd25:vm(25); //pandding值

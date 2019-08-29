@@ -31,22 +31,22 @@ button{
 
 // 火狐：
 :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-    color: $color-bb;  
+    color: $base-placeholder;  
 }
 ::-moz-placeholder { /* Mozilla Firefox 19+ */
-    color: $color-bb;
+    color: $base-placeholder;
 }
 
 // IE：
 input:-ms-input-placeholder,
 textarea:-ms-input-placeholder {
-    color: $color-bb;
+    color: $base-placeholder;
 }
 
 // 谷歌
 input::-webkit-input-placeholder,
 textarea::-webkit-input-placeholder {
-    color: $color-bb;
+    color: $base-placeholder;
 }
 
 #app {
@@ -55,5 +55,7 @@ textarea::-webkit-input-placeholder {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  background-color:#fff;
+  min-height:100vh;
 }
 </style>

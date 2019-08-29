@@ -4,7 +4,7 @@
         <input 
         :class="{'focus-color':value!=''}"
         :value='value' 
-        @input='handleInput'
+        v-on="inputListeners"
         v-bind="$attrs"/>
         <slot name="right"></slot>
     </div>
@@ -26,6 +26,19 @@
         },
         data(){
             return {
+            }
+        },
+        computed:{
+            inputListeners:function(){
+                var vm = this;
+                return Object.assign({},
+                this.$listeners,
+                {
+                    // 覆写监听器
+                    input:function(evt){
+                        vm.$emit('input',evt.target.value);
+                    }
+                })
             }
         },
         methods:{
@@ -57,7 +70,7 @@
             color:$theme-color;
         }
         &.focus-color{
-            text-shadow:0 0 0 $color-33;
+            text-shadow:0 0 0 $txt-black;
             -webkit-text-fill-color:transparent;
         }
     }
