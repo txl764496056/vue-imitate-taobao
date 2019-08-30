@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    dfdd
     <menu></menu>
   </div>
 </template>
@@ -17,7 +18,7 @@ export default {
     this.axios.get("http://localhost:3200/login",(res)=>{
       console.log(res)
     }).then((err)=>{
-      console.log(err);
+      // console.log(err);
     });
   }
 }

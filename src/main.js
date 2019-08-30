@@ -45,12 +45,11 @@ requireComponent.keys().forEach((fileName) => {
 });
 
 // 路由白名单
-// let witeSite = ['/login'];
+let witeSite = ['/login'];
 router.beforeEach((to,from,next)=>{
   let  userKey = localStorage.getItem('userKey');
-  console.log("dd")
     if(!userKey){
-        if(to.path!='/login'){
+        if(witeSite.indexOf(to.path)==-1){
           next('/login');
         }else{
           next();

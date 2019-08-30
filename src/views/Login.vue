@@ -11,7 +11,7 @@
         @keyup="tellKeyup"
         placeholder="请输入手机号码">
             <template #left>
-                <div class="area-code">
+                <div @click="getCallingCode" class="area-code">
                     <i class="iconfont add icon-plus"></i>
                     {{areaCode}}
                     <i class="iconfont icon-arrow-r"></i>
@@ -32,8 +32,14 @@
                 class="code-btn">{{isTint ? time+"s后重新获取":"获取验证码"}}</button>
             </template>
         </input-item>
-        <button @click="login" :disabled="tell==''||verifyCode.length!=verifyCodeLen" class="red-linear big-btn">登录</button>
-        <toast :isShow="toast!=''" v-on:changeIsShow="changeIsShow">
+        <button 
+        @click="login" 
+        :disabled="tell==''||verifyCode.length!=verifyCodeLen" 
+        class="red-linear big-btn">登录</button>
+        <toast 
+        :isShow="toast!=''"
+        :time="2000" 
+        v-on:changeIsShow="toast=$event">
             <template>
                 {{toast}}
             </template>
@@ -63,30 +69,22 @@ import Toast from '@/components/toast.js'
         },
         mounted(){
             this.getCallingCode();
-            this.axios.get("/login",(res)=>{
-                console.log(res);
-            }).then((err)=>{
-                console.log(err);
-            });
+        },
+        computed:{
+            tellNumber(){
+                return this.tell.replace(/\s/g,"");
+            }
         },
         methods:{
-            changeIsShow(data){
-                this.toast = data
-            },
             getCallingCode(){
                 let _this = this;
-                this.axios.get('/counryCallingcode',(res)=>{
-                    console.log(res)
-                }).then(err=>{
-                    console.log(err);
+                this.axios.get('/counryCallingcode').then(res=>{
+                    // console.log(err);
                 });
             },
             tellKeyup(evt){
                 this.checkNumber(evt.key);
-            },
-            tellKeydown(evt){
-                this.checkNumber(evt.key);
-                let str = this.tell.replace(/\s/g,"");
+                let str = this.tellNumber;
                 let len = str.length;
                 let arr = str.split("");
                 if(len<this.tellMax){
@@ -101,14 +99,16 @@ import Toast from '@/components/toast.js'
                 }
                 this.tell = arr.join("");
             },
+            tellKeydown(evt){
+                this.checkNumber(evt.key);
+            },
             /* 验证手机号 */
             checkTell(){
-                return /^1[3456789]\d{9}$/.test(this.tell);
+                return /^1[3456789]\d{9}$/.test(this.tellNumber);
             },
             /* 数字验证 */
             checkNumber(key){
                 if( !(/^[0-9]$/.test(key)) ){
-                    console.log(this.tell)
                     this.tell = this.tell.replace(/\D/g,"")
                     return ;
                 }
@@ -123,7 +123,16 @@ import Toast from '@/components/toast.js'
             /* 获取短信验证码 */
             getVerifyCode(){
                 let _this = this;
+                if( !this.checkTell() ){
+                    this.toast = '请输入正确手机号码';
+                    return ;
+                }
                 this.cutdown();
+                this.axios.get('/verifyCode',{params:{tell:this.tellNumber}}).then(res=>{
+                    let code = res.data.verify_code.code;
+                    _this.toast = "验证码 "+code+"有效时间2分钟！";
+                    _this.verifyCode = code;
+                });
             },
             cutdown(){
                 let _this = this;
@@ -138,11 +147,25 @@ import Toast from '@/components/toast.js'
             },
             /* 登录 */
             login(){
+                let _this = this;
                 if( !this.checkTell() ){
                     this.toast = '请输入正确手机号码';
                     // 跳转
                 }else{
-
+                    this.axios.get("/login",{
+                        params:{
+                            code:this.verifyCode,
+                            tell:this.tellNumber
+                        }
+                    }).then(res=>{
+                        if(res.data.msg=='登录成功'){
+                            localStorage.setItem("userKey",res.data.user_key);
+                            _this.$router.push("/");
+                        }else{
+                            _this.toast=res.data.msg;
+                        }
+                    });
+                    
                 }
             }
         }
