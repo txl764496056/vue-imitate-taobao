@@ -68,7 +68,6 @@ import Toast from '@/components/toast.js'
             }
         },
         mounted(){
-            this.getCallingCode();
         },
         computed:{
             tellNumber(){
@@ -78,9 +77,7 @@ import Toast from '@/components/toast.js'
         methods:{
             getCallingCode(){
                 let _this = this;
-                this.axios.get('/counryCallingcode').then(res=>{
-                    // console.log(err);
-                });
+                this.$router.push("/arealist");
             },
             tellKeyup(evt){
                 this.checkNumber(evt.key);

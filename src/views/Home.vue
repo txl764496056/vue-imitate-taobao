@@ -1,25 +1,21 @@
 <template>
   <div class="home">
-    dfdd
-    <menu></menu>
+    <!-- <AreaList></AreaList> -->
+    home
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import Menu from '@/components/Menu.vue'
+// import AreaList from '@/components/AreaList.vue'
 
 export default {
   name: 'home',
   components: {
-    Menu
+    // AreaList
   },
   created(){
-    this.axios.get("http://localhost:3200/login",(res)=>{
-      console.log(res)
-    }).then((err)=>{
-      // console.log(err);
-    });
+   
   }
 }
 </script>

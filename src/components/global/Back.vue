@@ -72,5 +72,8 @@
         color:$txt-black;
         font-size:vm(30);
     }
+    .center{
+        text-align:center;
+    }
 }
 </style>

@@ -16,5 +16,10 @@ export default new Router({
       name: 'login',
       component: ()=>import('./views/Login.vue')
     },
+    {
+      path: '/arealist',
+      name: 'arealist',
+      component: ()=>import('./views/AreaList.vue')
+    }
   ]
 })
