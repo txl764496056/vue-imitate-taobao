@@ -59,7 +59,6 @@
                         areaCode
                     }
                 })
-                // this.$emit('getArea',area);
             }
         }
     }

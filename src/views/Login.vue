@@ -83,7 +83,6 @@ import Toast from '@/components/toast.js'
                 }
             },
             getCallingCode(){
-                let _this = this;
                 this.$router.push("/arealist");
             },
             tellKeyup(evt){
