@@ -2,6 +2,7 @@ let Mock = require('mockjs');
 
 let jsonData = require("./json-data.js");
 import common from '../common.js'
+import global from '../global.js'
 let Random = Mock.Random;
 
 // let collect = 0; //收藏
@@ -15,6 +16,8 @@ let {
     track,
     coupon,
     nickname,
+} = global;
+let {
     getUrlParams
 } = common;
 
