@@ -1,18 +1,18 @@
 <template>
   <div class="home">
-    <!-- <AreaList></AreaList> -->
+    <Menu></Menu>
     home
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-// import AreaList from '@/components/AreaList.vue'
+import Menu from '@/components/Menu.vue'
 
 export default {
   name: 'home',
   components: {
-    // AreaList
+    Menu
   },
   created(){
    

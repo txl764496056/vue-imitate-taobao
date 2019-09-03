@@ -20,6 +20,11 @@ export default new Router({
       path: '/arealist',
       name: 'arealist',
       component: ()=>import('./views/AreaList.vue')
+    },
+    {
+      path: '/my',
+      name: 'my',
+      component: ()=>import('./views/My.vue')
     }
   ]
 })

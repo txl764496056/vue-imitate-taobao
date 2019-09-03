@@ -4,6 +4,29 @@ let jsonData = require("./json-data.js");
 import common from '../common.js'
 let Random = Mock.Random;
 
+let collect = 0; //收藏
+let attention = 0; //关注店铺
+let track = 0; //足迹
+let coupon = 4;//优惠卷
+let nickname = '';
+
+/* 我的页面 */
+Mock.mock(RegExp("/my"),'get',function(options){
+    console.log(options)
+    return Mock.mock({
+        "person":{
+            "nickname":function(){
+                return nickname ? nickname:"设置昵称";
+            },
+            "photo":Random.image("100x100","#fdd48a",'png','photo'),
+            collect,
+            attention,
+            track,
+            coupon
+        }
+    })    
+})
+
 /* 登录 */
 Mock.mock(RegExp('/login'),'get',function(options){
     let params = common.getUrlParams(options.url);

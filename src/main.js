@@ -12,6 +12,7 @@ import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
 
 import "./API/mock-data.js"
+import global from  "./global.js"
 
 import "./assets/iconfont/iconfont.css"
 import "./css/main.css";
@@ -20,6 +21,7 @@ Vue.use(VueAxios,axios);
 Vue.use(Vant);
 
 Vue.config.productionTip = false
+Vue.prototype.$global = global;
 
 // 组件全局注册
 const requireComponent = require.context(
@@ -50,7 +52,9 @@ router.beforeEach((to,from,next)=>{
   let  userKey = localStorage.getItem('userKey');
     if(!userKey){
         if(witeSite.indexOf(to.path)==-1){
-          next('/login');
+          // 登录成功后跳转至这个页面
+          localStorage.setItem('loginNextPath',to.path);
+          next('/login')
         }else{
           next();
         }
@@ -63,4 +67,10 @@ new Vue({
   router,
   store,
   render: h => h(App),
+  created(){
+    let  userKey = localStorage.getItem('userKey');
+    if(userKey){
+      this.$global.userKey = userKey;
+    }
+  }
 }).$mount('#app')

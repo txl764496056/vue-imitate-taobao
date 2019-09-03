@@ -13,12 +13,14 @@ $base-placeholder:#bbbbbb;
 $theme-color:#ff8b5a; //主题色
 $txt-black:#222222; //文本黑色
 $back-arrow:#444444; //导航返回箭头
-$back-nav-h:vm(80); //返回导航高度
 $pd25:vm(25); //pandding值
 $txt-gray1:#666666; //比黑色浅1
 $txt-gray2:#999999; //比黑色浅2
 $border-color-dd:#dddddd;
 
+//尺寸大小
+$back-nav-h:vm(80); //返回导航高度
+$menu-h:vm(100); //主菜单高度
 .abs{
     position:absolute;
 }

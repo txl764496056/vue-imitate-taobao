@@ -163,7 +163,9 @@ import Toast from '@/components/toast.js'
                     }).then(res=>{
                         if(res.data.msg=='登录成功'){
                             localStorage.setItem("userKey",res.data.user_key);
-                            _this.$router.push("/");
+                            let nextPath = localStorage.getItem("loginNextPath") || '/';
+                            _this.$router.push(nextPath);
+                            localStorage.removeItem("loginNextPath");
                         }else{
                             _this.toast=res.data.msg;
                         }
