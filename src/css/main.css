@@ -21,6 +21,11 @@ a {
   text-decoration: none;
 }
 
+.padlr {
+  padding-right: 3.33333vw;
+  padding-left: 3.33333vw;
+}
+
 :-moz-placeholder {
   /* Mozilla Firefox 4 to 18 */
   color: #bbbbbb;
@@ -53,7 +58,7 @@ textarea::-webkit-input-placeholder {
 .big-btn {
   border: none;
   display: block;
-  width: 80%;
+  width: 85%;
   margin: 0 auto;
   height: 12vw;
   border-radius: 6vw;
@@ -81,4 +86,9 @@ textarea::-webkit-input-placeholder {
 .toast.center {
   top: 50%;
   transform: translate(-50%);
+}
+
+.txt-tips {
+  color: #aaaaaa;
+  font-size: 3.73333vw;
 }

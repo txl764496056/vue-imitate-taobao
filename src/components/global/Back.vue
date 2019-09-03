@@ -6,7 +6,7 @@
                 <i @click="goBack" class="back-arrow iconfont icon-arrow-l"></i>
             </slot>
         </div>
-        <div class="center">
+        <div class="center" :class="titlePos">
             <slot name="back-title"></slot>
         </div>
         <div class="right">
@@ -19,6 +19,12 @@
 <script>
     export default {
         name:'Back',
+        props:{
+            titlePos:{
+                type:String,
+                default:''
+            }
+        },
         methods:{
             goBack(){
                 this.$router.go(-1);
@@ -50,11 +56,14 @@
     line-height:$back-nav-h;
     background-color:#fff;
     font-size:vm(34);
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
     .left{
-        @extend .abs;
-        left:0;
-        top:0;
-        bottom:0;
+        // @extend .abs;
+        // left:0;
+        // top:0;
+        // bottom:0;
         .back-arrow{
             font-size:vm(40);
             color:$back-arrow;
@@ -66,16 +75,20 @@
         }
     }
     .right{
-        @extend .abs;
-        right:0;
-        top:0;
-        bottom:0;
+        // @extend .abs;
+        // right:0;
+        // top:0;
+        // bottom:0;
         color:$txt-black;
         font-size:vm(30);
     }
     .center{
         text-align:center;
         font-size:vm(34);
+        flex:1;
+        &.left{
+            text-align:left;
+        }
     }
 }
 </style>

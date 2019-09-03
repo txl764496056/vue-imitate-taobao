@@ -4,7 +4,7 @@
             <div class="up">
                 <div class="photo">
                     <img :src="person.photo" alt="" />
-                    <p>{{person.nickname}}</p>
+                    <router-link to="/nickname" class="nick-name">{{person.nickname}}</router-link>
                 </div>
                 <router-link to="" class="iconfont icon-shezhi"></router-link>
             </div>
@@ -44,6 +44,7 @@ import Menu from '@/components/Menu.vue'
             }
         },
         created(){
+            console.log('my-create')
             this.getData();
         },
         methods:{
@@ -86,7 +87,7 @@ import Menu from '@/components/Menu.vue'
                 border-radius:50%;
                 border: 2px solid #fff;
             }
-            p{
+            .nick-name{
                 margin-left:vm(15);
                 font-size:vm(40);
             }

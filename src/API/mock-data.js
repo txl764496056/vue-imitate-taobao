@@ -4,15 +4,32 @@ let jsonData = require("./json-data.js");
 import common from '../common.js'
 let Random = Mock.Random;
 
-let collect = 0; //收藏
-let attention = 0; //关注店铺
-let track = 0; //足迹
-let coupon = 4;//优惠卷
-let nickname = '';
+// let collect = 0; //收藏
+// let attention = 0; //关注店铺
+// let track = 0; //足迹
+// let coupon = 4;//优惠卷
+// let nickname = '';
+let {
+    collect,
+    attention,
+    track,
+    coupon,
+    nickname,
+    getUrlParams
+} = common;
+
+/* 设置昵称 */
+Mock.mock(RegExp("/setnickname"),'post',function(options){
+    let name = JSON.parse(options.body).nickname;
+    nickname = name;
+    return {
+        state:'ok',
+        content:'修改成功'
+    };
+})
 
 /* 我的页面 */
 Mock.mock(RegExp("/my"),'get',function(options){
-    console.log(options)
     return Mock.mock({
         "person":{
             "nickname":function(){
@@ -29,7 +46,7 @@ Mock.mock(RegExp("/my"),'get',function(options){
 
 /* 登录 */
 Mock.mock(RegExp('/login'),'get',function(options){
-    let params = common.getUrlParams(options.url);
+    let params = getUrlParams(options.url);
     let local_msg = localStorage.getItem('verify_code');
     local_msg = local_msg ? JSON.parse(local_msg).verify_code:'';
     let user_key = Mock.mock("@guid");
@@ -45,9 +62,9 @@ Mock.mock(RegExp('/login'),'get',function(options){
     }
 });
 
+/* 手机验证码 */
 Mock.mock(RegExp("/verifyCode"),'get',function(options){
-        
-       let params = common.getUrlParams(options.url);
+       let params = getUrlParams(options.url)
        let msg = Mock.mock({
            "verify_code":{
                "tell":params.tell,

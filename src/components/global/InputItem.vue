@@ -7,7 +7,11 @@
             :value='value' 
             v-on="inputListeners"
             v-bind="$attrs"/>
-            <i v-if="clearShow" @click="clear" class="clear iconfont icon-cha"></i>
+            <i 
+            v-if="clearShow" 
+            @click="clear" 
+            :class="{'bg':clearBg}"
+            class="clear iconfont icon-cha"></i>
         </div>
         <slot name="right"></slot>
     </div>
@@ -27,6 +31,10 @@
                 default:''
             },
             clearShow:{
+                type:Boolean,
+                default:false
+            },
+            clearBg:{
                 type:Boolean,
                 default:false
             }
@@ -63,7 +71,6 @@
 @import '../../css/base.scss';
 .input-item{
     display:flex;
-    border-bottom:1px solid $theme-color;
     height:vm(70);
     align-items:center;
     .input{
@@ -78,6 +85,18 @@
             align-items:center;
             flex-shrink:0;
             color:$txt-gray1;
+            &.bg{
+                $size:vm(36);
+                width:$size;
+                height:$size;
+                display:flex;
+                justify-content: center;
+                align-items:center;
+                background-color:rgba(0,0,0,0.2);
+                color:#fff;
+                font-size:vm(25);
+                border-radius:50%;
+            }
         }
     }
     input{
@@ -86,6 +105,7 @@
         flex:1;
         border:none;
         font-size:vm(34);
+        background-color:transparent;
         &:focus{
             color:$theme-color;
         }

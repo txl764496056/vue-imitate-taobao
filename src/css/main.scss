@@ -18,6 +18,10 @@
   a{
     text-decoration: none;
   }
+  .padlr{
+    padding-right:$pd25;
+    padding-left:$pd25;
+  }
 
   // 火狐：
   :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
@@ -50,7 +54,7 @@
     $h:90;
     border:none;
     display:block;
-    width:80%;
+    width:85%;
     margin:0 auto;
     height:vm($h);
     border-radius:vm($h/2);
@@ -77,4 +81,9 @@
         top:50%;
         transform: translate(-50%);
     }
+}
+
+.txt-tips{
+  color:$txt-tips;
+  font-size:vm(28);
 }

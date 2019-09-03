@@ -180,6 +180,10 @@ import Toast from '@/components/toast.js'
 
 <style lang="scss" scoped>
 @import '../css/base.scss';
+.login-page{
+    background-color:#fff;
+    min-height:100vh;
+}
 .logo{
     $logo-size:vm(140);
     width:$logo-size;
@@ -198,6 +202,8 @@ import Toast from '@/components/toast.js'
     }
 }
 .login-unit{
+    border-bottom:1px solid $theme-color;
+    background-color:#fff;
     margin: vm(40) {
         bottom:0;
     };
