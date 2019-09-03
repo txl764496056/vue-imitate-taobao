@@ -64,10 +64,11 @@ import Toast from '@/components/toast.js'
                 isTint:false,
                 time:60, //倒计时,
                 type:'number',
-                toast:''
+                toast:'',
             }
         },
         mounted(){
+            this.getAreaCode();
         },
         computed:{
             tellNumber(){
@@ -75,6 +76,12 @@ import Toast from '@/components/toast.js'
             }
         },
         methods:{
+            getAreaCode(){
+                let code = this.$route.params.areaCode;
+                if(code){
+                    this.areaCode = code;
+                }
+            },
             getCallingCode(){
                 let _this = this;
                 this.$router.push("/arealist");
@@ -177,8 +184,8 @@ import Toast from '@/components/toast.js'
     width:$logo-size;
     height:$logo-size;
     border-radius:50%;
-    margin-top:vm(60);
-    margin-bottom:vm(40);
+    margin: vm(60) auto vm(40);
+    display:block;
 }
 .code-btn{
     height:100%;

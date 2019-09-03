@@ -33,20 +33,21 @@
     position:absolute;
 }
 .back-nav{
+    position:relative;
+    z-index:9999;
     &::after{
         display:block;
         content:"";
-        height:$back-size;
+        height:$back-nav-h;
     }
 }
 .nav{
-
     position:fixed;
     top:0;
     left:0;
     right:0;
-    height:$back-size;
-    line-height:$back-size;
+    height:$back-nav-h;
+    line-height:$back-nav-h;
     background-color:#fff;
     font-size:vm(34);
     .left{
@@ -74,6 +75,7 @@
     }
     .center{
         text-align:center;
+        font-size:vm(34);
     }
 }
 </style>
