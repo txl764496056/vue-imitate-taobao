@@ -6,7 +6,7 @@
                     <img :src="person.photo" alt="" />
                     <router-link to="/nickname" class="nick-name">{{person.nickname}}</router-link>
                 </div>
-                <router-link to="" class="iconfont icon-shezhi"></router-link>
+                <router-link to="/seting" class="iconfont icon-shezhi"></router-link>
             </div>
             <div class="dw">
                 <router-link to="" class="item">
