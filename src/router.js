@@ -40,6 +40,11 @@ export default new Router({
       path: '/authority',
       name: 'authority',
       component: ()=>import('./views/Authority.vue')
+    },
+    {
+      path: '/address',
+      name: 'address',
+      component: ()=>import('./views/Address.vue')
     }
   ]
 })

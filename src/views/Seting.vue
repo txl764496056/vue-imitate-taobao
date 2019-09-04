@@ -30,6 +30,7 @@ import List from '@/components/List.vue'
                 list:{
                     address:[{
                         title:"我的收获地址",
+                        url:'/address'
                     }],
                     authority:[{
                         title:"系统权限",
