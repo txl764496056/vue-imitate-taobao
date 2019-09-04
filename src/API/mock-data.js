@@ -16,6 +16,19 @@ let {
     getUrlParams
 } = common;
 
+let photo = Random.image("100x100","#fdd48a",'png','photo');
+
+/* 设置页用户信息 */
+Mock.mock(RegExp('/seting'),'get',function(options){
+    console.log(options);
+    return Mock.mock({
+        "nickname":function(){
+            return nickname ? nickname:"设置昵称";
+        },
+        photo
+    })
+})
+
 /* 设置昵称 */
 Mock.mock(RegExp("/setnickname"),'post',function(options){
     let name = JSON.parse(options.body).nickname;
@@ -33,7 +46,7 @@ Mock.mock(RegExp("/my"),'get',function(options){
             "nickname":function(){
                 return nickname ? nickname:"设置昵称";
             },
-            "photo":Random.image("100x100","#fdd48a",'png','photo'),
+            photo,
             collect,
             attention,
             track,
