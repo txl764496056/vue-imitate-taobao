@@ -1,5 +1,8 @@
 <template>
     <div>
+        <back>
+            <template #back-title>设置</template>
+        </back>
         <div class="set-unit" v-for="(value,key) in list" :key="key">
             <div v-if="key=='address'" class="user-msg">
                 <img :src="userMsg.photo" alt="" class="photo">
@@ -30,6 +33,7 @@ import List from '@/components/List.vue'
                     }],
                     authority:[{
                         title:"系统权限",
+                        url:'/authority'
                     }]
                 }
             }
@@ -52,10 +56,10 @@ import List from '@/components/List.vue'
 
 <style lang="scss" scoped>
 @import '../css/base.scss';
-.set-list{
+.set-list,.user-msg{
     margin-top:vm(20);
 }
-.set-item,.user-msg{
+.user-msg{
     margin-left:vm(25);
 }
 .user-msg{

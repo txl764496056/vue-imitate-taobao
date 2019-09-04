@@ -48,8 +48,7 @@
         display:flex;
         justify-content: space-between;
         align-items: center;
-        padding-top:$pd;
-        padding-bottom:$pd;
+        padding: $pd ;
         &:last-of-type{
             border-bottom:none;
         }
@@ -67,6 +66,7 @@
             display:flex;
             justify-content: flex-end;
             align-items: center;
+            min-width:vm(200);
             .tips{
                 color:$txt-gray2;
                 font-size:vm(28);

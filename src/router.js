@@ -35,6 +35,11 @@ export default new Router({
       path: '/seting',
       name: 'seting',
       component: ()=>import('./views/Seting.vue')
+    },
+    {
+      path: '/authority',
+      name: 'authority',
+      component: ()=>import('./views/Authority.vue')
     }
   ]
 })
