@@ -56,14 +56,14 @@
     line-height:$back-nav-h;
     background-color:#fff;
     font-size:vm(34);
-    display:flex;
-    justify-content: space-between;
-    align-items:center;
+    // display:flex;
+    // justify-content: space-between;
+    // align-items:center;
     .left{
-        // @extend .abs;
-        // left:0;
-        // top:0;
-        // bottom:0;
+        @extend .abs;
+        left:0;
+        top:0;
+        bottom:0;
         .back-arrow{
             font-size:vm(40);
             color:$back-arrow;
@@ -75,10 +75,10 @@
         }
     }
     .right{
-        // @extend .abs;
-        // right:0;
-        // top:0;
-        // bottom:0;
+        @extend .abs;
+        right:0;
+        top:0;
+        bottom:0;
         color:$txt-black;
         font-size:vm(30);
     }
@@ -88,6 +88,7 @@
         flex:1;
         &.left{
             text-align:left;
+            padding-left:vm(70);
         }
     }
 }

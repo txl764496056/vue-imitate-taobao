@@ -17,6 +17,23 @@ let {
 } = common;
 
 let photo = Random.image("100x100","#fdd48a",'png','photo');
+let address = Mock.mock({
+    "address_list|15":[
+        {
+           "id":"@id()",
+           "name":"@cname()",
+           "address":"@city(true)",
+           "tell":/^1[35789]\d{9}/,
+           "default":false
+        }
+    ]
+});
+address.address_list[0]['default'] = true;
+
+/* 收货地址 */
+Mock.mock(RegExp('/address'),'get',function(options){
+     return address;
+});
 
 /* 设置页用户信息 */
 Mock.mock(RegExp('/seting'),'get',function(options){

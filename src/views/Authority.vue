@@ -1,6 +1,6 @@
 <template>
     <div class="authority-list">
-        <back>
+        <back :titlePos="'left'">
             <template #back-title>系统权限</template>
         </back>
         <p>为您提供更好的用户体验，淘宝在特定场景可能需要向您申请一下手机系统权限</p>
