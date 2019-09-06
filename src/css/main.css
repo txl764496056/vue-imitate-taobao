@@ -21,9 +21,20 @@ a {
   text-decoration: none;
 }
 
+a:active {
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -moz-user-focus: none;
+}
+
 .padlr {
   padding-right: 3.33333vw;
   padding-left: 3.33333vw;
+}
+
+.mt20 {
+  margin-top: 2.66667vw;
 }
 
 :-moz-placeholder {

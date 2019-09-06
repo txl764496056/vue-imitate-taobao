@@ -25,7 +25,7 @@
         methods:{
             setNickname(){
                 let _this = this;
-                this.axios.post('/setnickname',{
+                this.axios.post('/setNickname',{
                     nickname:_this.nickname
                 }).then(res=>{
                     if(res.data.state=='ok'){

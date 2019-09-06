@@ -8,7 +8,7 @@
             v-on="inputListeners"
             v-bind="$attrs"/>
             <i 
-            v-if="clearShow" 
+            v-if="isShow&&clearIcon" 
             @click="clear" 
             :class="{'bg':clearBg}"
             class="clear iconfont icon-cha"></i>
@@ -30,6 +30,12 @@
                 type:[String,Number],
                 default:''
             },
+            // 是否显示清楚按钮
+            clearIcon:{
+                type:Boolean,
+                default:false
+            },
+            // 是否一直显示清除按钮
             clearShow:{
                 type:Boolean,
                 default:false
@@ -41,6 +47,7 @@
         },
         data(){
             return {
+                isShow:false
             }
         },
         computed:{
@@ -52,14 +59,17 @@
                     // 覆写监听器
                     input:function(evt){
                         vm.$emit('input',evt.target.value);
+                    },
+                    focus:function(){
+                        vm.isShow = true;
+                    },
+                    blur:function(){
+                        vm.isShow = vm.clearShow ? true:false;
                     }
                 })
             }
         },
         methods:{
-            handleInput(evt){
-                this.$emit('input',evt.target.value);
-            },
             clear(){
                 this.$emit('input','');
             }

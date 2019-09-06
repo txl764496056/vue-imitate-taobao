@@ -17,10 +17,19 @@
   }
   a{
     text-decoration: none;
+    &:active{
+      -webkit-tap-highlight-color:rgba(255,255,255,0);
+      -webkit-user-select:none;
+      -moz-user-select:none;
+      -moz-user-focus:none;
+    }
   }
   .padlr{
     padding-right:$pd25;
     padding-left:$pd25;
+  }
+  .mt20{
+    margin-top:vm(20);
   }
 
   // 火狐：

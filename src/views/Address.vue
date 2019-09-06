@@ -20,7 +20,7 @@
                     <p>{{item.address}}</p>
                 </div>
             </div>
-            <div class="edit">编辑</div>
+            <router-link :to="{path:'/editaddress',query:{id:item.id}}" class="edit">编辑</router-link>
         </div>
     </div>
 </template>
@@ -54,12 +54,16 @@
     color:$txt-gray1;
     margin-right:vm(25);
 }
+.address-container{
+    margin-top:vm(20);
+}
 .address-item{
-    $icon-size:vm(60);
+    $icon-size:vm(66);
     display:flex;
     justify-content: space-between;
     align-items:center;
     background-color:#fff;
+    padding:vm(15) vm(25);
     >i{
         background-image:linear-gradient(90deg,#ccc,#aaa);
         display:inline-block;
@@ -70,7 +74,7 @@
         justify-content: center;
         align-items:center;
         color:#fff;
-        font-size:vm(28);
+        font-size:vm(30);
         font-style:normal;
     }
     .msg{
@@ -81,6 +85,7 @@
             align-items:flex-end;
             p{
                 color:$txt-black;
+                font-size:vm(32);
             }
             span{
                 color:$txt-gray2;
@@ -89,20 +94,29 @@
             }
         }
         .dw{
-            font-size:vm(26);
             span{
                 color:$theme-color;
                 font-size:inherit;
                 background-color:themeColor(0.2);
-                padding:vm(2) vm(8);
+                padding:0 vm(8);
                 display:inline-block;
-                margin-right:vm(15);
+                margin-right:vm(10);
+                font-size:vm(24);
+                border-radius:vm(4);
             }
             p{
                 display:inline-block;
                 font-size:inherit;
+                font-size:vm(28);
             }
         }
+    }
+    .edit{
+        padding-left:vm(15);
+        border-left:1px solid $border-color-dd;
+        font-size:vm(26);
+        color:$txt-gray2;
+        padding-bottom:2px;
     }
 }
 </style>

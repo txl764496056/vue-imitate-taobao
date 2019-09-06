@@ -6,7 +6,8 @@
         class="login-unit"
         v-model='tell' 
         type="text"
-        :clearShow="true&&tell!=''"
+        :clearIcon="true&&tell!=''"
+        :clearShow="true"
         @keydown="tellKeydown"
         @keyup="tellKeyup"
         placeholder="请输入手机号码">

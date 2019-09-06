@@ -22,13 +22,21 @@ let address = Mock.mock({
         {
            "id":"@id()",
            "name":"@cname()",
-           "address":"@city(true)",
+           "address":"@county(true)"+"@ctitle()",
            "tell":/^1[35789]\d{9}/,
            "default":false
         }
     ]
 });
 address.address_list[0]['default'] = true;
+
+/* 获取将要修改的地址信息 */
+Mock.mock(RegExp('/getAddress'),'get',function(options){
+    let id = getUrlParams(options.url).id;
+    return address.address_list.filter(function(item,index){
+        return item.id==id;
+    });
+})
 
 /* 收货地址 */
 Mock.mock(RegExp('/address'),'get',function(options){
@@ -37,17 +45,16 @@ Mock.mock(RegExp('/address'),'get',function(options){
 
 /* 设置页用户信息 */
 Mock.mock(RegExp('/seting'),'get',function(options){
-    console.log(options);
     return Mock.mock({
         "nickname":function(){
             return nickname ? nickname:"设置昵称";
         },
         photo
     })
-})
+});
 
 /* 设置昵称 */
-Mock.mock(RegExp("/setnickname"),'post',function(options){
+Mock.mock(RegExp("/setNickname"),'post',function(options){
     let name = JSON.parse(options.body).nickname;
     nickname = name;
     return {
