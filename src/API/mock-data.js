@@ -16,31 +16,49 @@ let {
     getUrlParams
 } = common;
 
+// 生成用户头像
 let photo = Random.image("100x100","#fdd48a",'png','photo');
-let address = Mock.mock({
+// 生成地址数据
+let addressMsg = Mock.mock({
     "address_list|15":[
         {
            "id":"@id()",
            "name":"@cname()",
            "address":"@county(true)"+"@ctitle()",
            "tell":/^1[35789]\d{9}/,
-           "default":false
+           "isDefault":false
         }
     ]
 });
-address.address_list[0]['default'] = true;
+// 设置默认地址
+addressMsg.address_list[0]['isDefault'] = true;
+
+/* 修改地址 */
+Mock.mock(RegExp('/editAddress'),'get',function(options){
+    let params = getUrlParams(options.url);
+    let id = params.id;
+    let arr = addressMsg.address_list;
+    for(let i=0;i<arr.length;i++){
+        if(arr[i].id==id){
+            arr[i] = params;
+            console.log(addressMsg.address_list[i]);
+            return '修改成功';
+        }
+    }
+    return '地址不存在';
+})
 
 /* 获取将要修改的地址信息 */
 Mock.mock(RegExp('/getAddress'),'get',function(options){
     let id = getUrlParams(options.url).id;
-    return address.address_list.filter(function(item,index){
+    return addressMsg.address_list.filter(function(item,index){
         return item.id==id;
     });
 })
 
 /* 收货地址 */
 Mock.mock(RegExp('/address'),'get',function(options){
-     return address;
+     return addressMsg;
 });
 
 /* 设置页用户信息 */

@@ -6,7 +6,7 @@ const getUrlParams = function(url){
     for(let i=0;i<arr.length;i++){
         let temp = arr[i].split("=");
         if(temp.length==2){
-            result[temp[0]] = temp[1];
+            result[temp[0]] = decodeURIComponent(temp[1]).replace(/\+/g," ");
         }
     }
     return result;

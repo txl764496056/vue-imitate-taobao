@@ -70,7 +70,16 @@
     font-size:vm(36);
     color:#fff;
     letter-spacing:1px;
+    &.w100{
+      width:100%;
+    }
+    &.no-radiu{
+      border-radius:0;
+    }
   }
+.bg-ff{
+  background-color:#fff;
+}
 
 // toast
 .toast{
@@ -95,4 +104,32 @@
 .txt-tips{
   color:$txt-tips;
   font-size:vm(28);
+}
+
+// 滑动开关按钮
+.smoonth-btn{
+    $h:16;
+    $w:60;
+    $size:30;
+    background-color:successColor(0.5);
+    width:vm($w);
+    height:vm($h);
+    border-radius:vm($h/2);
+    &::after{
+        content:"";
+        display:block;
+        background-color:$success-color;
+        width:vm($size);
+        height:vm($size);
+        border-radius:50%;
+        transform:translate(vm( $w - $size),vm( - ( $size - $h ) / 2));
+        transition:transform 0.5s;
+    }
+    &.close{
+      background-color:forbiddenColor(0.2);
+        &::after{
+          transform:translate(0,vm( - ( $size - $h ) / 2));
+          background-color:$forbidden-color;
+        }
+    }
 }

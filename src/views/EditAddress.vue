@@ -3,7 +3,7 @@
         <back>
             <template #back-title>编辑收货地址</template>
             <template #back-right>
-                <span class="save-btn">保存</span>
+                <span class="save-btn" @click="editAddress">保存</span>
             </template>
         </back>
         <div class="edit-address mt20">
@@ -23,12 +23,13 @@
                     </p>
                 </template>
             </div>
-            <textarea :value="address[address.length-1]"></textarea>
+            <textarea  v-model="adDetail"></textarea>
         </div>
         <div class="default-btn mt20 padlr">
             <div class="left">设为默认地址</div>
-            <div class="right"></div>
+            <div class="right smoonth-btn" :class="{'close':!isDefault}" @click="setDefault"></div>
         </div>
+        <button class="big-btn w100 no-radiu bg-ff delete-ad-btn">删除地址</button>
     </div>
 </template>
 
@@ -44,6 +45,7 @@ eventBus.$on('areaCode',function(data){
             return {
                 id:"",
                 adMsg:{},
+                isDefault:false,
                 area:areaCode || 86
             }
         },
@@ -59,6 +61,15 @@ eventBus.$on('areaCode',function(data){
                     return [];
                 }
                return this.adMsg.address.split(" ");
+            },
+            adDetail:{
+                set(val){
+                    this.address[this.address.length-1] = val;
+                    this.$set(this.adMsg,'address',this.address.join(" "));
+                },
+                get(){
+                    return this.address[this.address.length-1];
+                }
             }
         },
         methods:{
@@ -70,7 +81,31 @@ eventBus.$on('areaCode',function(data){
                     }
                 }).then(res=>{
                     _this.adMsg = res.data[0] ;
+                    _this.isDefault = res.data[0].isDefault;
                 })      
+            },
+            setDefault(){
+                this.isDefault = !this.isDefault;
+
+            },
+            editAddress(){
+                let _this = this;
+                let {name,tell,address,id} = this.adMsg;
+                this.axios.get('/editAddress',{
+                    params:{
+                        id,
+                        name,
+                        tell,
+                        address,
+                        isDefault:_this.isDefault
+                    }
+                }).then(res=>{
+                    if(res.data=='修改成功'){
+                        _this.$router.push({
+                            path:'/address'
+                        });
+                    }
+                });
             }
         }
     }
@@ -120,10 +155,10 @@ eventBus.$on('areaCode',function(data){
     display:flex;
     justify-content: space-between;
     align-items:center;
-    .right{
-        background-color:$success-color;
-        width:vm(60);
-        height:vm(20);
-    }
+}
+.delete-ad-btn{
+    color:$theme-color;
+    position:fixed;
+    bottom:0;
 }
 </style>

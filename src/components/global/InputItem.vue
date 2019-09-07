@@ -81,7 +81,7 @@
 @import '../../css/base.scss';
 .input-item{
     display:flex;
-    height:vm(70);
+    min-height:vm(70);
     align-items:center;
     .input{
         flex:1;

@@ -16,7 +16,7 @@
                     <span>{{item.tell}}</span>
                 </div>
                 <div class="dw">
-                    <span v-if="item.default">默认</span>
+                    <span v-if="item.isDefault">默认</span>
                     <p>{{item.address}}</p>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                 _this.addressList = res.data.address_list;
 
             });
-        }
+        },
     }
 </script>
 
