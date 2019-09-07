@@ -41,7 +41,6 @@ Mock.mock(RegExp('/editAddress'),'get',function(options){
     for(let i=0;i<arr.length;i++){
         if(arr[i].id==id){
             arr[i] = params;
-            console.log(addressMsg.address_list[i]);
             return '修改成功';
         }
     }
