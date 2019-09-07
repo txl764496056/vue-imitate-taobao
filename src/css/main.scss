@@ -10,7 +10,7 @@
     font-family: 'Arail','微软雅黑';
   }
   input,
-  button{
+  button,textarea{
     &:focus{
       outline: none;
     }

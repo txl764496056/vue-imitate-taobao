@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import eventBus from '../event-bus.js'
     export default {
         name:'AreaList',
         data(){
@@ -52,13 +53,15 @@
                 document.documentElement.scrollTop = scroll;
             },
             selectArea(area,areaCode){
-                this.$router.push({
-                    name:"login",
-                    params:{
-                        area,
-                        areaCode
-                    }
-                })
+                // this.$router.push({
+                //     name:"login",
+                //     params:{
+                //         area,
+                //         areaCode
+                //     }
+                // })
+                eventBus.$emit('areaCode',{area,areaCode});
+                this.$router.go(-1);
             }
         }
     }
@@ -71,7 +74,7 @@ $area-nav-w:50;
     position:relative;
     .title{
         text-align:left;
-        background-color:#eee;
+        background-color:#eee; 
         font-size:vm(32);
         padding: vm(8) vm(25) {right:vm(25 + $area-nav-w);};
     }
@@ -80,6 +83,7 @@ $area-nav-w:50;
         justify-content: space-between;
         line-height:vm(100);
         border-bottom:1px solid $border-color-dd;
+        background-color:#fff;
         padding: 0 vm(25) {right:vm(25 + $area-nav-w);};
         p{
             font-weight:bold;
