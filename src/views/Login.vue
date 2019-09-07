@@ -50,6 +50,11 @@
 
 <script>
 import Toast from '@/components/toast.js'
+import eventBus from "../event-bus.js"
+let area ;
+eventBus.$on('areaCode',function(data){
+    area = data.areaCode;
+})
     export default {
         name:'Login',
         components:{
@@ -61,7 +66,7 @@ import Toast from '@/components/toast.js'
                 verifyCodeLen:6,
                 tell:'',
                 tellMax:12,
-                areaCode:86,
+                areaCode:area || 86,
                 isTint:false,
                 time:60, //倒计时,
                 type:'number',
