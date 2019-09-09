@@ -3,7 +3,7 @@
         <back>
             <template #back-title>我的收货地址</template>
             <template #back-right>
-                <router-link class="address-link" to="">添加新地址</router-link>
+                <router-link class="address-link" :to="{path:'/editaddress',query:{type:'add'}}">添加新地址</router-link>
             </template>
         </back>
         <div class="address-item"
@@ -16,11 +16,13 @@
                     <span>{{item.tell}}</span>
                 </div>
                 <div class="dw">
-                    <span v-if="item.isDefault">默认</span>
-                    <p>{{item.address}}</p>
+                    <p>
+                        <span v-if="item.isDefault">默认</span>
+                        {{item.address}}
+                    </p>
                 </div>
             </div>
-            <router-link :to="{path:'/editaddress',query:{id:item.id}}" class="edit">编辑</router-link>
+            <router-link :to="{path:'/editaddress',query:{id:item.id,type:'edit'}}" class="edit">编辑</router-link>
         </div>
     </div>
 </template>
@@ -44,6 +46,8 @@
 
             });
         },
+
+        /* 数据更新了，页面状态没更新 */
     }
 </script>
 
@@ -105,7 +109,6 @@
                 border-radius:vm(4);
             }
             p{
-                display:inline-block;
                 font-size:inherit;
                 font-size:vm(28);
             }

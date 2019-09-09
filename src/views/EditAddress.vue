@@ -1,14 +1,14 @@
 <template>
     <div>
         <back>
-            <template #back-title>编辑收货地址</template>
+            <template #back-title>{{backTitle}}</template>
             <template #back-right>
-                <span class="save-btn" @click="editAddress">保存</span>
+                <span class="save-btn" :type="type" @click="saveBtnClick">保存</span>
             </template>
         </back>
         <div class="edit-address mt20">
-            <input-item class="item" v-model="adMsg.name" :clearBg="true" :clearIcon="true"></input-item>
-            <input-item class="item" v-model="adMsg.tell" :clearBg="true" :clearIcon="true">
+            <input-item class="item" v-model="adMsg.name" placeholder="请输入姓名" :clearBg="true" :clearIcon="true"></input-item>
+            <input-item class="item" v-model="adMsg.tell" placeholder="请输入手机号" :clearBg="true" :clearIcon="true">
                 <template #right>
                     <router-link to="/arealist" class="select-area">
                         +{{area}}
@@ -29,7 +29,7 @@
             <div class="left">设为默认地址</div>
             <div class="right smoonth-btn" :class="{'close':!isDefault}" @click="setDefault"></div>
         </div>
-        <button class="big-btn w100 no-radiu bg-ff delete-ad-btn">删除地址</button>
+        <button v-if="type=='edit'" class="big-btn w100 no-radiu bg-ff delete-ad-btn" @click="deleteAddress">删除地址</button>
     </div>
 </template>
 
@@ -44,23 +44,30 @@ eventBus.$on('areaCode',function(data){
         data(){
             return {
                 id:"",
-                adMsg:{},
+                backTitle:'添加收货地址',
+                adMsg:{
+                    name:'',
+                    tell:''
+                },
+                type:'',
                 isDefault:false,
                 area:areaCode || 86
             }
         },
         created(){
-          this.id = this.$route.query.id;
+          this.id = this.$route.query.id || '';
+          this.type = this.$route.query.type;
         },
         mounted(){
-            this.getAddress();
+            if(this.type=='edit'){
+                this.getAddress();
+                this.backTitle = '编辑收货地址';
+            }
+            
         },
         computed:{
             address(){
-                if(Object.keys(this.adMsg).length<=0) {
-                    return [];
-                }
-               return this.adMsg.address.split(" ");
+                return (this.adMsg.address ? this.adMsg.address.split(" "):['湖北省','恩施市','木抚办事处','东头组12号']);
             },
             adDetail:{
                 set(val){
@@ -68,7 +75,7 @@ eventBus.$on('areaCode',function(data){
                     this.$set(this.adMsg,'address',this.address.join(" "));
                 },
                 get(){
-                    return this.address[this.address.length-1];
+                    return this.address[this.address.length-1] || '';
                 }
             }
         },
@@ -88,6 +95,27 @@ eventBus.$on('areaCode',function(data){
                 this.isDefault = !this.isDefault;
 
             },
+            saveBtnClick(){
+                return this.type=='edit' ? this.editAddress():this.addAddress();
+            },
+            addAddress(){
+                let _this = this;
+                let {name,tell} = this.adMsg;
+                this.axios.get('/addAddress',{
+                    params:{
+                        name,
+                        tell,
+                        address:_this.address.join(" "),
+                        isDefault:_this.isDefault
+                    }
+                }).then(res=>{
+                    if(res.data=='添加成功'){
+                        _this.$router.push({
+                            path:'/address'
+                        });
+                    }
+                });
+            },
             editAddress(){
                 let _this = this;
                 let {name,tell,address,id} = this.adMsg;
@@ -106,6 +134,19 @@ eventBus.$on('areaCode',function(data){
                         });
                     }
                 });
+            },
+            deleteAddress(){
+                let _this = this;
+                let {id} = this.adMsg;
+                this.axios.get('/deleteAddress',{
+                    params:{
+                        id
+                    }
+                }).then(res=>{
+                    if( res.data=="删除成功" ){
+                        _this.$router.push('/address');
+                    }
+                })
             }
         }
     }
@@ -158,7 +199,6 @@ eventBus.$on('areaCode',function(data){
 }
 .delete-ad-btn{
     color:$theme-color;
-    position:fixed;
-    bottom:0;
+    margin-top:vm(20);
 }
 </style>

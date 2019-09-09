@@ -28,23 +28,64 @@ let addressMsg = Mock.mock({
            "tell":/^1[35789]\d{9}/,
            "isDefault":false
         }
-    ]
+    ] 
 });
 // 设置默认地址
 addressMsg.address_list[0]['isDefault'] = true;
 
+/* 将默认地址为true的项改为false */
+function setDefaultAddress(id){
+    let arr = addressMsg.address_list;
+    for(let i=0;i<addressMsg.address_list.length;i++){
+        if(arr[i].id!==id&&arr[i].isDefault){
+            arr[i].isDefault = false;
+        }
+    }
+}
+
+/* 添加地址 */
+Mock.mock(RegExp('/addAddress'),'get',function(options){
+    let params = getUrlParams(options.url);
+    let id = Mock.mock({
+        "id":"@id()"
+    }).id;
+    params['id'] = id;
+    addressMsg.address_list.push(params);
+    if(params.isDefault){
+        setDefaultAddress(id);
+    }
+    return '添加成功';
+});
+
+/* 删除地址 */
+Mock.mock(RegExp("/deleteAddress"),'get',function(options){
+    let id = getUrlParams(options.url).id;
+    let arr = addressMsg.address_list;
+    for(let i=0;i<arr.length;i++){
+        if(arr[i].id==id){
+            arr.splice(i,1);
+            return '删除成功';
+        }
+    }
+    return '删除失败';
+})
+
 /* 修改地址 */
 Mock.mock(RegExp('/editAddress'),'get',function(options){
+    let status = '地址不存在';
     let params = getUrlParams(options.url);
     let id = params.id;
     let arr = addressMsg.address_list;
     for(let i=0;i<arr.length;i++){
         if(arr[i].id==id){
             arr[i] = params;
-            return '修改成功';
+            if(params.isDefault){
+                setDefaultAddress(id);
+            }
+            status = '修改成功';
         }
     }
-    return '地址不存在';
+    return status;
 })
 
 /* 获取将要修改的地址信息 */
@@ -55,8 +96,19 @@ Mock.mock(RegExp('/getAddress'),'get',function(options){
     });
 })
 
-/* 收货地址 */
+/* 收货地址 返货收货地址 默认地址在数组第一项 */
 Mock.mock(RegExp('/address'),'get',function(options){
+    let arr = addressMsg.address_list;
+    let index = 0;
+    for(let i = 0;i<arr.length;i++){
+        if(arr[i].isDefault){
+            index = i;
+            break;
+        }   
+    }
+    let temp = arr[index];
+    arr.splice(index,1);
+    arr.unshift(temp);
      return addressMsg;
 });
 
