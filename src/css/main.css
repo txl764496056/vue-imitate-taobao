@@ -86,6 +86,19 @@ textarea::-webkit-input-placeholder {
   border-radius: 0;
 }
 
+.big-btn.fixed {
+  position: fixed;
+}
+
+.big-btn.bottom {
+  bottom: 0;
+}
+
+.fixed-btn {
+  position: relative;
+  height: 12vw;
+}
+
 .bg-ff {
   background-color: #fff;
 }

@@ -14,6 +14,9 @@
             :list="value" 
             ></list>
         </div>
+        <div class="fixed-btn">
+            <button @click="outLogin" class="big-btn no-radiu red-linear w100 fixed bottom">退出当前账户</button>
+        </div>
     </div>
 </template>
 
@@ -50,6 +53,10 @@ import List from '@/components/List.vue'
                 }).then(res=>{
                     _this.userMsg = res.data;
                 });
+            },
+            outLogin(){
+                localStorage.removeItem("userKey");
+                this.$router.push("/login");
             }
         }
     }
