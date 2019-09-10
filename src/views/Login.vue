@@ -1,6 +1,10 @@
 <template>
     <div class="login-page">
-        <back></back>
+        <back>
+            <template #back-left>
+                <i @click="vistorBrowse" class="back-arrow iconfont icon-arrow-l"></i>
+            </template>
+        </back>
         <img src="images/logo.jpg" alt="" class="logo">
         <input-item 
         class="login-unit"
@@ -178,6 +182,10 @@ eventBus.$on('areaCode',function(data){
                     });
                     
                 }
+            },
+            /* 游客浏览 */
+            vistorBrowse(){
+                this.$router.push("/");
             }
         }
        
