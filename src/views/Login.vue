@@ -10,7 +10,7 @@
         class="login-unit"
         v-model='tell' 
         type="text"
-        :clearIcon="true&&tell!=''"
+        :clearIcon="true"
         :clearShow="true"
         @keydown="tellKeydown"
         @keyup="tellKeyup"

@@ -8,7 +8,7 @@
             v-on="inputListeners"
             v-bind="$attrs"/>
             <i 
-            v-if="isShow&&clearIcon" 
+            v-if="isShow&&clearIcon&&value!=''" 
             @click="clear" 
             :class="{'bg':clearBg}"
             class="clear iconfont icon-cha"></i>
@@ -30,7 +30,7 @@
                 type:[String,Number],
                 default:''
             },
-            // 是否显示清楚按钮
+            // 是否显示清除按钮
             clearIcon:{
                 type:Boolean,
                 default:false
@@ -47,7 +47,7 @@
         },
         data(){
             return {
-                isShow:false
+                isShow:false,
             }
         },
         computed:{
@@ -64,7 +64,9 @@
                         vm.isShow = true;
                     },
                     blur:function(){
-                        vm.isShow = vm.clearShow ? true:false;
+                        setTimeout(function(){
+                          vm.isShow = vm.clearShow ? true:false;  
+                        },50)
                     }
                 })
             }
