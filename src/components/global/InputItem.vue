@@ -124,7 +124,7 @@
         height:100%;
         flex:1;
         border:none;
-        font-size:vm(34);
+        font-size:vm(32);
         background-color:transparent;
         color:$txt-black;
         &.cursor-color{

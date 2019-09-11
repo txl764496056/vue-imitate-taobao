@@ -3,7 +3,7 @@
     <router-link to="/search" class="top red-linear">
       <input-item class="home-search" v-model="search" disabled :placeholder="'搜索'">
         <template #left>
-          <i class="iconfont icon-sousuo"></i>
+          <i class="sousuo iconfont icon-sousuo"></i>
         </template>
       </input-item>
     </router-link>
@@ -51,6 +51,13 @@ $toph:vm(100);
     background-color:#fff;
     border-radius:vm(50);
     padding:0 vm(30);
+    input{
+      font-size:vm(30);
+    }
+    .sousuo{
+      margin-right:vm(15);
+      color:$txt-gray2;
+    }
   }
 }
 </style>

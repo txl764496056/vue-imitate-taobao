@@ -217,6 +217,7 @@ eventBus.$on('areaCode',function(data){
         color:themeColor(0.5);
     }
 }
+
 .login-unit{
     border-bottom:1px solid $theme-color;
     background-color:#fff;
@@ -238,6 +239,9 @@ eventBus.$on('areaCode',function(data){
             }
         }
     }
+    &.input-item{
+        ::v-deep input{font-size:vm(34);}
+    } 
 }
 
 .login-page{
