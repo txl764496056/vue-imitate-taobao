@@ -2,7 +2,11 @@
     <div>
         <back>
             <template #back-title>
-                <input-item v-model="search" clearIcon placeholder="搜索"></input-item>
+                <input-item v-model="search" clearIcon placeholder="搜索">
+                    <template #left>
+                        <i class="iconfont icon-sousuo"></i>
+                    </template>
+                </input-item>
             </template>
         </back>
     </div>

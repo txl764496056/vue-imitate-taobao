@@ -12,6 +12,7 @@
         type="text"
         :clearIcon="true"
         :clearShow="true"
+        :cursorColor='true'
         @keydown="tellKeydown"
         @keyup="tellKeyup"
         placeholder="请输入手机号码">
@@ -27,6 +28,7 @@
         class="login-unit"
         v-model='verifyCode' 
         type="text"
+        :cursorColor="true"
         @input="checkVerifyCode" 
         placeholder="请输入验证码">
             <template #right>

@@ -3,7 +3,7 @@
         <slot name="left"></slot>
         <div class="input">
             <input 
-            :class="{'focus-color':value!=''}"
+            :class="{'cursor-color':cursorColor&&value==''}"
             :value='value' 
             v-on="inputListeners"
             v-bind="$attrs"/>
@@ -43,11 +43,19 @@
             clearBg:{
                 type:Boolean,
                 default:false
+            },
+            cursorColor:{
+                type:Boolean,
+                default:false
             }
         },
         data(){
             return {
                 isShow:false,
+                inputStyle:{
+                    'text-shadow':'0 0 0 '+this.cursorColor,
+                    '-webkit-text-fill-color':'transparent'
+                }
             }
         },
         computed:{
@@ -118,12 +126,12 @@
         border:none;
         font-size:vm(34);
         background-color:transparent;
-        &:focus{
+        color:$txt-black;
+        &.cursor-color{
             color:$theme-color;
         }
-        &.focus-color{
-            text-shadow:0 0 0 $txt-black;
-            -webkit-text-fill-color:transparent;
+        &:disabled{
+            color:$txt-gray2;
         }
     }
 }

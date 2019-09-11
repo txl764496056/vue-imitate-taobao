@@ -56,9 +56,6 @@
     line-height:$back-nav-h;
     background-color:#fff;
     font-size:vm(34);
-    // display:flex;
-    // justify-content: space-between;
-    // align-items:center;
     .left{
         @extend .abs;
         left:0;
@@ -86,9 +83,9 @@
         text-align:center;
         font-size:vm(34);
         flex:1;
+        margin:0 vm(70);
         &.left{
             text-align:left;
-            padding-left:vm(70);
         }
     }
 }

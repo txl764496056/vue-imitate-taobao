@@ -1,8 +1,7 @@
 <template>
   <div class="home">
     <router-link to="/search" class="top red-linear">
-      <!-- <search class="home-search" disabled v-model="search" :placeholder="'搜索'"></search> -->
-      <input-item v-model="search" disabled :placeholder="'搜索'">
+      <input-item class="home-search" v-model="search" disabled :placeholder="'搜索'">
         <template #left>
           <i class="iconfont icon-sousuo"></i>
         </template>
@@ -49,6 +48,9 @@ $toph:vm(100);
   align-items: center;
   .home-search{
     width:80%;
+    background-color:#fff;
+    border-radius:vm(50);
+    padding:0 vm(30);
   }
 }
 </style>
