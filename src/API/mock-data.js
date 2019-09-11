@@ -33,6 +33,37 @@ let addressMsg = Mock.mock({
 // 设置默认地址
 addressMsg.address_list[0]['isDefault'] = true;
 
+/* 搜索-返回搜索结果 */
+// Mock.mock(RegExp('/search'),'get',function(options){
+//     let product = getUrlParams(options.url).product;
+//     return Mock.mock({
+//         "search_list|4":[{
+
+//         }]
+//     })
+
+// })
+
+/* 搜索-热门搜索 */
+Mock.mock(RegExp('/searchHot'),'get',function(options){
+    let hot_key = (getUrlParams(options.url)).hot_key;
+    let result = [];
+    let pattern = new RegExp(hot_key,'gi');
+    for(let i=0;i<15;i++){
+        let num = parseInt(Math.random()*10);
+        let temp = "";
+        if(num%3>0){
+            temp = Mock.mock('@ctitle(3,6)');
+        }else{
+            temp = Mock.mock('@title(3,9)');
+        }
+        if(pattern.test(temp)){
+            result.push(temp);
+        }
+    }
+    return result;
+})
+
 /* 将默认地址为true的项改为false */
 function setDefaultAddress(id){
     let arr = addressMsg.address_list;

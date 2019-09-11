@@ -56,6 +56,8 @@
     line-height:$back-nav-h;
     background-color:#fff;
     font-size:vm(34);
+    display:flex;
+    align-items:center;
     .left{
         @extend .abs;
         left:0;
