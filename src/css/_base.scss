@@ -16,6 +16,10 @@
     @return rgba(0,0,0,$num);
 }
 
+@function shadowColor($num){
+    @return rgba(100,100,100,$num);
+}
+
 /* 颜色组 */
 $base-placeholder:#bbbbbb;
 $theme-color:#ff8b5a; //主题色
@@ -32,6 +36,7 @@ $forbidden-color:#e4e4e4;
 
 //尺寸大小
 $back-nav-h:vm(80); //返回导航高度
+$back-nav-h-num:80;
 $menu-h:vm(100); //主菜单高度
 .abs{
     position:absolute;

@@ -14,6 +14,9 @@
                 @click="searchStart">搜索</button>
             </template>
         </back>
+        <div class="hot-list">
+            <div class="item" v-for="(item,index) in hotList" :key="index">{{item}}</div>
+        </div>
     </div>
 </template>
 
@@ -24,7 +27,8 @@
         },
         data(){
             return {
-                search:''
+                search:'',
+                hotList:[]
             }
         },
         mounted(){
@@ -55,8 +59,8 @@
                         hot_key:_this.search
                     }
                 }).then(res=>{
-                    // _this.hotList = res.data;
-                    console.log(res);
+                    _this.hotList = res.data;
+                    // console.log(res);
                 })
             }
         }
@@ -80,5 +84,23 @@
     padding:vm(5) vm(15) vm(8);
     border-radius:vm(40);
     margin-right:vm(10);
+}
+.hot-list{
+    position:fixed;
+    top:vm( $back-nav-h-num + 20 );
+    background-color:#fff;
+    margin:0 vm(50);
+    padding:vm(10);
+    border-radius:vm(8);
+    box-shadow:0 0 vm(12) shadowColor(0.15);
+    .item{
+        border-bottom:1px solid $border-color-ee;
+        padding:vm(15) vm(10);
+        font-size:vm(26);
+        color:$txt-gray2;
+        &:last-of-type{
+            border-bottom:none;
+        }
+    }
 }
 </style>
