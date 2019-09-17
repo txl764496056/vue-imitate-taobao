@@ -11,6 +11,7 @@ let {
     track,
     coupon,
     nickname,
+    searchRecord,
 } = global;
 let {
     getUrlParams
@@ -33,8 +34,27 @@ let addressMsg = Mock.mock({
 // 设置默认地址
 addressMsg.address_list[0]['isDefault'] = true;
 
+/* 获取搜索发现 */
+Mock.mock(RegExp("/getSearchFind"),'get',function(){
+    return Mock.mock({
+        "list|12":["@ctitle(2,5)"]
+    }).list;
+});
+
+/* 获取搜索历史记录 */
+Mock.mock(RegExp("/getSearchRecord"),'get',function(){
+    return searchRecord;
+});
+
+/* 搜索历史记录保存 */
+Mock.mock(RegExp("/saveSearchRecord"),'get',function(options){
+    let record = getUrlParams(options.url).record;
+    searchRecord.push(record);
+    return '保存成功';
+});
+
 /* 搜索-返回搜索结果 */
-// Mock.mock(RegExp('/search'),'get',function(options){
+// Mock.mock(RegExp('/search '),'get',function(options){
 //     let product = getUrlParams(options.url).product;
 //     return Mock.mock({
 //         "search_list|4":[{
@@ -49,14 +69,20 @@ Mock.mock(RegExp('/searchHot'),'get',function(options){
     let hot_key = (getUrlParams(options.url)).hot_key;
     let result = [];
     let pattern = new RegExp(hot_key,'gi');
-    for(let i=0;i<15;i++){
+    for(let i=0;i<27;i++){
         let num = parseInt(Math.random()*10);
         let temp = "";
         if(num%3>0){
-            temp = Mock.mock('@ctitle(3,6)');
+            temp = Mock.mock('@ctitle(3,9)');
         }else{
-            temp = Mock.mock('@title(3,9)');
+            temp = Mock.mock('@title(1,3)');
         }
+        
+        /* 避免没有生成符合要求的热词 */
+        if(i==3){
+            temp = temp + hot_key;
+        }
+
         if(pattern.test(temp)){
             result.push(temp);
         }
@@ -122,13 +148,13 @@ Mock.mock(RegExp('/editAddress'),'get',function(options){
 /* 获取将要修改的地址信息 */
 Mock.mock(RegExp('/getAddress'),'get',function(options){
     let id = getUrlParams(options.url).id;
-    return addressMsg.address_list.filter(function(item,index){
+    return addressMsg.address_list.filter(function(item){
         return item.id==id;
     });
 })
 
 /* 收货地址 返货收货地址 默认地址在数组第一项 */
-Mock.mock(RegExp('/address'),'get',function(options){
+Mock.mock(RegExp('/address'),'get',function(){
     let arr = addressMsg.address_list;
     let index = 0;
     for(let i = 0;i<arr.length;i++){
@@ -144,7 +170,7 @@ Mock.mock(RegExp('/address'),'get',function(options){
 });
 
 /* 设置页用户信息 */
-Mock.mock(RegExp('/seting'),'get',function(options){
+Mock.mock(RegExp('/seting'),'get',function(){
     return Mock.mock({
         "nickname":function(){
             return nickname ? nickname:"设置昵称";
@@ -164,7 +190,7 @@ Mock.mock(RegExp("/setNickname"),'post',function(options){
 })
 
 /* 我的页面 */
-Mock.mock(RegExp("/my"),'get',function(options){
+Mock.mock(RegExp("/my"),'get',function(){
     return Mock.mock({
         "person":{
             "nickname":function(){

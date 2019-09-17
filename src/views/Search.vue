@@ -7,45 +7,75 @@
                   clearIcon
                   clearBg
                   placeholder="搜索"
-                  @keyup="keyupHandle"></input-item>
+                  @keyup="keyupHandle"
+                  @input="searchInput"></input-item>
             </template>
             <template #back-right>
                 <button class="search-btn red-linear"
                 @click="searchStart">搜索</button>
             </template>
         </back>
-        <div class="hot-list">
-            <div class="item" v-for="(item,index) in hotList" :key="index">{{item}}</div>
+        <div v-if="hotList.length!=0&&isHotList&&search!=''" class="hot-list">
+            <div class="item"
+             v-for="(item,index) in hotList"
+             :key="index"
+             @click="selectHotKey(item)">{{item}}</div>
         </div>
+        <search-record 
+         v-if="isHistoryRecord" 
+         :historyRecord="historyRecord"
+         v-on:navListType="navListType"
+         :currType="currType"></search-record>
+        <search-result v-else :currType="currType"></search-result>
     </div>
 </template>
 
 <script>
+import SearchRecord from "./SearchRecord.vue"
+import SearchResult from "./SearchResult.vue"
     export default {
         name:'Search',
         components:{
+            SearchRecord,
+            SearchResult
         },
         data(){
             return {
                 search:'',
-                hotList:[]
+                hotList:[],
+                isHotList:false,
+                historyRecord:[],
+                isHistoryRecord:true,
+                currType:'all'
             }
         },
         mounted(){
             document.addEventListener('keydown',this.keyboardEnter);
+            this.getSearchRecord();
         },
         methods:{
             searchStart(){
-                // let _this = this;
-                // this.axios.get('/search',{
-                //     params:{
-                //         product:_this.search
-                //     }
-                // }).then(res=>{
-                //     console.log(res);
-                // })
                 // 搜索成功后
                 document.removeEventListener('keydown',this.keyboardEnter);
+                this.saveSearchRecord();
+            },
+            saveSearchRecord(){
+                let _this = this;
+                this.axios.get('/saveSearchRecord',{
+                    params:{
+                        record:_this.search
+                    }
+                }).then(res => {
+                    if(res.data=='保存成功'){
+                        _this.getSearchRecord();
+                    }
+                });
+            },
+            getSearchRecord(){
+                let _this = this;
+                this.axios.get('/getSearchRecord').then(res => {
+                    _this.historyRecord = res.data;
+                });
             },
             keyboardEnter(evt){
                 if(evt.keyCode==13){
@@ -54,14 +84,26 @@
             },
             keyupHandle(){
                 let _this = this;
+                this.isHotList = true;
                 this.axios.get('/searchHot',{
                     params:{
                         hot_key:_this.search
                     }
                 }).then(res=>{
                     _this.hotList = res.data;
-                    // console.log(res);
                 })
+            },
+            selectHotKey(hotKey){
+                this.search = hotKey;
+                this.isHotList = false;
+                this.isHistoryRecord = false;
+                this.searchStart();
+            },
+            searchInput(){
+                this.isHistoryRecord = true;
+            },
+            navListType(data){
+                this.currType = data;
             }
         }
     }
@@ -87,16 +129,19 @@
 }
 .hot-list{
     position:fixed;
-    top:vm( $back-nav-h-num + 20 );
+    top:$back-nav-h;
     background-color:#fff;
-    margin:0 vm(50);
+    left:0;
+    right:0;
+    bottom:0;
     padding:vm(10);
     border-radius:vm(8);
     box-shadow:0 0 vm(12) shadowColor(0.15);
+    z-index:999;
     .item{
         border-bottom:1px solid $border-color-ee;
-        padding:vm(15) vm(10);
-        font-size:vm(26);
+        padding:vm(25) vm(10);
+        font-size:vm(28);
         color:$txt-gray2;
         &:last-of-type{
             border-bottom:none;
