@@ -6,13 +6,15 @@
             <div class="history-list">
                 <div class="item"
                 v-for="(item,index) in historyRecord"
-                :key="index">{{item.length>5 ? item.slice(0,5)+"...":item}}</div>
+                :key="index"
+                @click="searchClick(item)">{{item.length>5 ? item.slice(0,5)+"...":item}}</div>
             </div>
             <h2>搜索发现</h2>
             <div class="search-find">
                 <div class="item"
                 v-for="(item,index) in searchFind"
-                :key="index">
+                :key="index"
+                @click="searchClick(item)">
                     {{item}}
                 </div>
             </div>
@@ -77,6 +79,9 @@ import NavList from "@/components/NavList.vue"
             navListClick(data){
                 this.getSearchFind();
                 this.$emit('navListType',data);
+            },
+            searchClick(record){
+                this.$emit('searchClick',record);
             }
         }
     }

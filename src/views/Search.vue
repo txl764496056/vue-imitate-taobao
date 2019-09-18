@@ -1,6 +1,9 @@
 <template>
     <div class="search-page">
         <back>
+            <template #back-left>
+                <i class="search-back-icon iconfont icon-arrow-l" @click="isHistoryRecord ? goBack():hideHistoryRecord()"></i>
+            </template>
             <template #back-title>
                 <input-item class="search"
                   v-model="search"
@@ -25,8 +28,9 @@
          v-if="isHistoryRecord" 
          :historyRecord="historyRecord"
          v-on:navListType="navListType"
+         v-on:searchClick="searchClick"
          :currType="currType"></search-record>
-        <search-result v-else :currType="currType"></search-result>
+        <search-result v-else :currType="currType" :search="search"></search-result>
     </div>
 </template>
 
@@ -57,6 +61,8 @@ import SearchResult from "./SearchResult.vue"
             searchStart(){
                 // 搜索成功后
                 document.removeEventListener('keydown',this.keyboardEnter);
+                this.isHotList = false;
+                this.isHistoryRecord = false;
                 this.saveSearchRecord();
             },
             saveSearchRecord(){
@@ -95,8 +101,6 @@ import SearchResult from "./SearchResult.vue"
             },
             selectHotKey(hotKey){
                 this.search = hotKey;
-                this.isHotList = false;
-                this.isHistoryRecord = false;
                 this.searchStart();
             },
             searchInput(){
@@ -104,6 +108,16 @@ import SearchResult from "./SearchResult.vue"
             },
             navListType(data){
                 this.currType = data;
+            },
+            searchClick(data){
+                this.search = data;
+                this.searchStart();
+            },
+            hideHistoryRecord(){
+                this.isHistoryRecord = true;
+            },
+            goBack(){
+                this.$router.go(-1);
             }
         }
     }
@@ -147,5 +161,11 @@ import SearchResult from "./SearchResult.vue"
             border-bottom:none;
         }
     }
+}
+.search-back-icon{
+    margin-left:vm(20);
+    font-size:vm(38);
+    font-weight:bold;
+    color:$txt-gray1;
 }
 </style>

@@ -34,6 +34,50 @@ let addressMsg = Mock.mock({
 // 设置默认地址
 addressMsg.address_list[0]['isDefault'] = true;
 
+
+/* 搜索-返回搜索结果 */
+Mock.mock(RegExp('/getSearchResult'),'get',function(options){
+    let type = getUrlParams(options.url).type;
+    let product = getUrlParams(options.url).product;
+    /* 全部 */
+    return Mock.mock({
+        "search_list|4":[{
+            "title":"@ctitle()"+product,
+            "tips":function(){
+                let arr = ['直送','包邮','满99减20','过敏包退'];
+                let len = parseInt(Math.random()*arr.length);
+                let result = [];
+                for(let i=0;i<len;i++){
+                    result.push(arr[parseInt(Math.random()*len)]);
+                }
+                return result;
+            },
+            "address":"@city()",
+            "price|5-100.0-2":20.5,
+            "sales|1-100":5,
+            "type":function(){
+                let arr = [];
+                switch(type){
+                    case 'all':arr = ['天猫','','店铺','经验'];break;
+                    case 'tianmao':arr = ['天猫'];break;
+                    case 'shop':arr = ['店铺'];break;
+                    case 'taobaojingyan':arr = ['经验'];break;
+                    default:break;
+                }
+                return Mock.mock({
+                    "type|1":arr
+                }).type;
+            },
+            "shop_name":"@ctitle()"+'店',
+            "product_img|1":[
+                Random.image('200x200','#a9c7ff','jpg','product'),
+                Random.image('200x200','#fecda8','jpg','product')
+            ]
+        }]
+    })
+
+});
+
 /* 获取搜索发现 */
 Mock.mock(RegExp("/getSearchFind"),'get',function(){
     return Mock.mock({
@@ -52,17 +96,6 @@ Mock.mock(RegExp("/saveSearchRecord"),'get',function(options){
     searchRecord.push(record);
     return '保存成功';
 });
-
-/* 搜索-返回搜索结果 */
-// Mock.mock(RegExp('/search '),'get',function(options){
-//     let product = getUrlParams(options.url).product;
-//     return Mock.mock({
-//         "search_list|4":[{
-
-//         }]
-//     })
-
-// })
 
 /* 搜索-热门搜索 */
 Mock.mock(RegExp('/searchHot'),'get',function(options){
