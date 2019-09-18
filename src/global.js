@@ -7,6 +7,7 @@ let track = 0; //足迹
 let coupon = 4;//优惠卷
 let nickname = '';
 let searchRecord = []; //搜索记录
+let productList = []; //所有产品
 
 export default{
     userKey,
@@ -15,5 +16,6 @@ export default{
     attention,
     coupon,
     nickname,
-    searchRecord
+    searchRecord,
+    productList
 }

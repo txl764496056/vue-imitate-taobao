@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <button class="remove-login" @click="removeUserKey">删除登录缓存</button>
-    <keep-alive>
+    <keep-alive include="search">
       <router-view/>
     </keep-alive>
   </div>

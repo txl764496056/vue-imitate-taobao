@@ -12,10 +12,12 @@ let {
     coupon,
     nickname,
     searchRecord,
+    productList
 } = global;
 let {
     getUrlParams
 } = common;
+
 
 // 生成用户头像
 let photo = Random.image("100x100","#fdd48a",'png','photo');
@@ -39,9 +41,9 @@ addressMsg.address_list[0]['isDefault'] = true;
 Mock.mock(RegExp('/getSearchResult'),'get',function(options){
     let type = getUrlParams(options.url).type;
     let product = getUrlParams(options.url).product;
-    /* 全部 */
-    return Mock.mock({
+    let list =  Mock.mock({
         "search_list|4":[{
+            "id":"@id()",
             "title":"@ctitle()"+product,
             "tips":function(){
                 let arr = ['直送','包邮','满99减20','过敏包退'];
@@ -74,8 +76,9 @@ Mock.mock(RegExp('/getSearchResult'),'get',function(options){
                 Random.image('200x200','#fecda8','jpg','product')
             ]
         }]
-    })
-
+    });
+    productList.push(...list.search_list);
+    return list;
 });
 
 /* 获取搜索发现 */
