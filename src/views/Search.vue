@@ -24,13 +24,15 @@
              :key="index"
              @click="selectHotKey(item)">{{item}}</div>
         </div>
-        <search-record 
-         v-if="isHistoryRecord" 
-         :historyRecord="historyRecord"
-         v-on:navListType="navListType"
-         v-on:searchClick="searchClick"
-         :currType="currType"></search-record>
-        <search-result v-else :currType="currType" :search="search"></search-result>
+        <keep-alive>
+            <search-record 
+            v-if="isHistoryRecord" 
+            :historyRecord="historyRecord"
+            v-on:navListType="navListType"
+            v-on:searchClick="searchClick"
+            :currType="currType"></search-record>
+            <search-result v-else :currType="currType" :search="search"></search-result>
+        </keep-alive>
     </div>
 </template>
 
@@ -64,6 +66,7 @@ import SearchResult from "./SearchResult.vue"
                 this.isHotList = false;
                 this.isHistoryRecord = false;
                 this.saveSearchRecord();
+                // this.$router.push("/address")
             },
             saveSearchRecord(){
                 let _this = this;
