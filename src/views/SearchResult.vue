@@ -4,8 +4,9 @@
         :navList="list" 
         :currType="currType"
         v-on:navListClick="navListClick"></nav-list>
-        <div class="product-list">
-            <div class="item"
+        <div  class="product-list">
+            <router-link class="item"
+            :to="{path:'/gooddetails',query:{id:item.id,goodsType:'search'}}"
             v-for="(item,index) in productList"
             :key="index">
                 <img :src="item.product_img" alt="">
@@ -26,7 +27,7 @@
                     </div>
                     <div class="shop">{{item.shop_name}}></div>
                 </div>
-            </div>
+            </router-link>
         </div>
     </div>
 </template>

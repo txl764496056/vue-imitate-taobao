@@ -12,10 +12,11 @@ let {
     coupon,
     nickname,
     searchRecord,
-    productList
+    productList,
+    detailsType
 } = global;
 let {
-    getUrlParams
+    getUrlParams,
 } = common;
 
 
@@ -37,6 +38,16 @@ let addressMsg = Mock.mock({
 addressMsg.address_list[0]['isDefault'] = true;
 
 
+/* 商品详情页信息 */
+Mock.mock(RegExp("/getGoodMsg"),'get',function(options){
+    if( !Object.keys(productList).length ) return "暂无商品信息";
+    let params = getUrlParams(options.url);
+    let {id,goodsType} = params;
+    return productList[detailsType[goodsType]].filter(function(item){
+        return item.id===id;
+    })[0];
+})
+
 /* 搜索-返回搜索结果 */
 Mock.mock(RegExp('/getSearchResult'),'get',function(options){
     let type = getUrlParams(options.url).type;
@@ -56,7 +67,9 @@ Mock.mock(RegExp('/getSearchResult'),'get',function(options){
             },
             "address":"@city()",
             "price|5-100.0-2":20.5,
-            "sales|1-100":5,
+            "original_price|100-200.0-2":200,
+            "sales|1-1000":5,
+            "express_fee|1-25":10,
             "type":function(){
                 let arr = [];
                 switch(type){
@@ -72,12 +85,12 @@ Mock.mock(RegExp('/getSearchResult'),'get',function(options){
             },
             "shop_name":"@ctitle()"+'店',
             "product_img|1":[
-                Random.image('200x200','#a9c7ff','jpg','product'),
-                Random.image('200x200','#fecda8','jpg','product')
+                Random.image('300x300','#a9c7ff','jpg','product'),
+                Random.image('300x300','#fecda8','jpg','product')
             ]
         }]
     });
-    productList.push(...list.search_list);
+    Object.assign(productList,list);
     return list;
 });
 
@@ -96,7 +109,12 @@ Mock.mock(RegExp("/getSearchRecord"),'get',function(){
 /* 搜索历史记录保存 */
 Mock.mock(RegExp("/saveSearchRecord"),'get',function(options){
     let record = getUrlParams(options.url).record;
-    searchRecord.push(record);
+    let arr = searchRecord.filter(function(item){
+        return item==record;
+    });
+    if(arr.length==0){
+        searchRecord.push(record);
+    }
     return '保存成功';
 });
 

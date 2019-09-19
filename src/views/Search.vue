@@ -24,7 +24,8 @@
              :key="index"
              @click="selectHotKey(item)">{{item}}</div>
         </div>
-        <keep-alive>
+        
+        <keep-alive include="SearchRecord">
             <search-record 
             v-if="isHistoryRecord" 
             :historyRecord="historyRecord"

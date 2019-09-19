@@ -7,7 +7,10 @@ let track = 0; //足迹
 let coupon = 4;//优惠卷
 let nickname = '';
 let searchRecord = []; //搜索记录
-let productList = []; //所有产品
+let productList = {}; //所有产品
+let detailsType = { //产品详情页类型，
+    search:"search_list"
+}
 
 export default{
     userKey,
@@ -17,5 +20,6 @@ export default{
     coupon,
     nickname,
     searchRecord,
-    productList
+    productList,
+    detailsType
 }
