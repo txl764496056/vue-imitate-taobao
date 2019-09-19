@@ -17,6 +17,8 @@ let {
 } = global;
 let {
     getUrlParams,
+    addCollect,
+    createProduct
 } = common;
 
 
@@ -38,6 +40,21 @@ let addressMsg = Mock.mock({
 addressMsg.address_list[0]['isDefault'] = true;
 
 
+/* 收藏商品 */
+Mock.mock(RegExp('/collectGoods'),'get',function(options){
+    let params = getUrlParams(options.url);
+    let {id,goodsType,isCollect} = params;
+    let status = "收藏失败";
+    for(let item of productList[detailsType[goodsType]]){
+        if(item.id==id){
+            item.collect = !isCollect;
+            status = "修改成功";
+            collect = addCollect(id,collect);
+        }
+    }
+    return status;
+})
+
 /* 商品详情页信息 */
 Mock.mock(RegExp("/getGoodMsg"),'get',function(options){
     if( !Object.keys(productList).length ) return "暂无商品信息";
@@ -52,44 +69,7 @@ Mock.mock(RegExp("/getGoodMsg"),'get',function(options){
 Mock.mock(RegExp('/getSearchResult'),'get',function(options){
     let type = getUrlParams(options.url).type;
     let product = getUrlParams(options.url).product;
-    let list =  Mock.mock({
-        "search_list|4":[{
-            "id":"@id()",
-            "title":"@ctitle()"+product,
-            "tips":function(){
-                let arr = ['直送','包邮','满99减20','过敏包退'];
-                let len = parseInt(Math.random()*arr.length);
-                let result = [];
-                for(let i=0;i<len;i++){
-                    result.push(arr[parseInt(Math.random()*len)]);
-                }
-                return result;
-            },
-            "address":"@city()",
-            "price|5-100.0-2":20.5,
-            "original_price|100-200.0-2":200,
-            "sales|1-1000":5,
-            "express_fee|1-25":10,
-            "type":function(){
-                let arr = [];
-                switch(type){
-                    case 'all':arr = ['天猫','','店铺','经验'];break;
-                    case 'tianmao':arr = ['天猫'];break;
-                    case 'shop':arr = ['店铺'];break;
-                    case 'taobaojingyan':arr = ['经验'];break;
-                    default:break;
-                }
-                return Mock.mock({
-                    "type|1":arr
-                }).type;
-            },
-            "shop_name":"@ctitle()"+'店',
-            "product_img|1":[
-                Random.image('300x300','#a9c7ff','jpg','product'),
-                Random.image('300x300','#fecda8','jpg','product')
-            ]
-        }]
-    });
+    let list =  createProduct({product,type});
     Object.assign(productList,list);
     return list;
 });
@@ -251,7 +231,7 @@ Mock.mock(RegExp("/my"),'get',function(){
                 return nickname ? nickname:"设置昵称";
             },
             photo,
-            collect,
+            collect:collect.length,
             attention,
             track,
             coupon

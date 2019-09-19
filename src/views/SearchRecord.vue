@@ -100,7 +100,7 @@ import NavList from "@/components/NavList.vue"
 .search-find,.history-list{
     margin-top:vm(10);
     .item{
-        font-size:vm(26);
+        font-size:vm(28);
         color:$txt-gray1;
     }
 }
@@ -110,7 +110,7 @@ import NavList from "@/components/NavList.vue"
     flex-wrap:wrap;
     .item{
         width:50%;
-        margin:vm(10) 0;
+        margin:vm(6) 0;
     }
 }
 

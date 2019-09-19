@@ -44,7 +44,6 @@ import Menu from '@/components/Menu.vue'
             }
         },
         created(){
-            console.log('my-create')
             this.getData();
         },
         methods:{

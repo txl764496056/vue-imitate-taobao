@@ -1,7 +1,7 @@
 
 let userKey = "";
 
-let collect = 0; //收藏
+let collect = []; //收藏商品的id
 let attention = 0; //关注店铺
 let track = 0; //足迹
 let coupon = 4;//优惠卷
