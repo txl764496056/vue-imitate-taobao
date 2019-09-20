@@ -4,9 +4,9 @@
             <div class="up">
                 <div class="photo">
                     <img :src="person.photo" alt="" />
-                    <router-link to="/nickname" class="nick-name">{{person.nickname}}</router-link>
+                    <router-link to="/my/nickname" class="nick-name">{{person.nickname}}</router-link>
                 </div>
-                <router-link to="/seting" class="iconfont icon-shezhi"></router-link>
+                <router-link to="/my/seting" class="iconfont icon-shezhi"></router-link>
             </div>
             <div class="dw">
                 <router-link to="" class="item">

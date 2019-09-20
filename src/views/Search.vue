@@ -67,7 +67,6 @@ import SearchResult from "./SearchResult.vue"
                 this.isHotList = false;
                 this.isHistoryRecord = false;
                 this.saveSearchRecord();
-                // this.$router.push("/address")
             },
             saveSearchRecord(){
                 let _this = this;

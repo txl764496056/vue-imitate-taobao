@@ -110,9 +110,7 @@ eventBus.$on('areaCode',function(data){
                     }
                 }).then(res=>{
                     if(res.data=='添加成功'){
-                        _this.$router.push({
-                            path:'/address'
-                        });
+                        _this.$router.go(-1);
                     }
                 });
             },
@@ -129,9 +127,7 @@ eventBus.$on('areaCode',function(data){
                     }
                 }).then(res=>{
                     if(res.data=='修改成功'){
-                        _this.$router.push({
-                            path:'/address'
-                        });
+                        _this.$router.go(-1);
                     }
                 });
             },
@@ -144,7 +140,7 @@ eventBus.$on('areaCode',function(data){
                     }
                 }).then(res=>{
                     if( res.data=="删除成功" ){
-                        _this.$router.push('/address');
+                        _this.$router.go(-1);
                     }
                 })
             }

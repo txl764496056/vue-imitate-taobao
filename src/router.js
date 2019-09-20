@@ -12,6 +12,11 @@ export default new Router({
       component: Home
     },
     {
+      path: '/home/search',
+      name: 'search',
+      component: ()=>import('./views/Search.vue')
+    },
+    {
       path: '/login',
       name: 'login',
       component: ()=>import('./views/Login.vue')
@@ -27,37 +32,38 @@ export default new Router({
       component: ()=>import('./views/My.vue')
     },
     {
-      path: '/nickname',
+      path: '/my/nickname',
       name: 'nickname',
       component: ()=>import('./views/Nickname.vue')
     },
     {
-      path: '/seting',
+      path: '/my/seting/nickname',
+      name: 'setingNickname',
+      component: ()=>import('./views/Nickname.vue')
+    },
+    {
+      path: '/my/seting',
       name: 'seting',
       component: ()=>import('./views/Seting.vue')
     },
     {
-      path: '/authority',
+      path: '/my/seting/authority',
       name: 'authority',
       component: ()=>import('./views/Authority.vue')
     },
     {
-      path: '/address',
+      path: '/my/seting/address',
       name: 'address',
       component: ()=>import('./views/Address.vue')
     },
     {
-      path: '/editaddress',
+      path: '/my/seting/address/editaddress',
       name: 'editaddress',
       component: ()=>import('./views/EditAddress.vue')
     },
+    
     {
-      path: '/search',
-      name: 'search',
-      component: ()=>import('./views/Search.vue')
-    },
-    {
-      path: '/gooddetails',
+      path: '/home/search/gooddetails',
       name: 'gooddetails',
       component: ()=>import('./views/GoodDetails.vue')
     }

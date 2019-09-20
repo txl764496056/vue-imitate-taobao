@@ -6,7 +6,7 @@
         <div class="set-unit" v-for="(value,key) in list" :key="key">
             <div v-if="key=='address'" class="user-msg">
                 <img :src="userMsg.photo" alt="" class="photo">
-                <router-link class="nick-name" to="/nickname">{{userMsg.nickname}}</router-link>
+                <router-link class="nick-name" to="/my/seting/nickname">{{userMsg.nickname}}</router-link>
             </div>
             <list 
             class="set-item"
@@ -33,11 +33,11 @@ import List from '@/components/List.vue'
                 list:{
                     address:[{
                         title:"我的收获地址",
-                        url:'/address'
+                        url:'seting/address'
                     }],
                     authority:[{
                         title:"系统权限",
-                        url:'/authority'
+                        url:'seting/authority'
                     }]
                 }
             }

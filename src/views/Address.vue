@@ -3,7 +3,7 @@
         <back>
             <template #back-title>我的收货地址</template>
             <template #back-right>
-                <router-link class="address-link" :to="{path:'/editaddress',query:{type:'add'}}">添加新地址</router-link>
+                <router-link class="address-link" :to="{path:'/my/seting/address/editaddress',query:{type:'add'}}">添加新地址</router-link>
             </template>
         </back>
         <div class="address-item"
@@ -22,7 +22,7 @@
                     </p>
                 </div>
             </div>
-            <router-link :to="{path:'/editaddress',query:{id:item.id,type:'edit'}}" class="edit">编辑</router-link>
+            <router-link :to="{path:'/my/seting/address/editaddress',query:{id:item.id,type:'edit'}}" class="edit">编辑</router-link>
         </div>
     </div>
 </template>

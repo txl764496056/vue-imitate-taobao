@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <router-link to="/search" class="top red-linear">
+    <router-link to="/home/search" class="top red-linear">
       <input-item class="home-search" v-model="search" disabled :placeholder="'搜索'">
         <template #left>
           <i class="sousuo iconfont icon-sousuo"></i>

@@ -6,7 +6,7 @@
         v-on:navListClick="navListClick"></nav-list>
         <div  class="product-list">
             <router-link class="item"
-            :to="{path:'/gooddetails',query:{id:item.id,goodsType:'search'}}"
+            :to="{path:'/home/search/gooddetails',query:{id:item.id,goodsType:'search'}}"
             v-for="(item,index) in productList"
             :key="index">
                 <img :src="item.product_img" alt="">
