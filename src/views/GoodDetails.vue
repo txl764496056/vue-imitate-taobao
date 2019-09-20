@@ -43,12 +43,29 @@
             <div class="add-cart-btn item red-linear">加入购物车</div>
             <div class="limit-buy-btn item">立即购买</div>
         </div>
+        <div class="select-type">
+            <div class="content">
+                <div class="good-msg">
+                    <img :src="goodMsg.product_img" alt="">
+                    <div class="msg">
+                        <p>￥<span>{{goodMsg.price}}</span></p>
+                        <b>库存{{goodMsg.repertory}}件</b>
+                    </div>
+                </div>
+                <buy-num class="num" :max="goodMsg.repertory"></buy-num>
+                <button>确定</button>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
+import BuyNum from "@/components/BuyNum.vue";
     export default {
         name:"GoodDetails",
+        components:{
+            BuyNum
+        },
         data(){
             return {
                 id:"",
@@ -218,6 +235,52 @@
     }
     .limit-buy-btn{
         background-color:$light-red;
+    }
+}
+
+.select-type{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    top:0;
+    background-color:rgba(0,0,0,0.3);
+    z-index:9999;
+    display:flex;
+    align-items:flex-end;
+    .content{
+        background-color:#fff;
+        padding:vm(25);
+        width:100%;
+        .good-msg{
+            display:flex;
+            align-items:center;
+            img{
+                $size:vm(120);
+                width:$size;
+                height:$size;
+                border-radius:vm(5);
+            }
+            .msg{
+                margin-left:vm(10);
+                p{
+                    color:$theme-color;
+                    font-size:vm(26);
+                    span{
+                        font-size:vm(40);
+                    }
+                }
+                b{
+                    color:$txt-gray2;
+                    font-weight:normal;
+                    font-size:vm(24);
+                }
+            }
+        }
+        .num{
+            margin-top:vm(10);
+            justify-content: flex-end;
+        }
     }
 }
 </style>

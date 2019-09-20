@@ -73,7 +73,8 @@ const createProduct = function({product='',type=''}={product,type}){
                     Random.image('300x140','#fecda8','jpg','details')
                 ];
             },
-            "collect":false
+            "collect":false,
+            "repertory|0-50":9
         }]
     });
 }
