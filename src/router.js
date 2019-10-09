@@ -61,11 +61,15 @@ export default new Router({
       name: 'editaddress',
       component: ()=>import('./views/EditAddress.vue')
     },
-    
     {
       path: '/home/search/gooddetails',
       name: 'gooddetails',
       component: ()=>import('./views/GoodDetails.vue')
+    },
+    {
+      path: '/cart',
+      name: 'cart',
+      component: ()=>import('./views/Cart.vue')
     }
   ]
 })

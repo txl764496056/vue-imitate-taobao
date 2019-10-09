@@ -39,6 +39,18 @@ let addressMsg = Mock.mock({
 // 设置默认地址
 addressMsg.address_list[0]['isDefault'] = true;
 
+/* 购物车列表 */
+Mock.mock(RegExp('/cartList'),'get',function(){
+    let result = [];
+    for(let key in productList){
+        let temp = productList[key].filter(function(item){
+            return item.cart_num>0;
+        });
+        result.push(...temp);
+    }
+    return result;
+});
+
 /* 加入购物车 */
 Mock.mock(RegExp('/addCart'),'get',function(options){
     let params = getUrlParams(options.url);

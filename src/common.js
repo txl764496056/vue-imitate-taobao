@@ -64,6 +64,7 @@ const createProduct = function({product='',type=''}={product,type}){
             },
             "cart_num":0,
             "shop_name":"@ctitle()"+'店',
+            "shop_logo":Random.image('60x60','#fecda8','jpg','shop'),
             "product_img|1":[
                 Random.image('300x300','#a9c7ff','jpg','product'),
                 Random.image('300x300','#fecda8','jpg','product')
