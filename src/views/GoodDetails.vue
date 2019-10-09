@@ -40,38 +40,60 @@
                 <i class="iconfont icon-star"></i>
                 收藏
             </div>
-            <div class="add-cart-btn item red-linear">加入购物车</div>
-            <div class="limit-buy-btn item">立即购买</div>
+            <div class="add-cart-btn item red-linear" @click="openSelect">加入购物车</div>
+            <div class="limit-buy-btn item" @click="openSelect">立即购买</div>
         </div>
-        <div class="select-type">
+        <div v-show="addCart" @click.self="closeSelect" class="select-type">
             <div class="content">
-                <div class="good-msg">
+                <div class="good-msg unit">
                     <img :src="goodMsg.product_img" alt="">
                     <div class="msg">
                         <p>￥<span>{{goodMsg.price}}</span></p>
                         <b>库存{{goodMsg.repertory}}件</b>
                     </div>
                 </div>
-                <buy-num class="num" :max="goodMsg.repertory"></buy-num>
-                <button>确定</button>
+                <!-- @input="goodsNum=$event" -->
+                <div class="good-num unit">
+                    购买数量
+                    <buy-num class="num"
+                     v-model="goodsNum"
+                     :max="goodMsg.repertory"></buy-num>
+                </div>
+                <div class="btns">
+                    <button class="left yellow-linear" @click="addCartClick">加入购物车</button>
+                    <button class="right red-linear">立即购买</button>
+                </div>
+                <i class="close" @click="closeSelect">x</i>
             </div>
         </div>
+        <toast
+         :isShow="addCartTips!=''" 
+         :position="'bottom'"
+         :time="500"
+         @changeIsShow="toastShow">
+            <template>{{addCartTips}}</template>
+        </toast>
     </div>
 </template>
 
 <script>
+import toast from "@/components/toast.js";
 import BuyNum from "@/components/BuyNum.vue";
     export default {
         name:"GoodDetails",
         components:{
-            BuyNum
+            BuyNum,
+            toast
         },
         data(){
             return {
                 id:"",
-                detailsType:"",
+                goodsType:"",
                 goodMsg:"",
-                emptyMsg:""
+                emptyMsg:"",
+                addCartTips:"",
+                goodsNum:1,
+                addCart:false //加入购物车弹窗
             }
         },
         mounted(){
@@ -112,6 +134,34 @@ import BuyNum from "@/components/BuyNum.vue";
                 }).then(()=>{
                     _this.getGoodMsg();
                 })
+            },
+            openSelect(){
+                this.addCart = true;
+            },
+            closeSelect(){
+                this.addCart = false;
+            },
+            addCartClick(){
+                let _this = this;
+                this.axios.get("/addCart",{
+                    params:{
+                        id:_this.id,
+                        goodsType:_this.goodsType,
+                        num:_this.goodsNum
+                    }
+                }).then(res=>{
+                    if(res.data=='添加成功'){
+                        _this.addCartTips = '加入购物车成功';
+                        
+                    }else{
+                        _this.addCartTips = '加入购物车失败';
+                    }
+                })
+                
+            },
+            toastShow(data){
+                this.addCartTips = data;
+                this.closeSelect();
             }
         },
         computed:{
@@ -245,13 +295,35 @@ import BuyNum from "@/components/BuyNum.vue";
     bottom:0;
     top:0;
     background-color:rgba(0,0,0,0.3);
-    z-index:9999;
+    z-index:999;
     display:flex;
     align-items:flex-end;
     .content{
         background-color:#fff;
         padding:vm(25);
         width:100%;
+        position:relative;
+        .unit{
+            border-bottom:1px solid $border-color-ee;
+            padding:vm(25) 0;
+        }
+        .close{
+            position:absolute;
+            right:vm(20);
+            top:vm(20);
+            font-style:normal;
+            color:$txt-gray2;
+            font-size:vm(34);
+            border:1px solid $border-color-ee;
+            display:inline-block;
+            $size:40;
+            height:vm($size);
+            width:vm($size);
+            border-radius:vm($size/2);
+            font-weight:normal;
+            text-align:center;
+            line-height:vm($size - 10);
+        }
         .good-msg{
             display:flex;
             align-items:center;
@@ -262,7 +334,7 @@ import BuyNum from "@/components/BuyNum.vue";
                 border-radius:vm(5);
             }
             .msg{
-                margin-left:vm(10);
+                margin-left:vm(15);
                 p{
                     color:$theme-color;
                     font-size:vm(26);
@@ -277,9 +349,37 @@ import BuyNum from "@/components/BuyNum.vue";
                 }
             }
         }
+        
         .num{
             margin-top:vm(10);
             justify-content: flex-end;
+        }
+        .good-num{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+        .btns{
+            margin-top:vm(60);
+            display:flex;
+            justify-content: space-between;
+            button{
+                $h:90;
+                width:50%;
+                text-align:center;
+                height:vm($h);
+                border:none;
+                font-size:vm(32);
+                color:#fff;
+                &.left{
+                    border-top-left-radius: vm($h/2);
+                    border-bottom-left-radius: vm($h/2);
+                }
+                &.right{
+                    border-top-right-radius: vm($h/2);
+                    border-bottom-right-radius: vm($h/2);
+                }
+            }
         }
     }
 }

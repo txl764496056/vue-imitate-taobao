@@ -8,7 +8,7 @@ let coupon = 4;//优惠卷
 let nickname = '';
 let searchRecord = []; //搜索记录
 let productList = {}; //所有产品
-let detailsType = { //产品详情页类型，
+let listType = { //详情产品类型，便于在所有产品中查询
     search:"search_list"
 }
 
@@ -21,5 +21,5 @@ export default{
     nickname,
     searchRecord,
     productList,
-    detailsType
+    listType
 }

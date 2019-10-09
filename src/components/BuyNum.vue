@@ -1,7 +1,10 @@
 <template>
     <div class="buy-num">
         <div class="sub btn" :class="{'light':num>min}" @click="subNum">-</div>
-        <input class="num" :disabled="numDisabled" type="number" v-model="num">
+        <input class="num"
+         :disabled="numDisabled"
+         type="number"
+         v-model="num">
         <div class="plus btn" :class="{'light':num<max}" @click="addNum">+</div>
     </div>
 </template>
@@ -10,6 +13,10 @@
     export default {
         name:"BuyNum",
         props:{
+            value:{
+                type:Number,
+                default:1
+            },
             max:{
                 type:Number,
                 default:10
@@ -25,12 +32,20 @@
         },
         data() {
             return {
-                num:0
+                // num:this.value
             }
         },
         computed:{
             numDisabled(){
                 return this.num>=this.max||this.num<=this.min||this.isDisabled;
+            },
+            num:{
+                get(){
+                    return this.value;
+                },
+                set(val){
+                    this.$emit('input',val);
+                }
             }
         },
         methods: {
@@ -39,7 +54,7 @@
             },
             addNum(){
                 this.num = (this.num+1)>this.max ? this.max:this.num+1;
-            }        
+            }       
         },
     }
 </script>

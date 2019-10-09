@@ -62,6 +62,7 @@ const createProduct = function({product='',type=''}={product,type}){
                     "type|1":arr
                 }).type;
             },
+            "cart_num":0,
             "shop_name":"@ctitle()"+'店',
             "product_img|1":[
                 Random.image('300x300','#a9c7ff','jpg','product'),

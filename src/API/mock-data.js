@@ -13,7 +13,7 @@ let {
     nickname,
     searchRecord,
     productList,
-    detailsType
+    listType
 } = global;
 let {
     getUrlParams,
@@ -39,13 +39,26 @@ let addressMsg = Mock.mock({
 // 设置默认地址
 addressMsg.address_list[0]['isDefault'] = true;
 
+/* 加入购物车 */
+Mock.mock(RegExp('/addCart'),'get',function(options){
+    let params = getUrlParams(options.url);
+    let {id,goodsType,num} = params;
+    let status = "添加失败";
+    for(let item of productList[listType[goodsType]]){
+        if(item.id==id){
+            status = "添加成功";
+            item.cart_num += parseInt(num);
+        }
+    }
+    return status;
+})
 
 /* 收藏商品 */
 Mock.mock(RegExp('/collectGoods'),'get',function(options){
     let params = getUrlParams(options.url);
     let {id,goodsType,isCollect} = params;
     let status = "收藏失败";
-    for(let item of productList[detailsType[goodsType]]){
+    for(let item of productList[listType[goodsType]]){
         if(item.id==id){
             item.collect = !isCollect;
             status = "修改成功";
@@ -60,7 +73,7 @@ Mock.mock(RegExp("/getGoodMsg"),'get',function(options){
     if( !Object.keys(productList).length ) return "暂无商品信息";
     let params = getUrlParams(options.url);
     let {id,goodsType} = params;
-    return productList[detailsType[goodsType]].filter(function(item){
+    return productList[listType[goodsType]].filter(function(item){
         return item.id===id;
     })[0];
 })
