@@ -15,12 +15,36 @@
                 <checkbox
                  class="checkbox-btn"
                  :disabled="false" 
-                 :label="item.id"
+                 :label="item.shop_id"
                  :showLabel="false" 
-                 v-model='checkboxList'></checkbox>
+                 v-model='shopIdList'></checkbox>
                  <div class="right">
                      <img :src="item.shop_logo" alt="">
-                     <p>{{item.shop_name}}</p>
+                     <p>
+                         {{item.shop_name}}
+                        <span>></span>
+                     </p>
+                 </div>
+            </div>
+            <div class="down" v-for="(item2,index2) in item.product" :key="index2">
+                <div class="left">
+                    <checkbox
+                    class="checkbox-btn"
+                    :disabled="false" 
+                    :label="item2.id"
+                    :showLabel="false" 
+                    v-model='productIdList'></checkbox>
+                    <img :src="item2.product_img" alt="">
+                </div>
+                 <div class="right">
+                     <h2>{{item2.title}}</h2>
+                     <div class="price-num">
+                         <p>
+                             ￥
+                            <span>{{item2.price}}</span>
+                         </p>
+                         <buy-num :max="item2.repertory" v-model="item2.cart_num"></buy-num>
+                     </div>
                  </div>
             </div>
         </div>
@@ -31,17 +55,20 @@
 <script>
 import Menu from "@/components/Menu.vue"
 import Checkbox from "@/components/Checkbox.vue"
+import BuyNum from "@/components/BuyNum.vue"
     export default {
         name:"Cart",
         components:{
             Menu,
-            Checkbox
+            Checkbox,
+            BuyNum
         },
         data() {
             return {
                 isManage:true,
                 cartList:[],
-                checkboxList:[]
+                productIdList:[],
+                shopIdList:[]
             }
         },
         mounted(){
@@ -93,11 +120,15 @@ import Checkbox from "@/components/Checkbox.vue"
             border-radius:50%;
         }
     }
+   
     .cart-item{
         background-color:#fff;
         margin:vm(25);
         border-radius:vm(10);
         padding:vm(20);
+        &:nth-of-type(2){
+            margin-top:vm(-80);
+        }
         .up{
             display:flex;
             align-items: center;
@@ -114,6 +145,46 @@ import Checkbox from "@/components/Checkbox.vue"
                     margin-left:vm(15);
                     color:$txt-black;
                     font-size:vm(28);
+                    span{
+                        color:$txt-gray2;
+                    }
+                }
+            }
+        }
+        .down{
+            padding-top:vm(30);
+            display: flex;
+            align-items: flex-start;
+            .left{
+                display: flex;
+                align-items:center;
+                >img{
+                    $size:120;
+                    width:vm($size);
+                    height:vm($size);
+                    border-radius:vm(6);
+                }
+            }
+            .right{
+                margin-left:vm(20);
+                align-self:stretch;
+                flex:1;
+                display:flex;
+                flex-direction:column;
+                justify-content: space-between;
+                h2{
+                    font-weight: normal;
+                }
+                .price-num{
+                    display:flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    p{
+                        color:$theme-color;
+                        display:flex;
+                        align-items:flex-end;
+                        span{font-size:vm(34);}
+                    }
                 }
             }
         }

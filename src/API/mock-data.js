@@ -42,12 +42,30 @@ addressMsg.address_list[0]['isDefault'] = true;
 /* 购物车列表 */
 Mock.mock(RegExp('/cartList'),'get',function(){
     let result = [];
+    let product = [];
+    let id_arr = [];
     for(let key in productList){
         let temp = productList[key].filter(function(item){
+            if( item.cart_num>0 && !id_arr.includes(item.shop_id) ){
+                id_arr.push(item.shop_id);
+            }
             return item.cart_num>0;
         });
-        result.push(...temp);
+        product.push(...temp);
     }
+
+    for(let i=0;i<id_arr.length;i++){
+        let temp = product.filter(function(item){
+            return item.shop_id == id_arr[i];
+        });
+        result.push({
+            "shop_id":temp[0].shop_id,
+            "shop_name":temp[0].shop_name,
+            "shop_logo":temp[0].shop_logo,
+            "product":temp
+        });
+    }
+
     return result;
 });
 

@@ -1,5 +1,13 @@
-let Mock = require("mockjs");
-let Random = Mock.Random;
+const Mock = require("mockjs");
+const Random = Mock.Random;
+
+/* 店铺id */
+const shops = Mock.mock({
+    "list|5-20":[{
+        "id":"@id()",
+        "name":"@ctitle()"+'店'
+    }]
+});
 
 /* 获取地址链接？后所有参数 */
 const getUrlParams = function(url){
@@ -31,8 +39,10 @@ const addCollect = function(id,arr){
 }
 
 const createProduct = function({product='',type=''}={product,type}){
+    let shop_id_index = -1;
+    let num = 0;
     return Mock.mock({
-        "search_list|4":[{
+        "search_list|8":[{
             "id":"@id()",
             "title":"@ctitle(8,15)"+(product||''),
             "tips":function(){
@@ -63,7 +73,21 @@ const createProduct = function({product='',type=''}={product,type}){
                 }).type;
             },
             "cart_num":0,
-            "shop_name":"@ctitle()"+'店',
+            // "shop_id":shops.list[shop_id_index].id,
+            "shop_id":function(){
+                //目的：生成同一个店铺有多个商品3-5，3个产品是同一个店铺的
+                if( !(num>2&&num<6)){
+                    shop_id_index = parseInt(Math.random()*(shops.list.length-1));
+                }
+                return shops.list[shop_id_index].id;
+            },  
+            "shop_name":function(){
+                if(shop_id_index>=0){
+                    return shops.list[shop_id_index].name;
+                }else{
+                    return '';
+                }
+            },
             "shop_logo":Random.image('60x60','#fecda8','jpg','shop'),
             "product_img|1":[
                 Random.image('300x300','#a9c7ff','jpg','product'),
@@ -80,7 +104,6 @@ const createProduct = function({product='',type=''}={product,type}){
         }]
     });
 }
-
 
 export default{
     getUrlParams,

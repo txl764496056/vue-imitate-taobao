@@ -1,11 +1,13 @@
 <template>
-  <div class="menu">
-      <router-link
-        class="item iconfont"
-        v-for="item in menuList"
-        :key="item.path"
-        :class="[item.icon,{'selected':item.path==$route.path}]" 
-        :to="item.path">{{item.name}}</router-link>
+  <div class="menum-container">
+      <div class="menu">
+        <router-link
+          class="item iconfont"
+          v-for="item in menuList"
+          :key="item.path"
+          :class="[item.icon,{'selected':item.path==$route.path}]" 
+          :to="item.path">{{item.name}}</router-link>
+    </div>
   </div>
 </template>
 
@@ -27,6 +29,10 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 @import '../css/base.scss';
+.menum-container{
+  position:relative;
+  height:$menu-h;
+}
 .menu{
   position:fixed;
   bottom:0;
