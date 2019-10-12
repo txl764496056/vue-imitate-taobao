@@ -8,12 +8,12 @@
             <div class="bg-ff item">
                 <img :src="goodMsg.product_img" alt="" class="banner">
                 <div class="price padlr">
-                    <p>￥<span>{{goodMsg.price}}</span></p>
+                    <p>￥<span>{{goodMsg.spu_price}}</span></p>
                     <b>价格<i>￥{{goodMsg.original_price}}</i></b>
                 </div>
                 <div class="title padlr">
                     <span v-if="goodMsg.type">{{goodMsg.type}}</span>
-                    {{goodMsg.title}}
+                    {{goodMsg.spu_name}}
                 </div>
             </div>
             <div class="bg-ff item mt20 pdt25">
@@ -48,17 +48,32 @@
                 <div class="good-msg unit">
                     <img :src="goodMsg.product_img" alt="">
                     <div class="msg">
-                        <p>￥<span>{{goodMsg.price}}</span></p>
-                        <b>库存{{goodMsg.repertory}}件</b>
+                        <p>￥<span>{{goodMsg.spu_price}}</span></p>
+                        <b>库存{{goodMsg.store}}件</b>
+                        <div class="type">已选：</div>
                     </div>
                 </div>
-                <!-- @input="goodsNum=$event" -->
-                <div class="good-num unit">
-                    购买数量
-                    <buy-num class="num"
-                     v-model="goodsNum"
-                     :max="goodMsg.repertory"></buy-num>
+
+                <div class="c-content">
+                    <div class="attr-item" v-for="(item3,key) in attrList" :key="key">
+                        <h2>{{item3.title}}</h2>
+                        <div class="attr-item-unit"
+                         v-for="(item4,index4) in item3.list" :key="index4"
+                         :class="{'selected':attrItemSlected[key]==item4.code}"
+                         @click="attrItemClick(key,item4.code)">
+                            <img v-if="item4.img" :src="item4.img" alt="">
+                            <span>{{item4.value}}</span>
+                        </div>
+                    </div>
+                    <!-- @input="goodsNum=$event" -->
+                    <div class="good-num unit">
+                        购买数量
+                        <buy-num class="num"
+                        v-model="goodsNum"
+                        :max="goodMsg.repertory"></buy-num>
+                    </div>
                 </div>
+
                 <div class="btns">
                     <button class="left yellow-linear" @click="addCartClick">加入购物车</button>
                     <button class="right red-linear">立即购买</button>
@@ -87,32 +102,35 @@ import BuyNum from "@/components/BuyNum.vue";
         },
         data(){
             return {
-                id:"",
+                sku_code:[],
+                spu_code:"",
                 goodsType:"",
                 goodMsg:"",
                 emptyMsg:"",
                 addCartTips:"",
                 goodsNum:1,
+                attrItemSlected:{},
+                attrList:{},
                 addCart:false //加入购物车弹窗
             }
         },
         mounted(){
-            this.getId();
+            this.getSpuCode();
             this.getGoodType();
             this.getGoodMsg();
         },
         methods:{
-            getId(){
-                this.id = this.$route.query.id;
+            getSpuCode(){
+                this.spu_code = this.$route.params.spu_code;
             },
             getGoodType(){
-                this.goodsType = this.$route.query.goodsType;
+                this.goodsType = this.$route.params.goodsType;
             },
             getGoodMsg(){
                 let _this = this;
                 this.axios.get("/getGoodMsg",{
                     params:{
-                        id:_this.id,
+                        spu_code:_this.spu_code,
                         goodsType:_this.goodsType
                     }
                 }).then(res=>{
@@ -120,6 +138,7 @@ import BuyNum from "@/components/BuyNum.vue";
                         _this.emptyMsg = res.data;
                     }else{
                         _this.goodMsg = res.data;
+                        _this.attrList = res.data.sku_list.attr;
                     }
                 })
             },
@@ -127,7 +146,7 @@ import BuyNum from "@/components/BuyNum.vue";
                 let _this = this;
                 this.axios.get('/collectGoods',{
                     params:{
-                        id:_this.id,
+                        spu_code:_this.spu_code,
                         goodsType:_this.goodsType,
                         isCollect:_this.goodMsg.collect
                     }
@@ -136,7 +155,13 @@ import BuyNum from "@/components/BuyNum.vue";
                 })
             },
             openSelect(){
-                this.addCart = true;
+                let userKey = localStorage.getItem('userKey');
+                if(userKey){
+                    this.addCart = true;
+                }else{
+                    localStorage.setItem('loginNextPath',this.$route.path);
+                    this.$router.push('/login');
+                }
             },
             closeSelect(){
                 this.addCart = false;
@@ -145,7 +170,7 @@ import BuyNum from "@/components/BuyNum.vue";
                 let _this = this;
                 this.axios.get("/addCart",{
                     params:{
-                        id:_this.id,
+                        spu_code:_this.spu_code,
                         goodsType:_this.goodsType,
                         num:_this.goodsNum
                     }
@@ -162,6 +187,13 @@ import BuyNum from "@/components/BuyNum.vue";
             toastShow(data){
                 this.addCartTips = data;
                 this.closeSelect();
+            },
+            attrItemClick(key,code){
+                if( this.attrItemSlected[key] == code ){
+                    this.$set(this.attrItemSlected,key,-1);
+                }else{
+                    this.$set(this.attrItemSlected,key,code);
+                }
             }
         },
         computed:{
@@ -346,6 +378,45 @@ import BuyNum from "@/components/BuyNum.vue";
                     color:$txt-gray2;
                     font-weight:normal;
                     font-size:vm(24);
+                }
+                .type{
+                    color:$txt-black;
+                    font-size:vm(24);
+                }
+            }
+        }
+        .c-content{
+            max-height:vm(675);
+            overflow-y:auto;
+        }
+        .attr-item{
+            margin-top:vm(20);
+            h2{
+                font-weight:normal;
+                font-size:vm(28);
+            }
+            .attr-item-unit{
+                background-color:#eee;
+                padding:vm(6);
+                display:inline-flex;
+                align-items:center;
+                margin:vm(10);
+                border-radius:vm(6);
+                border:1px solid transparent;
+                img{
+                    $size:vm(40);
+                    width:$size;
+                    height:$size;
+                    border-radius:vm(4);
+                }
+                span{
+                    font-size:vm(24);
+                    margin:0 vm(20);
+                    color:$txt-black;
+                }
+                &.selected{
+                    color:$theme-color;
+                    border-color: $theme-color;
                 }
             }
         }

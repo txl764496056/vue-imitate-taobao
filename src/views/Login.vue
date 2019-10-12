@@ -1,9 +1,9 @@
 <template>
     <div class="login-page">
         <back>
-            <template #back-left>
+            <!-- <template #back-left>
                 <i @click="vistorBrowse" class="back-arrow iconfont icon-arrow-l"></i>
-            </template>
+            </template> -->
         </back>
         <img src="images/logo.jpg" alt="" class="logo">
         <input-item 
@@ -43,6 +43,9 @@
         @click="login" 
         :disabled="tell==''||verifyCode.length!=verifyCodeLen" 
         class="red-linear big-btn">登录</button>
+
+        <p class="vistor-p" @click="vistorBrowse">游客浏览（进入首页）</p>
+
         <toast 
         :isShow="toast!=''"
         :time="2000" 
@@ -176,7 +179,7 @@ eventBus.$on('areaCode',function(data){
                         if(res.data.msg=='登录成功'){
                             localStorage.setItem("userKey",res.data.user_key);
                             let nextPath = localStorage.getItem("loginNextPath") || '/';
-                            _this.$router.push(nextPath);
+                            _this.$router.replace(nextPath);
                             localStorage.removeItem("loginNextPath");
                         }else{
                             _this.toast=res.data.msg;
@@ -250,5 +253,11 @@ eventBus.$on('areaCode',function(data){
     }
 }
 
+.vistor-p{
+    margin-top:vm(280);
+    text-align:center;
+    padding:0 vm(25);
+    color:$txt-gray2;
+}
 
 </style>

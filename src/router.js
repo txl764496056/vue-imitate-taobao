@@ -62,7 +62,8 @@ export default new Router({
       component: ()=>import('./views/EditAddress.vue')
     },
     {
-      path: '/home/search/gooddetails',
+      path: '/home/search/gooddetails/:spu_code/:goodsType',
+      // path: '/home/search/gooddetails',
       name: 'gooddetails',
       component: ()=>import('./views/GoodDetails.vue')
     },

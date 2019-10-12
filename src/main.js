@@ -17,6 +17,8 @@ import global from  "./global.js"
 import "./assets/iconfont/iconfont.css"
 import "./css/main.css";
 
+import _ from 'lodash';
+
 Vue.use(VueAxios,axios);
 Vue.use(Vant);
 
@@ -47,11 +49,20 @@ requireComponent.keys().forEach((fileName) => {
 });
 
 // 路由白名单
-let witeSite = ['/login','/arealist','/','/search','/gooddetails'];
+let witeSite = ['/login','/arealist','/','/home/search','/home/search/gooddetails'];
 router.beforeEach((to,from,next)=>{
   let  userKey = localStorage.getItem('userKey');
+  
+  let isExis = _.findIndex(witeSite,function(item){
+      if(to.path==='/'){
+        return 2;
+      }else{
+        return _.startsWith(to.path,item,0)&&item!=='/';
+      }
+  });
+  
     if(!userKey){
-        if(witeSite.indexOf(to.path)==-1){
+        if( isExis<0){
           // 登录成功后跳转至这个页面
           localStorage.setItem('loginNextPath',to.path);
           next('/login')

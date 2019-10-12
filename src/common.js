@@ -1,6 +1,13 @@
 const Mock = require("mockjs");
 const Random = Mock.Random;
 
+const randomImage = function({size='60x60',type='jpg',text=''}={}){
+    // console.log(arguments)
+    // let {size='60x60',type='jpg',text=''} = arguments[0];
+    let color = Mock.mock({"color":"@color()"}).color;
+    return Random.image(size,color,type,text);
+}
+
 /* 店铺id */
 const shops = Mock.mock({
     "list|5-20":[{
@@ -41,10 +48,30 @@ const addCollect = function(id,arr){
 const createProduct = function({product='',type=''}={product,type}){
     let shop_id_index = -1;
     let num = 0;
+    let color_code = [];
+    let spu_code = 's1';
+    let loop = 0;
     return Mock.mock({
         "search_list|8":[{
-            "id":"@id()",
-            "title":"@ctitle(8,15)"+(product||''),
+            //参数初始化函数，不会返回这个字段（不带return）
+            "baseFn":function(){
+                color_code = [];
+                // loop = (loop>8) ? 0:loop++; 
+                loop++;
+                if(loop>1)
+                    spu_code = '';
+            },  
+            // "id"
+            "spu_code":function(){
+                if(loop>1){
+                    spu_code = Mock.mock({"code":"@increment()"}).code;
+                    spu_code = spu_code+1;
+                    spu_code = 's' + spu_code;
+                }
+                return spu_code;
+            },
+            // "title":"@ctitle(8,15)"+(product||''),
+            "spu_name":"@ctitle(8,15)"+(product||''),
             "tips":function(){
                 let arr = ['直送','包邮','满99减20','过敏包退'];
                 let len = parseInt(Math.random()*arr.length);
@@ -55,7 +82,7 @@ const createProduct = function({product='',type=''}={product,type}){
                 return result;
             },
             "address":"@city()",
-            "price|5-100.0-2":20.5,
+            "spu_price|5-100.0-2":20.5,
             "original_price|100-200.0-2":200,
             "sales|1-1000":5,
             "express_fee|1-25.2":10,
@@ -73,7 +100,6 @@ const createProduct = function({product='',type=''}={product,type}){
                 }).type;
             },
             "cart_num":0,
-            // "shop_id":shops.list[shop_id_index].id,
             "shop_id":function(){
                 //目的：生成同一个店铺有多个商品3-5，3个产品是同一个店铺的
                 if( !(num>2&&num<6)){
@@ -88,11 +114,8 @@ const createProduct = function({product='',type=''}={product,type}){
                     return '';
                 }
             },
-            "shop_logo":Random.image('60x60','#fecda8','jpg','shop'),
-            "product_img|1":[
-                Random.image('300x300','#a9c7ff','jpg','product'),
-                Random.image('300x300','#fecda8','jpg','product')
-            ],
+            "shop_logo":randomImage.bind(this,{size:'60x60',text:"shop"}),
+            "product_img|1":randomImage.bind(this,{size:'300x300',text:"product"}),
             "details_img":function(){
                 return [
                     Random.image('300x100','#a9c7ff','jpg','details'),
@@ -100,7 +123,55 @@ const createProduct = function({product='',type=''}={product,type}){
                 ];
             },
             "collect":false,
-            "repertory|0-50":9
+            "store|200-500":20,
+            "sku_list":{
+                "attr":{
+                    "color":{
+                        "title":"颜色分类",
+                        "list|4-6":[{
+                            "code":function(){
+                                let code = Mock.mock({"code":"k"+"@increment()"}).code;
+                                color_code.push(code);
+                                return code;
+                            },
+                            "value":"@ctitle(1,4)"+'色',
+                            "img":randomImage.bind(this,{size:'60x60',text:"product"})
+                        }]
+                    },
+                    "size":{
+                        "title":"尺码",
+                        "list":[{
+                            "value":"S",
+                            "code":"ss",
+                        },{
+                            "value":'M',
+                            "code":"sm",
+                        },{
+                            "value":"L",
+                            "code":"sl",
+                        }]
+                    }
+                },
+                "sku_items":function(){
+                    let result = [];
+                    let size_list = this.attr.size.list;
+                    for(let i=0;i<color_code.length;i++){
+                        for(let j=0;j<size_list.length;j++){
+                            let temp = {};
+                            temp = Mock.mock({
+                                "temp":{
+                                    "price|20-80.0-2":20,
+                                    "store|0-100":50,
+                                    "code":spu_code+color_code[i]+size_list[j].code,
+                                }
+                            }).temp;
+                            result.push(temp);
+                        }
+                    }
+                    console.log(spu_code,result);
+                    return result;
+                }
+            }
         }]
     });
 }

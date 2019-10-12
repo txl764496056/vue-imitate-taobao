@@ -5,15 +5,17 @@
         :currType="currType"
         v-on:navListClick="navListClick"></nav-list>
         <div  class="product-list">
+            <!-- {path:'/home/search/gooddetails/'+item.id+'/search'} -->
+            <!-- {path:'/home/search/gooddetails',query:{id:item.id,goodsType:'search'}} -->
             <router-link class="item"
-            :to="{path:'/home/search/gooddetails',query:{id:item.id,goodsType:'search'}}"
+            :to="{path:'/home/search/gooddetails/'+item.spu_code+'/search'}"
             v-for="(item,index) in productList"
             :key="index">
                 <img :src="item.product_img" alt="">
                 <div class="content">
                     <div class="title">
                         <span v-if="item.type">{{item.type}}</span>
-                        {{item.title.slice(0,17)}}
+                        {{item.spu_name.slice(0,17)}}
                     </div>
                     <div class="tips">
                         <div class="left">
@@ -22,7 +24,7 @@
                         <b>{{item.address}}</b>
                     </div>
                     <div class="price">
-                        <p>￥<span>{{item.price}}</span></p>
+                        <p>￥<span>{{item.spu_price}}</span></p>
                         <b>{{item.sales}}人付款</b>
                     </div>
                     <div class="shop">{{item.shop_name}}></div>
