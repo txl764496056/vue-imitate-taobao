@@ -50,7 +50,17 @@
                     <div class="msg">
                         <p>￥<span>{{goodMsg.spu_price}}</span></p>
                         <b>库存{{goodMsg.store}}件</b>
-                        <div class="type">已选：</div>
+                        <div class="type">
+                            <template v-if="compoleteChoice">
+                                已选:"
+                                {{compoleteChoice}}
+                                "
+                            </template>
+                            <template v-if="needSelected">
+                                选择:
+                                {{needSelected}}
+                            </template>
+                        </div>
                     </div>
                 </div>
 
@@ -59,8 +69,8 @@
                         <h2>{{item3.title}}</h2>
                         <div class="attr-item-unit"
                          v-for="(item4,index4) in item3.list" :key="index4"
-                         :class="{'selected':attrItemSlected[key]==item4.code}"
-                         @click="attrItemClick(key,item4.code)">
+                         :class="{'selected':attrItemSlected[key]&&attrItemSlected[key].code==item4.code}"
+                         @click="attrItemClick(key,item4)">
                             <img v-if="item4.img" :src="item4.img" alt="">
                             <span>{{item4.value}}</span>
                         </div>
@@ -102,15 +112,15 @@ import BuyNum from "@/components/BuyNum.vue";
         },
         data(){
             return {
-                sku_code:[],
-                spu_code:"",
-                goodsType:"",
-                goodMsg:"",
-                emptyMsg:"",
-                addCartTips:"",
-                goodsNum:1,
-                attrItemSlected:{},
-                attrList:{},
+                // sku_code:"", //产品唯一id
+                spu_code:"", //产品大类id
+                goodsType:"", //产品分类（搜索类...)
+                goodMsg:"", //产品所有信息
+                emptyMsg:"", //无此产品时的提示
+                addCartTips:"", //加入购入车的toast文本
+                goodsNum:1, //商品数量
+                attrItemSlected:{}, //已选中属性（值）
+                attrList:{}, //属性列表
                 addCart:false //加入购物车弹窗
             }
         },
@@ -188,18 +198,59 @@ import BuyNum from "@/components/BuyNum.vue";
                 this.addCartTips = data;
                 this.closeSelect();
             },
-            attrItemClick(key,code){
-                if( this.attrItemSlected[key] == code ){
-                    this.$set(this.attrItemSlected,key,-1);
+            attrItemClick(key,obj){
+                if( this.attrItemSlected[key] && (this.attrItemSlected[key].code == obj.code) ){
+                    this.$delete(this.attrItemSlected,key);
                 }else{
-                    this.$set(this.attrItemSlected,key,code);
+                    this.$set(this.attrItemSlected,key,{
+                        "code":obj.code,
+                        "value":obj.value
+                    });
                 }
-            }
+            },
+            
         },
         computed:{
             monthlyScales(){
                 return this.goodMsg.sales/100+'万';
-            }
+            },
+            /* 
+            * 返回没有任何已选值的属性
+             */
+            needSelected(){
+                let arr = [];
+                for(let key in this.attrList){
+                    // 属性没有已选值
+                    if( !this.attrItemSlected[key] ){ 
+                        arr.push(this.attrList[key].title);
+                    }
+                }
+                return arr.join(" ");
+            },
+            /* 
+            * 所有属性都选择了值,
+             */
+            compoleteChoice(){
+                let arr = [];
+                if(Object.keys(this.attrList).length==Object.keys(this.attrItemSlected).length){
+                    for(let key in this.attrItemSlected){
+                        arr.push(this.attrItemSlected[key].value);
+                    }
+                }
+                return arr.join(" ");
+            },
+            /**
+             * 计算sku_code 产品唯一id
+             */
+            skuCode(){
+                let id = '';
+                if(Object.keys(this.attrList).length==Object.keys(this.attrItemSlected).length){
+                    for(let key in this.attrItemSlected){
+                        id += this.attrItemSlected[key].code;
+                    }
+                }
+                return id!='' ? (this.spu_code + id):'';
+            },
         }
 
     }

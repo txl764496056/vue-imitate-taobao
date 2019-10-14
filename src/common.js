@@ -56,21 +56,13 @@ const createProduct = function({product='',type=''}={product,type}){
             //参数初始化函数，不会返回这个字段（不带return）
             "baseFn":function(){
                 color_code = [];
-                // loop = (loop>8) ? 0:loop++; 
-                loop++;
-                if(loop>1)
-                    spu_code = '';
             },  
-            // "id"
             "spu_code":function(){
-                if(loop>1){
-                    spu_code = Mock.mock({"code":"@increment()"}).code;
-                    spu_code = spu_code+1;
-                    spu_code = 's' + spu_code;
-                }
+                spu_code = Mock.mock({"code":"@increment()"}).code;
+                spu_code = spu_code+1;
+                spu_code = 's' + spu_code;
                 return spu_code;
             },
-            // "title":"@ctitle(8,15)"+(product||''),
             "spu_name":"@ctitle(8,15)"+(product||''),
             "tips":function(){
                 let arr = ['直送','包邮','满99减20','过敏包退'];
@@ -90,7 +82,7 @@ const createProduct = function({product='',type=''}={product,type}){
                 let arr = [];
                 switch(type){
                     case 'all':arr = ['天猫','','店铺','经验'];break;
-                    case 'tianmao':arr = ['天猫'];break;
+                    case 'tianmao':arr = ['天猫'];break; 
                     case 'shop':arr = ['店铺'];break;
                     case 'taobaojingyan':arr = ['经验'];break;
                     default:break;
@@ -168,7 +160,6 @@ const createProduct = function({product='',type=''}={product,type}){
                             result.push(temp);
                         }
                     }
-                    console.log(spu_code,result);
                     return result;
                 }
             }
