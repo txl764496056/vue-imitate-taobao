@@ -48,8 +48,8 @@
                 <div class="good-msg unit">
                     <img :src="goodMsg.product_img" alt="">
                     <div class="msg">
-                        <p>￥<span>{{goodMsg.spu_price}}</span></p>
-                        <b>库存{{goodMsg.store}}件</b>
+                        <p>￥<span>{{goodsPrice}}</span></p>
+                        <b>库存{{goodsStore}}件</b>
                         <div class="type">
                             <template v-if="compoleteChoice">
                                 已选:"
@@ -112,6 +112,8 @@ import BuyNum from "@/components/BuyNum.vue";
         },
         data(){
             return {
+                goodsPrice:0, //商品价格
+                goodsStore:0, //商品库存
                 // sku_code:"", //产品唯一id
                 spu_code:"", //产品大类id
                 goodsType:"", //产品分类（搜索类...)
@@ -121,6 +123,7 @@ import BuyNum from "@/components/BuyNum.vue";
                 goodsNum:1, //商品数量
                 attrItemSlected:{}, //已选中属性（值）
                 attrList:{}, //属性列表
+                sku_items:[], //产品列表（带有sku_code和基本信息)
                 addCart:false //加入购物车弹窗
             }
         },
@@ -128,8 +131,16 @@ import BuyNum from "@/components/BuyNum.vue";
             this.getSpuCode();
             this.getGoodType();
             this.getGoodMsg();
+            
         },
         methods:{
+            dataInit(){
+                if( !this.goodMsg ) {return ;}
+                this.attrList = this.goodMsg.sku_list.attr;
+                this.sku_items = this.goodMsg.sku_list.sku_items;
+                this.goodsPrice = this.goodMsg.spu_price;
+                this.goodsStore = this.goodMsg.store;
+            },
             getSpuCode(){
                 this.spu_code = this.$route.params.spu_code;
             },
@@ -148,7 +159,7 @@ import BuyNum from "@/components/BuyNum.vue";
                         _this.emptyMsg = res.data;
                     }else{
                         _this.goodMsg = res.data;
-                        _this.attrList = res.data.sku_list.attr;
+                        this.dataInit();
                     }
                 })
             },
@@ -251,6 +262,29 @@ import BuyNum from "@/components/BuyNum.vue";
                 }
                 return id!='' ? (this.spu_code + id):'';
             },
+        },
+        watch:{
+            skuCode(){
+                let price = 0;
+                let store = 0;
+                if(this.skuCode!=''){
+                    for(let i=0;i<this.sku_items.length;i++){
+                        let item = this.sku_items[i];
+                        console.log(item.code,this.skuCode,this.skuCode==item.code)
+                        if(this.skuCode==item.code){
+                            price = item.price;
+                            store = item.store;
+                            break;
+                        }
+                    }
+                    console.log(price);
+                }else{
+                    price = this.goodMsg.spu_price;
+                    store = this.goodMsg.store;
+                }
+                this.goodsPrice = price;
+                this.goodsStore = store;
+            }
         }
 
     }
