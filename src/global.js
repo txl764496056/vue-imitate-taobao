@@ -11,6 +11,7 @@ let productList = {}; //所有产品
 let listType = { //详情产品类型，便于在所有产品中查询
     search:"search_list"
 }
+let cart = []; //购物车
 
 export default{
     userKey,
@@ -21,5 +22,6 @@ export default{
     nickname,
     searchRecord,
     productList,
-    listType
+    listType,
+    cart
 }

@@ -65,12 +65,12 @@
                 </div>
 
                 <div class="c-content">
-                    <div class="attr-item" v-for="(item3,key) in attrList" :key="key">
+                    <div class="attr-item" v-for="(item3,key,index3) in attrList" :key="key">
                         <h2>{{item3.title}}</h2>
                         <div class="attr-item-unit"
                          v-for="(item4,index4) in item3.list" :key="index4"
                          :class="{'selected':attrItemSlected[key]&&attrItemSlected[key].code==item4.code}"
-                         @click="attrItemClick(key,item4)">
+                         @click="attrItemClick(key,item4,index3)">
                             <img v-if="item4.img" :src="item4.img" alt="">
                             <span>{{item4.value}}</span>
                         </div>
@@ -80,7 +80,7 @@
                         购买数量
                         <buy-num class="num"
                         v-model="goodsNum"
-                        :max="goodMsg.repertory"></buy-num>
+                        :max="goodsStore"></buy-num>
                     </div>
                 </div>
 
@@ -114,8 +114,8 @@ import BuyNum from "@/components/BuyNum.vue";
             return {
                 goodsPrice:0, //商品价格
                 goodsStore:0, //商品库存
-                // sku_code:"", //产品唯一id
                 spu_code:"", //产品大类id
+                // sku_code:"", //产品唯一id -- 已用skuCode计算属性代替
                 goodsType:"", //产品分类（搜索类...)
                 goodMsg:"", //产品所有信息
                 emptyMsg:"", //无此产品时的提示
@@ -189,9 +189,11 @@ import BuyNum from "@/components/BuyNum.vue";
             },
             addCartClick(){
                 let _this = this;
+                if( !this.skuCode ){ return ; }
                 this.axios.get("/addCart",{
                     params:{
-                        spu_code:_this.spu_code,
+                        // spu_code:_this.spu_code,
+                        sku_code:_this.skuCode,
                         goodsType:_this.goodsType,
                         num:_this.goodsNum
                     }
@@ -209,13 +211,14 @@ import BuyNum from "@/components/BuyNum.vue";
                 this.addCartTips = data;
                 this.closeSelect();
             },
-            attrItemClick(key,obj){
+            attrItemClick(key,obj,index){
                 if( this.attrItemSlected[key] && (this.attrItemSlected[key].code == obj.code) ){
                     this.$delete(this.attrItemSlected,key);
                 }else{
                     this.$set(this.attrItemSlected,key,{
                         "code":obj.code,
-                        "value":obj.value
+                        "value":obj.value,
+                        index
                     });
                 }
             },
@@ -255,9 +258,19 @@ import BuyNum from "@/components/BuyNum.vue";
              */
             skuCode(){
                 let id = '';
+                let arr = [];
                 if(Object.keys(this.attrList).length==Object.keys(this.attrItemSlected).length){
                     for(let key in this.attrItemSlected){
-                        id += this.attrItemSlected[key].code;
+                        arr.push(this.attrItemSlected[key].index);
+                    }
+                    arr.sort(function(a,b){ return a-b; });//排序
+                    // 拼接code
+                    for(let i=0;i<arr.length;i++){
+                        for(let key2 in this.attrItemSlected){
+                            if(arr[i]==this.attrItemSlected[key2].index){
+                                id += this.attrItemSlected[key2].code;
+                            }
+                        }
                     }
                 }
                 return id!='' ? (this.spu_code + id):'';
@@ -270,14 +283,12 @@ import BuyNum from "@/components/BuyNum.vue";
                 if(this.skuCode!=''){
                     for(let i=0;i<this.sku_items.length;i++){
                         let item = this.sku_items[i];
-                        console.log(item.code,this.skuCode,this.skuCode==item.code)
-                        if(this.skuCode==item.code){
+                        if(this.skuCode==item.sku_code){
                             price = item.price;
                             store = item.store;
                             break;
                         }
                     }
-                    console.log(price);
                 }else{
                     price = this.goodMsg.spu_price;
                     store = this.goodMsg.store;

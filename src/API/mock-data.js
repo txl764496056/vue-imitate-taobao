@@ -13,12 +13,14 @@ let {
     nickname,
     searchRecord,
     productList,
-    listType
+    listType,
+    cart
 } = global;
 let {
     getUrlParams,
     addCollect,
-    createProduct
+    createProduct,
+    shops
 } = common;
 
 
@@ -46,6 +48,10 @@ Mock.mock(RegExp('/cartList'),'get',function(){
     let id_arr = [];
     for(let key in productList){
         let temp = productList[key].filter(function(item){
+            item.sku_list.sku_items.filter(function(sku_item){
+                // if(sku_item.cart_num>0 && !)
+            })
+        
             if( item.cart_num>0 && !id_arr.includes(item.shop_id) ){
                 id_arr.push(item.shop_id);
             }
@@ -72,15 +78,54 @@ Mock.mock(RegExp('/cartList'),'get',function(){
 /* 加入购物车 */
 Mock.mock(RegExp('/addCart'),'get',function(options){
     let params = getUrlParams(options.url);
-    let {id,goodsType,num} = params;
-    let status = "添加失败";
-    for(let item of productList[listType[goodsType]]){
-        if(item.id==id){
-            status = "添加成功";
-            item.cart_num += parseInt(num);
+    let {sku_code,goodsType,num} = params;
+    // let status = "添加失败";
+
+    let cart_arr = cart.filter(function(cart_item){
+        return cart_item.sku_code===sku_code;
+    });
+    if(cart_arr.length>0){
+        cart_arr[0].cart_num += parseInt(num);
+    }else{
+        let spu_code = '';
+        for(let item of productList[listType[goodsType]]){
+            spu_code = item.spu_code;
+            break;
         }
+        cart.push({
+            sku_code,
+            spu_code,
+            cart_num:parseInt(num)
+        });
     }
-    return status;
+    console.log(cart);
+    return "添加成功";
+    /* for(let item of productList[listType[goodsType]]){
+        let sku_items = item.sku_list.sku_items;
+        // 店铺
+        let shop = shops.filter(function(shop_item){
+            return shop_item.id===item.shop_id;
+        })[0];
+        temp = {
+            "spu_code":item.spu_code,
+            // "shop_id":shop.id,
+            // "shop_name":shop.name,
+            // "shop_logo":shop.logo,
+            sku_code,
+            "cart_num":parseInt(num)
+        }
+        cart.push(temp);
+        status = "添加成功";
+        return status;
+        /* for(let i=0;i<sku_items.length;i++){
+            if( sku_items[i].sku_code==sku_code ){
+                temp
+                status = "添加成功";
+                // sku_items[i].cart_num += parseInt(num);
+                return status;
+            }
+        } */
+    // } */
 })
 
 /* 收藏商品 */
