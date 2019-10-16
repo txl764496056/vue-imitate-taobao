@@ -44,32 +44,54 @@ addressMsg.address_list[0]['isDefault'] = true;
 /* 购物车列表 */
 Mock.mock(RegExp('/cartList'),'get',function(){
     let result = [];
-    let product = [];
-    let id_arr = [];
-    for(let key in productList){
-        let temp = productList[key].filter(function(item){
-            item.sku_list.sku_items.filter(function(sku_item){
-                // if(sku_item.cart_num>0 && !)
-            })
-        
-            if( item.cart_num>0 && !id_arr.includes(item.shop_id) ){
-                id_arr.push(item.shop_id);
+
+    // 从productList中筛选出已经加入购物车的产品
+    for(let i=0;i<cart.length;i++){
+        let temp = {};
+        let sku_code = cart[i].sku_code;
+        Object.assign(temp,cart[i]);
+        for(let key in productList){
+            // 循环每个类型的所有产品
+            for(let j=0;j<productList[key].length;j++){
+                let item = productList[key][j];
+
+                let sku_items = item.sku_list.sku_items;
+                // 筛选出sku_code与购物车sku_code相等的
+                let sku_product = sku_items.filter(function(sku_item){
+                    return sku_item.sku_code === sku_code;
+                })[0];
+
+                // spu的title,shop_id,sku_list,
+                // sku下准确的price,attr,img
+                if( sku_product ){
+                    temp.title = item.spu_name;
+                    temp.shop_id = item.shop_id;
+                    temp.sku_list = item.sku_list;
+
+                    temp.attr = sku_product.attr;
+                    temp.img = sku_product.img;
+                    temp.price = sku_product.price;
+                    
+                    result.push(temp);
+                    break;
+                }
             }
-            return item.cart_num>0;
-        });
-        product.push(...temp);
+            
+        }
     }
 
-    for(let i=0;i<id_arr.length;i++){
-        let temp = product.filter(function(item){
-            return item.shop_id == id_arr[i];
-        });
-        result.push({
-            "shop_id":temp[0].shop_id,
-            "shop_name":temp[0].shop_name,
-            "shop_logo":temp[0].shop_logo,
-            "product":temp
-        });
+    // 获取店铺信息
+    for(let i=0;i<result.length;i++){
+        let shop_id = result[i].shop_id;
+        for(let j=0;j<shops.length;j++){
+            if( shops[j].id==shop_id ){
+                Object.assign(result[i],{
+                    "shop_name":shops[j].name,
+                    "shop_logo":shops[j].logo
+                });
+                break;
+            }
+        }
     }
 
     return result;
@@ -79,65 +101,49 @@ Mock.mock(RegExp('/cartList'),'get',function(){
 Mock.mock(RegExp('/addCart'),'get',function(options){
     let params = getUrlParams(options.url);
     let {sku_code,goodsType,num} = params;
-    // let status = "添加失败";
 
+    // 查找产品是否已经在购物车中
     let cart_arr = cart.filter(function(cart_item){
         return cart_item.sku_code===sku_code;
     });
+
     if(cart_arr.length>0){
         cart_arr[0].cart_num += parseInt(num);
     }else{
         let spu_code = '';
-        for(let item of productList[listType[goodsType]]){
-            spu_code = item.spu_code;
-            break;
+        let product = productList[listType[goodsType]];
+        // 循环指定类型所有产品，直至查询出sku_code与传过来的匹配的产品，则跳出循环
+        for(let i=0;i<product.length;i++){
+            let item = product[i];
+            // 查询每一个item下的所有sku_code是否有与传过来的sku_code匹配的
+            let arr = item.sku_list.sku_items.filter(function(sku_item){
+                return sku_item.sku_code === sku_code;
+            });
+            if(arr.length>0){
+                spu_code = item.spu_code;
+                break;
+            }
         }
+
         cart.push({
             sku_code,
             spu_code,
             cart_num:parseInt(num)
         });
     }
-    console.log(cart);
     return "添加成功";
-    /* for(let item of productList[listType[goodsType]]){
-        let sku_items = item.sku_list.sku_items;
-        // 店铺
-        let shop = shops.filter(function(shop_item){
-            return shop_item.id===item.shop_id;
-        })[0];
-        temp = {
-            "spu_code":item.spu_code,
-            // "shop_id":shop.id,
-            // "shop_name":shop.name,
-            // "shop_logo":shop.logo,
-            sku_code,
-            "cart_num":parseInt(num)
-        }
-        cart.push(temp);
-        status = "添加成功";
-        return status;
-        /* for(let i=0;i<sku_items.length;i++){
-            if( sku_items[i].sku_code==sku_code ){
-                temp
-                status = "添加成功";
-                // sku_items[i].cart_num += parseInt(num);
-                return status;
-            }
-        } */
-    // } */
 })
 
 /* 收藏商品 */
 Mock.mock(RegExp('/collectGoods'),'get',function(options){
     let params = getUrlParams(options.url);
-    let {id,goodsType,isCollect} = params;
+    let {spu_code,goodsType,isCollect} = params;
     let status = "收藏失败";
     for(let item of productList[listType[goodsType]]){
-        if(item.id==id){
+        if(item.spu_code==spu_code){
             item.collect = !isCollect;
             status = "修改成功";
-            collect = addCollect(id,collect);
+            collect = addCollect(spu_code,collect);
         }
     }
     return status;
@@ -147,19 +153,21 @@ Mock.mock(RegExp('/collectGoods'),'get',function(options){
 Mock.mock(RegExp("/getGoodMsg"),'get',function(options){
     if( !Object.keys(productList).length ) return "暂无商品信息";
     let params = getUrlParams(options.url);
-    let {id,goodsType} = params;
+    let {spu_code,goodsType} = params;
     return productList[listType[goodsType]].filter(function(item){
-        return item.id===id;
+        return item.spu_code===spu_code;
     })[0];
 })
 
 /* 搜索-返回搜索结果 */
 Mock.mock(RegExp('/getSearchResult'),'get',function(options){
-    let type = getUrlParams(options.url).type;
+    let result = {};
+    let type = getUrlParams(options.url).type; //搜索结果，产品的小标签类型，不是产品类型
     let product = getUrlParams(options.url).product;
     let list =  createProduct({product,type});
-    Object.assign(productList,list);
-    return list;
+    productList[listType.search].push(...list);
+    result[listType.search]=list
+    return result;
 });
 
 /* 获取搜索发现 */

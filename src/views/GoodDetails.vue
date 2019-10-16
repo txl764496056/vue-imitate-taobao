@@ -43,7 +43,7 @@
             <div class="add-cart-btn item red-linear" @click="openSelect">加入购物车</div>
             <div class="limit-buy-btn item" @click="openSelect">立即购买</div>
         </div>
-        <div v-show="addCart" @click.self="closeSelect" class="select-type">
+        <div v-if="addCart" @click.self="closeSelect" class="select-type">
             <div class="content">
                 <div class="good-msg unit">
                     <img :src="goodMsg.product_img" alt="">

@@ -13,7 +13,7 @@ const shops = Mock.mock({
         "name":"@ctitle()"+'店',
         "logo":randomImage.bind(this,{size:'60x60',text:"shop"}),
     }]
-});
+}).list;
 
 /* 获取地址链接？后所有参数 */
 const getUrlParams = function(url){
@@ -34,12 +34,12 @@ const getUrlParams = function(url){
 };
 
 /* 收藏商品id保存 */
-const addCollect = function(id,arr){
+const addCollect = function(spu_code,arr){
     let temp = arr.filter(function(value){
-        return value==id;
+        return value==spu_code;
     });
     if(temp.length==0){
-        arr.push(id);
+        arr.push(spu_code);
     }
     return arr;
 }
@@ -50,7 +50,7 @@ const createProduct = function({product='',type=''}={product,type}){
     let color_list = [];
     let spu_code = '';
     return Mock.mock({
-        "search_list|8":[{
+        "list|8":[{
             "spu_name":"@ctitle(8,15)"+(product||''),
             "tips":function(){
                 let arr = ['直送','包邮','满99减20','过敏包退'];
@@ -82,13 +82,13 @@ const createProduct = function({product='',type=''}={product,type}){
             "shop_id":function(){
                 //目的：生成同一个店铺有多个商品3-5，3个产品是同一个店铺的
                 if( !(num>2&&num<6)){
-                    shop_id_index = parseInt(Math.random()*(shops.list.length-1));
+                    shop_id_index = parseInt(Math.random()*(shops.length-1));
                 }
-                return shops.list[shop_id_index].id;
+                return shops[shop_id_index].id;
             },  
             "shop_name":function(){
                 if(shop_id_index>=0){
-                    return shops.list[shop_id_index].name;
+                    return shops[shop_id_index].name;
                 }else{
                     return '';
                 }
@@ -160,7 +160,7 @@ const createProduct = function({product='',type=''}={product,type}){
                 }).list;
             },
         }]
-    });
+    }).list;
 }
 
 export default{
