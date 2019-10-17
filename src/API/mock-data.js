@@ -44,6 +44,7 @@ addressMsg.address_list[0]['isDefault'] = true;
 /* 购物车列表 */
 Mock.mock(RegExp('/cartList'),'get',function(){
     let result = [];
+    let group_arr = [];
 
     // 从productList中筛选出已经加入购物车的产品
     for(let i=0;i<cart.length;i++){
@@ -72,7 +73,7 @@ Mock.mock(RegExp('/cartList'),'get',function(){
                     temp.img = sku_product.img;
                     temp.price = sku_product.price;
                     
-                    result.push(temp);
+                    group_arr.push(temp);
                     break;
                 }
             }
@@ -80,15 +81,18 @@ Mock.mock(RegExp('/cartList'),'get',function(){
         }
     }
 
-    // 获取店铺信息
-    for(let i=0;i<result.length;i++){
-        let shop_id = result[i].shop_id;
-        for(let j=0;j<shops.length;j++){
-            if( shops[j].id==shop_id ){
-                Object.assign(result[i],{
-                    "shop_name":shops[j].name,
-                    "shop_logo":shops[j].logo
-                });
+    // 将产品信息根据店铺分组
+    group_arr =  _.groupBy(group_arr,'shop_id');
+
+    // 加上店铺信息
+    for(let key in group_arr){
+        for(let i=0;i<shops.length;i++){
+            if( shops[i].id==key ){
+                result.push({
+                    "shop_name":shops[i].name,
+                    "shop_logo":shops[i].logo,
+                    "product":group_arr[key]
+                })
                 break;
             }
         }
@@ -131,6 +135,7 @@ Mock.mock(RegExp('/addCart'),'get',function(options){
             cart_num:parseInt(num)
         });
     }
+
     return "添加成功";
 })
 

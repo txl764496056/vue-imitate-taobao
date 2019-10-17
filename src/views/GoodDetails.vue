@@ -43,7 +43,7 @@
             <div class="add-cart-btn item red-linear" @click="openSelect">加入购物车</div>
             <div class="limit-buy-btn item" @click="openSelect">立即购买</div>
         </div>
-        <div v-if="addCart" @click.self="closeSelect" class="select-type">
+        <!-- <div v-if="addCart" @click.self="closeSelect" class="select-type">
             <div class="content">
                 <div class="good-msg unit">
                     <img :src="goodMsg.product_img" alt="">
@@ -63,7 +63,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="c-content">
                     <div class="attr-item" v-for="(item3,key,index3) in attrList" :key="key">
                         <h2>{{item3.title}}</h2>
@@ -75,7 +74,6 @@
                             <span>{{item4.value}}</span>
                         </div>
                     </div>
-                    <!-- @input="goodsNum=$event" -->
                     <div class="good-num unit">
                         购买数量
                         <buy-num class="num"
@@ -83,43 +81,53 @@
                         :max="goodsStore"></buy-num>
                     </div>
                 </div>
-
                 <div class="btns">
                     <button class="left yellow-linear" @click="addCartClick">加入购物车</button>
                     <button class="right red-linear">立即购买</button>
                 </div>
                 <i class="close" @click="closeSelect">x</i>
             </div>
-        </div>
-        <toast
+        </div> -->
+        <!-- <toast
          :isShow="addCartTips!=''" 
          :position="'bottom'"
          :time="500"
          @changeIsShow="toastShow">
             <template>{{addCartTips}}</template>
-        </toast>
+        </toast> -->
+        <select-type 
+          v-if="addCart"
+          :skuList="goodMsg.sku_list" 
+          :goodImg="goodMsg.product_img"
+          :goodStore="goodMsg.store"
+          :goodPrice="goodMsg.spu_price"
+          :goodType="goodsType"
+          :spu_code="spu_code"
+          v-on:closeSelect="closeSelect"></select-type>
     </div>
 </template>
 
 <script>
-import toast from "@/components/toast.js";
-import BuyNum from "@/components/BuyNum.vue";
+// import toast from "@/components/toast.js";
+// import BuyNum from "@/components/BuyNum.vue";
+import SelectType from "@/components/SelectType.vue";
     export default {
         name:"GoodDetails",
         components:{
-            BuyNum,
-            toast
+            // BuyNum,
+            // toast,
+            SelectType
         },
         data(){
             return {
-                goodsPrice:0, //商品价格
-                goodsStore:0, //商品库存
+                // goodsPrice:0, //商品价格
+                // goodsStore:0, //商品库存
                 spu_code:"", //产品大类id
                 // sku_code:"", //产品唯一id -- 已用skuCode计算属性代替
                 goodsType:"", //产品分类（搜索类...)
                 goodMsg:"", //产品所有信息
                 emptyMsg:"", //无此产品时的提示
-                addCartTips:"", //加入购入车的toast文本
+                // addCartTips:"", //加入购入车的toast文本
                 goodsNum:1, //商品数量
                 attrItemSlected:{}, //已选中属性（值）
                 attrList:{}, //属性列表
@@ -184,10 +192,10 @@ import BuyNum from "@/components/BuyNum.vue";
                     this.$router.push('/login');
                 }
             },
-            closeSelect(){
-                this.addCart = false;
+            closeSelect(data){
+                this.addCart = data;
             },
-            addCartClick(){
+            /* addCartClick(){
                 let _this = this;
                 if( !this.skuCode ){ return ; }
                 this.axios.get("/addCart",{
@@ -206,12 +214,12 @@ import BuyNum from "@/components/BuyNum.vue";
                     }
                 })
                 
-            },
-            toastShow(data){
+            }, */
+            /* toastShow(data){
                 this.addCartTips = data;
                 this.closeSelect();
-            },
-            attrItemClick(key,obj,index){
+            }, */
+            /* attrItemClick(key,obj,index){
                 if( this.attrItemSlected[key] && (this.attrItemSlected[key].code == obj.code) ){
                     this.$delete(this.attrItemSlected,key);
                 }else{
@@ -221,7 +229,7 @@ import BuyNum from "@/components/BuyNum.vue";
                         index
                     });
                 }
-            },
+            }, */
             
         },
         computed:{
@@ -256,7 +264,7 @@ import BuyNum from "@/components/BuyNum.vue";
             /**
              * 计算sku_code 产品唯一id
              */
-            skuCode(){
+            /* skuCode(){
                 let id = '';
                 let arr = [];
                 if(Object.keys(this.attrList).length==Object.keys(this.attrItemSlected).length){
@@ -274,7 +282,7 @@ import BuyNum from "@/components/BuyNum.vue";
                     }
                 }
                 return id!='' ? (this.spu_code + id):'';
-            },
+            }, */
         },
         watch:{
             skuCode(){

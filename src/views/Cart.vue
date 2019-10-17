@@ -8,6 +8,7 @@
             </div>
             <p>共11件宝贝</p>
         </div>
+        <!-- cart > item  -->
         <div class="cart-item"
         v-for="(item,index) in cartList"
         :key="index">
@@ -26,6 +27,7 @@
                      </p>
                  </div>
             </div>
+            <!-- product>item2   -->
             <div class="down" v-for="(item2,index2) in item.product" :key="index2">
                 <div class="left">
                     <checkbox
@@ -34,10 +36,16 @@
                     :label="item2.id"
                     :showLabel="false" 
                     v-model='productIdList'></checkbox>
-                    <img :src="item2.product_img" alt="">
+                    <img :src="item2.img" alt="">
                 </div>
                  <div class="right">
                      <h2>{{item2.title}}</h2>
+                     <div class="select-attr">
+                         <div class="left">
+                             <template v-for="(attr_item) in item2.attr">{{attr_item}}</template>
+                         </div>
+                         <i class="arrow-b iconfont icon-arrow-b"></i>
+                     </div>
                      <div class="price-num">
                          <p>
                              ￥
@@ -184,6 +192,26 @@ import BuyNum from "@/components/BuyNum.vue"
                         display:flex;
                         align-items:flex-end;
                         span{font-size:vm(34);}
+                    }
+                }
+                .select-attr{
+                    display:flex;
+                    background-color:$bg-ee;
+                    margin: vm(5) auto{
+                        left:0;
+                    };
+                    padding:vm(4) vm(10);
+                    border-radius:vm(5);
+                    align-items: center;
+                    .left{
+                        color:$txt-gray2;
+                        font-size:vm(24);
+                    }
+                    .arrow-b{
+                        font-size:vm(24);
+                        color:$txt-gray2;
+                        display:inline-block;
+                        margin-left:vm(10);
                     }
                 }
             }
