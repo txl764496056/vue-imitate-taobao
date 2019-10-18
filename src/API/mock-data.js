@@ -68,6 +68,7 @@ Mock.mock(RegExp('/cartList'),'get',function(){
                     temp.title = item.spu_name;
                     temp.shop_id = item.shop_id;
                     temp.sku_list = item.sku_list;
+                    temp.store = item.store;
 
                     temp.attr = sku_product.attr;
                     temp.img = sku_product.img;
@@ -89,6 +90,7 @@ Mock.mock(RegExp('/cartList'),'get',function(){
         for(let i=0;i<shops.length;i++){
             if( shops[i].id==key ){
                 result.push({
+                    "shop_id":shops[i].id,
                     "shop_name":shops[i].name,
                     "shop_logo":shops[i].logo,
                     "product":group_arr[key]
@@ -101,10 +103,28 @@ Mock.mock(RegExp('/cartList'),'get',function(){
     return result;
 });
 
+function addCartfilter(sku_code){
+    for(let key in productList){
+        let product = productList[key];
+        for(let i=0;i<product.length;i++){
+            let item = product[i];
+            // 查询每一个item下的所有sku_code是否有与传过来的sku_code匹配的
+            let arr = item.sku_list.sku_items.filter(function(sku_item){
+                return sku_item.sku_code === sku_code;
+            });
+            if(arr.length>0){
+                // spu_code = item.spu_code;
+                return item.spu_code;
+                // break;
+            }
+        }
+    }
+}
+
 /* 加入购物车 */
 Mock.mock(RegExp('/addCart'),'get',function(options){
     let params = getUrlParams(options.url);
-    let {sku_code,goodsType,num} = params;
+    let {sku_code,num} = params;
 
     // 查找产品是否已经在购物车中
     let cart_arr = cart.filter(function(cart_item){
@@ -114,20 +134,7 @@ Mock.mock(RegExp('/addCart'),'get',function(options){
     if(cart_arr.length>0){
         cart_arr[0].cart_num += parseInt(num);
     }else{
-        let spu_code = '';
-        let product = productList[listType[goodsType]];
-        // 循环指定类型所有产品，直至查询出sku_code与传过来的匹配的产品，则跳出循环
-        for(let i=0;i<product.length;i++){
-            let item = product[i];
-            // 查询每一个item下的所有sku_code是否有与传过来的sku_code匹配的
-            let arr = item.sku_list.sku_items.filter(function(sku_item){
-                return sku_item.sku_code === sku_code;
-            });
-            if(arr.length>0){
-                spu_code = item.spu_code;
-                break;
-            }
-        }
+        let spu_code = addCartfilter(sku_code);
 
         cart.push({
             sku_code,
@@ -136,8 +143,9 @@ Mock.mock(RegExp('/addCart'),'get',function(options){
         });
     }
 
+    console.log(cart);
     return "添加成功";
-})
+});
 
 /* 收藏商品 */
 Mock.mock(RegExp('/collectGoods'),'get',function(options){

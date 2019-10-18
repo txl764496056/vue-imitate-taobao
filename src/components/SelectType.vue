@@ -5,8 +5,8 @@
             <div class="good-msg unit">
                 <img :src="goodImg" alt="">
                 <div class="msg">
-                    <p>￥<span>{{goodPrice}}</span></p>
-                    <b>库存{{goodStore}}件</b>
+                    <p>￥<span>{{price}}</span></p>
+                    <b>库存{{store}}件</b>
                     <div class="type">
                         <template v-if="compoleteChoice">
                             已选:"
@@ -23,14 +23,14 @@
             <!-- spu 信息 end -->
             <!-- 属性列表  start -->
             <div class="c-content">
-                <div class="attr-item" v-for="(item3,key,index3) in attrList" :key="key">
-                    <h2>{{item3.title}}</h2>
+                <div class="attr-item" v-for="(attr_item,key,attr_index) in attrList" :key="key">
+                    <h2>{{attr_item.title}}</h2>
                     <div class="attr-item-unit"
-                        v-for="(item4,index4) in item3.list" :key="index4"
-                        :class="{'selected':attrItemSlected[key]&&attrItemSlected[key].code==item4.code}"
-                        @click="attrItemClick(key,item4,index3)">
-                        <img v-if="item4.img" :src="item4.img" alt="">
-                        <span>{{item4.value}}</span>
+                        v-for="(sku_item,sku_index) in attr_item.list" :key="sku_index"
+                        :class="{'selected':attrItemSlected[key]&&attrItemSlected[key].code==sku_item.code}"
+                        @click="attrItemClick(key,sku_item,attr_index)">
+                        <img v-if="sku_item.img" :src="sku_item.img" alt="">
+                        <span>{{sku_item.value}}</span>
                     </div>
                 </div>
                 <div class="good-num unit">
@@ -42,23 +42,14 @@
             </div>
             <!-- 属性列表  end -->
             <div class="btns">
-                <button class="left yellow-linear" @click="addCartClick">加入购物车</button>
-                <button class="right red-linear">立即购买</button>
+                <slot></slot>
             </div>
             <i class="close" @click="closeSelect">x</i>
         </div>
-        <toast
-         :isShow="addCartTips!=''" 
-         :position="'bottom'"
-         :time="500"
-         @changeIsShow="toastShow">
-            <template>{{addCartTips}}</template>
-        </toast>
     </div>
 </template>
 
 <script>
-import toast from "@/components/toast.js";
 import BuyNum from "@/components/BuyNum.vue";
     export default {
         name:"SelectType",
@@ -81,10 +72,6 @@ import BuyNum from "@/components/BuyNum.vue";
                 type:Number,
                 default:0
             },
-            goodType:{
-                type:String,
-                default:""
-            },
             spu_code:{
                 type:String,
                 default:""
@@ -92,7 +79,6 @@ import BuyNum from "@/components/BuyNum.vue";
         },
         components:{
             BuyNum,
-            toast
         },
         data(){
             return {
@@ -101,11 +87,16 @@ import BuyNum from "@/components/BuyNum.vue";
                 attrItemSlected:{},
                 compoleteChoice:"",
                 needSelected:"",
-                addCartTips:""
+                price:0,
+                store:0,
+                sku_items:[]
             }
         },
         created(){
             this.attrList = this.skuList.attr;
+            this.price = this.goodPrice;
+            this.store = this.goodStore;
+            this.sku_items = this.skuList.sku_items;
         },
         computed:{
             skuCode(){
@@ -125,29 +116,12 @@ import BuyNum from "@/components/BuyNum.vue";
                         }
                     }
                 }
-                return id!='' ? (this.spu_code + id):'';
+                let sku_code = (id!='' ? (this.spu_code + id):'');
+                this.$emit("getSkuCode",sku_code)
+                return sku_code;
             }
         },
         methods:{
-            addCartClick(){
-                let _this = this;
-                if( !this.skuCode ){ return ; }
-                this.axios.get("/addCart",{
-                    params:{
-                        // spu_code:_this.spu_code,
-                        sku_code:_this.skuCode,
-                        goodsType:_this.goodType,
-                        num:_this.goodsNum
-                    }
-                }).then(res=>{
-                    if(res.data=='添加成功'){
-                        _this.addCartTips = '加入购物车成功';
-                        
-                    }else{
-                        _this.addCartTips = '加入购物车失败';
-                    }
-                })
-            },
             attrItemClick(key,obj,index){
                 if( this.attrItemSlected[key] && (this.attrItemSlected[key].code == obj.code) ){
                     this.$delete(this.attrItemSlected,key);
@@ -162,10 +136,33 @@ import BuyNum from "@/components/BuyNum.vue";
             closeSelect(){
                 this.$emit('closeSelect',false);
             },
-            toastShow(data){
-                this.addCartTips = data;
-                this.closeSelect();
+        },
+        watch:{
+            goodsNum:{
+                immediate:true,
+                handler(newVal){
+                    this.$emit("getGoodNum",newVal);
+                }
             },
+            skuCode(){
+                let price = 0;
+                let store = 0;
+                if(this.skuCode!=''){
+                    for(let i=0;i<this.sku_items.length;i++){
+                        let item = this.sku_items[i];
+                        if(this.skuCode==item.sku_code){
+                            price = item.price;
+                            store = item.store;
+                            break;
+                        }
+                    }
+                }else{
+                    price = this.goodMsg.spu_price;
+                    store = this.goodMsg.store;
+                }
+                this.price = price;
+                this.store = store;
+            }
         }
     }
 </script>

@@ -88,34 +88,40 @@
                 <i class="close" @click="closeSelect">x</i>
             </div>
         </div> -->
-        <!-- <toast
+        <toast
          :isShow="addCartTips!=''" 
          :position="'bottom'"
          :time="500"
          @changeIsShow="toastShow">
             <template>{{addCartTips}}</template>
-        </toast> -->
+        </toast>
         <select-type 
           v-if="addCart"
           :skuList="goodMsg.sku_list" 
           :goodImg="goodMsg.product_img"
           :goodStore="goodMsg.store"
           :goodPrice="goodMsg.spu_price"
-          :goodType="goodsType"
           :spu_code="spu_code"
-          v-on:closeSelect="closeSelect"></select-type>
+          v-on:getGoodNum="getGoodNum"
+          v-on:getSkuCode="getSkuCode"
+          v-on:closeSelect="closeSelect">
+            <template>
+                <button class="left yellow-linear" @click="addCartClick">加入购物车</button>
+                <button class="right red-linear">立即购买</button>
+            </template>
+          </select-type>
     </div>
 </template>
 
 <script>
-// import toast from "@/components/toast.js";
+import toast from "@/components/toast.js";
 // import BuyNum from "@/components/BuyNum.vue";
 import SelectType from "@/components/SelectType.vue";
     export default {
         name:"GoodDetails",
         components:{
             // BuyNum,
-            // toast,
+            toast,
             SelectType
         },
         data(){
@@ -123,15 +129,15 @@ import SelectType from "@/components/SelectType.vue";
                 // goodsPrice:0, //商品价格
                 // goodsStore:0, //商品库存
                 spu_code:"", //产品大类id
-                // sku_code:"", //产品唯一id -- 已用skuCode计算属性代替
+                sku_code:"", //产品唯一id -- 已用skuCode计算属性代替
                 goodsType:"", //产品分类（搜索类...)
                 goodMsg:"", //产品所有信息
                 emptyMsg:"", //无此产品时的提示
-                // addCartTips:"", //加入购入车的toast文本
-                goodsNum:1, //商品数量
+                addCartTips:"", //加入购入车的toast文本
+                goodsNum:0, //商品数量
                 attrItemSlected:{}, //已选中属性（值）
                 attrList:{}, //属性列表
-                sku_items:[], //产品列表（带有sku_code和基本信息)
+                // sku_items:[], //产品列表（带有sku_code和基本信息)
                 addCart:false //加入购物车弹窗
             }
         },
@@ -145,7 +151,7 @@ import SelectType from "@/components/SelectType.vue";
             dataInit(){
                 if( !this.goodMsg ) {return ;}
                 this.attrList = this.goodMsg.sku_list.attr;
-                this.sku_items = this.goodMsg.sku_list.sku_items;
+                // this.sku_items = this.goodMsg.sku_list.sku_items;
                 this.goodsPrice = this.goodMsg.spu_price;
                 this.goodsStore = this.goodMsg.store;
             },
@@ -195,14 +201,12 @@ import SelectType from "@/components/SelectType.vue";
             closeSelect(data){
                 this.addCart = data;
             },
-            /* addCartClick(){
+            addCartClick(){
                 let _this = this;
-                if( !this.skuCode ){ return ; }
+                if( !this.sku_code ){ return ; }
                 this.axios.get("/addCart",{
                     params:{
-                        // spu_code:_this.spu_code,
-                        sku_code:_this.skuCode,
-                        goodsType:_this.goodsType,
+                        sku_code:_this.sku_code,
                         num:_this.goodsNum
                     }
                 }).then(res=>{
@@ -214,11 +218,17 @@ import SelectType from "@/components/SelectType.vue";
                     }
                 })
                 
-            }, */
-            /* toastShow(data){
+            },
+            getSkuCode(data){
+                this.sku_code = data;
+            },
+            toastShow(data){
                 this.addCartTips = data;
                 this.closeSelect();
-            }, */
+            },
+            getGoodNum(data){
+                this.goodsNum = data;
+            },
             /* attrItemClick(key,obj,index){
                 if( this.attrItemSlected[key] && (this.attrItemSlected[key].code == obj.code) ){
                     this.$delete(this.attrItemSlected,key);
@@ -285,7 +295,7 @@ import SelectType from "@/components/SelectType.vue";
             }, */
         },
         watch:{
-            skuCode(){
+            /* skuCode(){
                 let price = 0;
                 let store = 0;
                 if(this.skuCode!=''){
@@ -303,7 +313,7 @@ import SelectType from "@/components/SelectType.vue";
                 }
                 this.goodsPrice = price;
                 this.goodsStore = store;
-            }
+            } */
         }
 
     }

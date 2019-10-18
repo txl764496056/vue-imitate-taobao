@@ -40,7 +40,7 @@
                 </div>
                  <div class="right">
                      <h2>{{item2.title}}</h2>
-                     <div class="select-attr">
+                     <div class="select-attr" @click="showSelect(item2.spu_code)">
                          <div class="left">
                              <template v-for="(attr_item) in item2.attr">{{attr_item}}</template>
                          </div>
@@ -57,6 +57,14 @@
             </div>
         </div>
         <Menu></Menu>
+        <select-type 
+        v-if="isSelectType"
+        :goodImg="selectMsg.img"
+        :goodPrice="selectMsg.price"
+        :goodStore="selectMsg.store"
+        :skuList="selectMsg.sku_list"
+        :spu_code="selectMsg.spu_code"
+        v-on:closeSelect="closeSelect"></select-type>
     </div>
 </template>
 
@@ -64,19 +72,24 @@
 import Menu from "@/components/Menu.vue"
 import Checkbox from "@/components/Checkbox.vue"
 import BuyNum from "@/components/BuyNum.vue"
+import SelectType from "@/components/SelectType.vue"
     export default {
         name:"Cart",
         components:{
             Menu,
             Checkbox,
-            BuyNum
+            BuyNum,
+            SelectType
         },
         data() {
             return {
                 isManage:true,
                 cartList:[],
                 productIdList:[],
-                shopIdList:[]
+                shopIdList:[],
+                isSelectType:false,
+                selectMsg:{},
+                selectSpuCode:"" //当前被选择产品大类的spu_code
             }
         },
         mounted(){
@@ -94,8 +107,29 @@ import BuyNum from "@/components/BuyNum.vue"
             },
             showManage() {
                 this.isManage = true;
+            },
+            showSelect(spu_code){
+                this.isSelectType = true;
+                this.selectSpuCode = spu_code;
+            },
+            closeSelect(data){
+                this.isSelectType = data;
             }
         },
+        watch:{
+            /* 筛选出当前被点击的产品大类（根据spu_code) */
+            selectSpuCode(){
+                let _this = this;
+                _.filter(this.cartList,function(item){
+                    let product = _.filter(item.product,function(o){
+                        return o.spu_code==_this.selectSpuCode;
+                    });
+                    _this.selectMsg = product[0];
+                    return product.length>0;
+                })
+                // console.log(arr);
+            }
+        }
     }
 </script>
 
