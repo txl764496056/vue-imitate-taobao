@@ -40,7 +40,7 @@
                 </div>
                  <div class="right">
                      <h2>{{item2.title}}</h2>
-                     <div class="select-attr" @click="showSelect(item2.spu_code)">
+                     <div class="select-attr" @click="showSelect(item2.spu_code,item2.sku_code)">
                          <div class="left">
                              <template v-for="(attr_item) in item2.attr">{{attr_item}}</template>
                          </div>
@@ -51,20 +51,29 @@
                              ￥
                             <span>{{item2.price}}</span>
                          </p>
-                         <buy-num :max="item2.repertory" v-model="item2.cart_num"></buy-num>
+                         <buy-num
+                          :max="item2.repertory" 
+                          v-on:addNumClick="addNumClick"
+                          v-model="item2.cart_num"></buy-num>
                      </div>
                  </div>
             </div>
         </div>
         <Menu></Menu>
-        <select-type 
+        <select-type
+        class="cart-select-type" 
         v-if="isSelectType"
         :goodImg="selectMsg.img"
         :goodPrice="selectMsg.price"
         :goodStore="selectMsg.store"
         :skuList="selectMsg.sku_list"
         :spu_code="selectMsg.spu_code"
-        v-on:closeSelect="closeSelect"></select-type>
+        v-on:getSkuCode="getSelectSkuCode"
+        v-on:closeSelect="closeSelect">
+            <template>
+                <button @click="updateCartProduct" class="big-btn confirm-btn">确定</button>
+            </template>
+        </select-type>
     </div>
 </template>
 
@@ -88,18 +97,23 @@ import SelectType from "@/components/SelectType.vue"
                 productIdList:[],
                 shopIdList:[],
                 isSelectType:false,
-                selectMsg:{},
+                selectMsg:{}, //当前被点击产品（购物车列表）的属性列表
+                cartItemSkuCode:"", //购物车列表每项产品，当前被点击产品的sku_code
+                selectSkuCode:"", //属性选择弹窗选择的产品的sku_code
                 selectSpuCode:"" //当前被选择产品大类的spu_code
             }
         },
         mounted(){
             this.getCartList();
         },
+        computed:{
+        },
         methods: {
             getCartList(){
                 let _this = this;
                 this.axios.get('/cartList').then(res=>{
-                    _this.cartList = res.data;
+                    // _this.cartList = res.data;
+                    _this.cartList = Object.assign({},res.data);
                 })
             },
             hiddenManage() {
@@ -108,26 +122,49 @@ import SelectType from "@/components/SelectType.vue"
             showManage() {
                 this.isManage = true;
             },
-            showSelect(spu_code){
+            showSelect(spu_code,sku_code){
                 this.isSelectType = true;
                 this.selectSpuCode = spu_code;
+                this.cartItemSkuCode = sku_code;
             },
             closeSelect(data){
                 this.isSelectType = data;
+            },
+            getSelectSkuCode(sku_code){
+                this.selectSkuCode = sku_code;
+            },
+            updateCartProduct(){
+                let _this = this;
+                this.axios.get("/updateCartProduct",{
+                    params:{
+                        sku_code:_this.cartItemSkuCode, //列表项的sku_code，更改前的
+                        update_code:_this.selectSkuCode, //列表属性的sku_code,新的sku_code
+                    }
+                }).then(res=>{
+                    if(res.data=='success'){
+                        _this.closeSelect();
+                        _this.getCartList();
+                    }
+                });
+            },
+            addNumClick(data){
+                console.log(data);
             }
         },
         watch:{
             /* 筛选出当前被点击的产品大类（根据spu_code) */
             selectSpuCode(){
                 let _this = this;
-                _.filter(this.cartList,function(item){
+                for(let i=0;i<this.cartList.length;i++){
+                    let item = this.cartList[i];
                     let product = _.filter(item.product,function(o){
                         return o.spu_code==_this.selectSpuCode;
                     });
-                    _this.selectMsg = product[0];
-                    return product.length>0;
-                })
-                // console.log(arr);
+                    if(product.length>0){
+                        _this.selectMsg = product[0];
+                        break;
+                    }
+                }
             }
         }
     }
@@ -247,6 +284,21 @@ import SelectType from "@/components/SelectType.vue"
                         display:inline-block;
                         margin-left:vm(10);
                     }
+                }
+            }
+        }
+    }
+}
+
+.cart-select-type{
+    .confirm-btn{
+        background-color:$theme-color;
+    }
+    ::v-deep &.select-type{
+        .content{
+            .btns{
+                .confirm-btn{
+                    width:100%;
                 }
             }
         }

@@ -33,12 +33,13 @@
                         <span>{{sku_item.value}}</span>
                     </div>
                 </div>
-                <div class="good-num unit">
+                <!-- <div class="good-num unit">
                     购买数量
                     <buy-num class="num"
                     v-model="goodsNum"
                     :max="goodStore"></buy-num>
-                </div>
+                </div> -->
+                <slot name="good-num"></slot>
             </div>
             <!-- 属性列表  end -->
             <div class="btns">
@@ -50,7 +51,7 @@
 </template>
 
 <script>
-import BuyNum from "@/components/BuyNum.vue";
+// import BuyNum from "@/components/BuyNum.vue";
     export default {
         name:"SelectType",
         props:{
@@ -78,12 +79,12 @@ import BuyNum from "@/components/BuyNum.vue";
             }
         },
         components:{
-            BuyNum,
+            // BuyNum,
         },
         data(){
             return {
                 attrList:{},
-                goodsNum:1,
+                // goodsNum:1,
                 attrItemSlected:{},
                 compoleteChoice:"",
                 needSelected:"",
@@ -138,12 +139,12 @@ import BuyNum from "@/components/BuyNum.vue";
             },
         },
         watch:{
-            goodsNum:{
+            /* goodsNum:{
                 immediate:true,
                 handler(newVal){
                     this.$emit("getGoodNum",newVal);
                 }
-            },
+            }, */
             skuCode(){
                 let price = 0;
                 let store = 0;

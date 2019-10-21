@@ -102,9 +102,16 @@
           :goodStore="goodMsg.store"
           :goodPrice="goodMsg.spu_price"
           :spu_code="spu_code"
-          v-on:getGoodNum="getGoodNum"
           v-on:getSkuCode="getSkuCode"
           v-on:closeSelect="closeSelect">
+            <template #good-num>
+                <div class="good-num unit">
+                    购买数量
+                    <buy-num class="num"
+                    v-model="goodsNum"
+                    :max="goodMsg.store"></buy-num>
+                </div>
+            </template>
             <template>
                 <button class="left yellow-linear" @click="addCartClick">加入购物车</button>
                 <button class="right red-linear">立即购买</button>
@@ -115,12 +122,12 @@
 
 <script>
 import toast from "@/components/toast.js";
-// import BuyNum from "@/components/BuyNum.vue";
+import BuyNum from "@/components/BuyNum.vue";
 import SelectType from "@/components/SelectType.vue";
     export default {
         name:"GoodDetails",
         components:{
-            // BuyNum,
+            BuyNum,
             toast,
             SelectType
         },
@@ -134,9 +141,9 @@ import SelectType from "@/components/SelectType.vue";
                 goodMsg:"", //产品所有信息
                 emptyMsg:"", //无此产品时的提示
                 addCartTips:"", //加入购入车的toast文本
-                goodsNum:0, //商品数量
+                goodsNum:1, //商品数量
                 attrItemSlected:{}, //已选中属性（值）
-                attrList:{}, //属性列表
+                // attrList:{}, //属性列表
                 // sku_items:[], //产品列表（带有sku_code和基本信息)
                 addCart:false //加入购物车弹窗
             }
@@ -145,16 +152,15 @@ import SelectType from "@/components/SelectType.vue";
             this.getSpuCode();
             this.getGoodType();
             this.getGoodMsg();
-            
         },
         methods:{
-            dataInit(){
+            /* dataInit(){
                 if( !this.goodMsg ) {return ;}
-                this.attrList = this.goodMsg.sku_list.attr;
+                // this.attrList = this.goodMsg.sku_list.attr;
                 // this.sku_items = this.goodMsg.sku_list.sku_items;
-                this.goodsPrice = this.goodMsg.spu_price;
-                this.goodsStore = this.goodMsg.store;
-            },
+                // this.goodsPrice = this.goodMsg.spu_price;
+                // this.goodsStore = this.goodMsg.store;
+            }, */
             getSpuCode(){
                 this.spu_code = this.$route.params.spu_code;
             },
@@ -173,7 +179,7 @@ import SelectType from "@/components/SelectType.vue";
                         _this.emptyMsg = res.data;
                     }else{
                         _this.goodMsg = res.data;
-                        this.dataInit();
+                        // this.dataInit();
                     }
                 })
             },
@@ -226,9 +232,9 @@ import SelectType from "@/components/SelectType.vue";
                 this.addCartTips = data;
                 this.closeSelect();
             },
-            getGoodNum(data){
+            /* getGoodNum(data){
                 this.goodsNum = data;
-            },
+            }, */
             /* attrItemClick(key,obj,index){
                 if( this.attrItemSlected[key] && (this.attrItemSlected[key].code == obj.code) ){
                     this.$delete(this.attrItemSlected,key);
@@ -249,7 +255,7 @@ import SelectType from "@/components/SelectType.vue";
             /* 
             * 返回没有任何已选值的属性
              */
-            needSelected(){
+           /*  needSelected(){
                 let arr = [];
                 for(let key in this.attrList){
                     // 属性没有已选值
@@ -258,11 +264,11 @@ import SelectType from "@/components/SelectType.vue";
                     }
                 }
                 return arr.join(" ");
-            },
+            }, */
             /* 
             * 所有属性都选择了值,
              */
-            compoleteChoice(){
+            /* compoleteChoice(){
                 let arr = [];
                 if(Object.keys(this.attrList).length==Object.keys(this.attrItemSlected).length){
                     for(let key in this.attrItemSlected){
@@ -270,7 +276,7 @@ import SelectType from "@/components/SelectType.vue";
                     }
                 }
                 return arr.join(" ");
-            },
+            }, */
             /**
              * 计算sku_code 产品唯一id
              */
@@ -434,7 +440,13 @@ import SelectType from "@/components/SelectType.vue";
     }
 }
 
-.select-type{
+.good-num{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+/* .select-type{
     position:fixed;
     left:0;
     right:0;
@@ -567,5 +579,5 @@ import SelectType from "@/components/SelectType.vue";
             }
         }
     }
-}
+} */
 </style>

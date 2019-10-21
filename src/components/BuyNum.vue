@@ -56,6 +56,11 @@
                 this.num = (this.num+1)>this.max ? this.max:this.num+1;
             }       
         },
+        watch:{
+            num(){
+                this.$emit('addNumClick',this.num);
+            }
+        }
     }
 </script>
 

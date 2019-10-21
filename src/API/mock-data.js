@@ -41,6 +41,32 @@ let addressMsg = Mock.mock({
 // 设置默认地址
 addressMsg.address_list[0]['isDefault'] = true;
 
+/* 购物车-更新已选产品属性 */
+Mock.mock(RegExp('/updateCartProduct'),'get',function(options){
+    let sku_code = getUrlParams(options.url).sku_code;
+    let update_code = getUrlParams(options.url).update_code;
+    let status = "fail";
+    let arr = cart.map(function(item){
+        return item.sku_code===update_code;
+    });
+    
+    for(let i=0;i<cart.length;i++){
+        if( cart[i].sku_code===sku_code ){
+            // 删除
+            if(arr.length>0){
+                cart.splice(i,1);
+            // 更新
+            }else{
+                cart[i].sku_code = update_code;
+            }
+            status = 'success';
+            break;
+        }
+    }
+    
+    return status;
+})
+
 /* 购物车列表 */
 Mock.mock(RegExp('/cartList'),'get',function(){
     let result = [];
@@ -143,7 +169,6 @@ Mock.mock(RegExp('/addCart'),'get',function(options){
         });
     }
 
-    console.log(cart);
     return "添加成功";
 });
 
