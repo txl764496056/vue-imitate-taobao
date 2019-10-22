@@ -4,7 +4,7 @@
           :class="{'checked':isSelected}"></span>
         <input type="checkbox"
          :value="label" 
-         :checked="checked" 
+         :checked="isChecked" 
          v-model="isChecked"
          v-bind="$attrs"/>
         <template v-if="showLabel">{{label}}</template>
@@ -21,14 +21,18 @@
         },
         props:{
             label:{
-                type:[String,Number],
+                type:[String,Number,Boolean],
                 default:""
             },
-            checked:{
+            /* checked:{
                 type:Array,
                 default(){
                     return []
                 }
+            }, */
+            checked:{
+                type:[Boolean,Array],
+                default:false
             },
             showLabel:{
                 type:Boolean,
@@ -45,13 +49,17 @@
                 }
             },
             isSelected(){
-                let result = false;
-                for(let i=0;i<this.isChecked.length;i++){
-                    if(this.isChecked[i]===this.label){
-                        result = true;
+                if(this.isChecked instanceof Array){
+                    let result = false;
+                    for(let i=0;i<this.isChecked.length;i++){
+                        if(this.isChecked[i]===this.label){
+                            result = true;
+                        }
                     }
+                    return result;
+                }else{
+                    return this.isChecked;
                 }
-                return result;
             }
         },
     }

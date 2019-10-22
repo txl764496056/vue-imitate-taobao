@@ -8,17 +8,17 @@
             </div>
             <p>共11件宝贝</p>
         </div>
-        <!-- cart > item  -->
-        <div class="cart-item"
+        <!-- <div class="cart-item"
         v-for="(item,index) in cartList"
         :key="index">
             <div class="up">
                 <checkbox
                  class="checkbox-btn"
                  :disabled="false" 
-                 :label="item.shop_id"
-                 :showLabel="false" 
-                 v-model='shopIdList'></checkbox>
+                 :label="item.is_checked"
+                 :showLabel="false"
+                 @click="checkClick" 
+                 v-model='item.is_checked'></checkbox>
                  <div class="right">
                      <img :src="item.shop_logo" alt="">
                      <p>
@@ -27,15 +27,14 @@
                      </p>
                  </div>
             </div>
-            <!-- product>item2   -->
             <div class="down" v-for="(item2,index2) in item.product" :key="index2">
                 <div class="left">
                     <checkbox
                     class="checkbox-btn"
                     :disabled="false" 
-                    :label="item2.id"
+                    :label="item2.is_checked"
                     :showLabel="false" 
-                    v-model='productIdList'></checkbox>
+                    v-model='item2.is_checked'></checkbox>
                     <img :src="item2.img" alt="">
                 </div>
                  <div class="right">
@@ -53,12 +52,13 @@
                          </p>
                          <buy-num
                           :max="item2.repertory" 
-                          v-on:addNumClick="addNumClick"
+                          v-on:addNumClick="addNumClick(item2.sku_code,$event)"
                           v-model="item2.cart_num"></buy-num>
                      </div>
                  </div>
             </div>
-        </div>
+        </div> -->
+        <cart-item v-for="(item,index) in cartList" :cartMsg="item" :key="index"></cart-item>
         <Menu></Menu>
         <select-type
         class="cart-select-type" 
@@ -79,23 +79,25 @@
 
 <script>
 import Menu from "@/components/Menu.vue"
-import Checkbox from "@/components/Checkbox.vue"
-import BuyNum from "@/components/BuyNum.vue"
+// import Checkbox from "@/components/Checkbox.vue"
+// import BuyNum from "@/components/BuyNum.vue"
 import SelectType from "@/components/SelectType.vue"
+import CartItem from "@/components/CartItem.vue"
     export default {
         name:"Cart",
         components:{
             Menu,
-            Checkbox,
-            BuyNum,
-            SelectType
+            // Checkbox,
+            // BuyNum,
+            SelectType,
+            CartItem
         },
         data() {
             return {
                 isManage:true,
                 cartList:[],
-                productIdList:[],
-                shopIdList:[],
+                // productIdList:[],
+                // shopIdList:[],
                 isSelectType:false,
                 selectMsg:{}, //当前被点击产品（购物车列表）的属性列表
                 cartItemSkuCode:"", //购物车列表每项产品，当前被点击产品的sku_code
@@ -113,7 +115,16 @@ import SelectType from "@/components/SelectType.vue"
                 let _this = this;
                 this.axios.get('/cartList').then(res=>{
                     // _this.cartList = res.data;
-                    _this.cartList = Object.assign({},res.data);
+                    // _this.cartList = Object.assign({},res.data);
+                    let list = res.data;
+                    for(let i=0;i<list.length;i++){
+                        let item = list[i].product;
+                        item.is_checked = false;
+                        for(let j=0;j<item.length;j++){
+                            item[j].is_checked = false;
+                        }
+                    }
+                    _this.cartList = list;
                 })
             },
             hiddenManage() {
@@ -147,8 +158,16 @@ import SelectType from "@/components/SelectType.vue"
                     }
                 });
             },
-            addNumClick(data){
-                console.log(data);
+            addNumClick(sku_code,num){
+                this.axios.get('/updateProductNum',{
+                    params:{
+                        sku_code,
+                        num
+                    }
+                });
+            },
+            checkClick(){
+                console.log("ddd");
             }
         },
         watch:{
@@ -200,7 +219,7 @@ import SelectType from "@/components/SelectType.vue"
         }
     }
    
-    .cart-item{
+    /* .cart-item{
         background-color:#fff;
         margin:vm(25);
         border-radius:vm(10);
@@ -287,7 +306,7 @@ import SelectType from "@/components/SelectType.vue"
                 }
             }
         }
-    }
+    } */
 }
 
 .cart-select-type{
