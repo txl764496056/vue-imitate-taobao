@@ -58,7 +58,22 @@
                  </div>
             </div>
         </div> -->
-        <cart-item v-for="(item,index) in cartList" :cartMsg="item" :key="index"></cart-item>
+        
+        <cart-item
+         v-for="(item,index) in cartList" 
+         :cartMsg="item" 
+         v-on:showSelect="showSelect"
+         :key="index"></cart-item>
+         
+         <div class="count-btn-container">
+            <div class="count-btn">
+                <checkbox class="checkbox-btn" :label="'全选'" :showLabel="true" v-model="allSelect"></checkbox>
+                <div class="right">
+                    <p>合计：<span>￥{{totalPrice}}</span></p>
+                    <button class="red-linear">结算({{totalNum}})</button>
+                </div>
+            </div>
+        </div>
         <Menu></Menu>
         <select-type
         class="cart-select-type" 
@@ -79,7 +94,7 @@
 
 <script>
 import Menu from "@/components/Menu.vue"
-// import Checkbox from "@/components/Checkbox.vue"
+import Checkbox from "@/components/Checkbox.vue"
 // import BuyNum from "@/components/BuyNum.vue"
 import SelectType from "@/components/SelectType.vue"
 import CartItem from "@/components/CartItem.vue"
@@ -87,7 +102,7 @@ import CartItem from "@/components/CartItem.vue"
         name:"Cart",
         components:{
             Menu,
-            // Checkbox,
+            Checkbox,
             // BuyNum,
             SelectType,
             CartItem
@@ -98,6 +113,8 @@ import CartItem from "@/components/CartItem.vue"
                 cartList:[],
                 // productIdList:[],
                 // shopIdList:[],
+                totalNum:0,
+                allSelect:false,
                 isSelectType:false,
                 selectMsg:{}, //当前被点击产品（购物车列表）的属性列表
                 cartItemSkuCode:"", //购物车列表每项产品，当前被点击产品的sku_code
@@ -105,18 +122,24 @@ import CartItem from "@/components/CartItem.vue"
                 selectSpuCode:"" //当前被选择产品大类的spu_code
             }
         },
+        created(){
+            
+        },
         mounted(){
             this.getCartList();
         },
         computed:{
+            totalPrice(){
+                return 0;
+            }
         },
         methods: {
             getCartList(){
                 let _this = this;
                 this.axios.get('/cartList').then(res=>{
-                    // _this.cartList = res.data;
+                    _this.cartList = res.data;
                     // _this.cartList = Object.assign({},res.data);
-                    let list = res.data;
+                   /*  let list = res.data;
                     for(let i=0;i<list.length;i++){
                         let item = list[i].product;
                         item.is_checked = false;
@@ -124,7 +147,7 @@ import CartItem from "@/components/CartItem.vue"
                             item[j].is_checked = false;
                         }
                     }
-                    _this.cartList = list;
+                    _this.cartList = list; */
                 })
             },
             hiddenManage() {
@@ -133,7 +156,8 @@ import CartItem from "@/components/CartItem.vue"
             showManage() {
                 this.isManage = true;
             },
-            showSelect(spu_code,sku_code){
+            showSelect(data){
+                let {spu_code,sku_code} = data;
                 this.isSelectType = true;
                 this.selectSpuCode = spu_code;
                 this.cartItemSkuCode = sku_code;
@@ -158,14 +182,14 @@ import CartItem from "@/components/CartItem.vue"
                     }
                 });
             },
-            addNumClick(sku_code,num){
+            /* addNumClick(sku_code,num){
                 this.axios.get('/updateProductNum',{
                     params:{
                         sku_code,
                         num
                     }
                 });
-            },
+            }, */
             checkClick(){
                 console.log("ddd");
             }
@@ -321,6 +345,25 @@ import CartItem from "@/components/CartItem.vue"
                 }
             }
         }
+    }
+}
+.count-btn-container{
+    position:relative;
+    height:$menu-h;
+}
+.count-btn{
+    display:flex;
+    justify-content: space-between;
+    position:fixed;
+    bottom:$menu-h;
+    left:0;
+    right:0;
+    height:$menu-h;
+    background-color:#fff;
+    border-top:1px solid $border-color-ee;
+    padding:0 vm(25);
+    .checkbox-btn{
+        font-size:vm(28);
     }
 }
 </style>

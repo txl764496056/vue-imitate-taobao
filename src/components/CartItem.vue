@@ -4,9 +4,9 @@
             <checkbox
                 class="checkbox-btn"
                 :disabled="false" 
-                :label="cartMsg.is_checked"
+                :label="cartMsg.shop_id"
                 :showLabel="false"
-                v-model='cartMsg.is_checked'></checkbox>
+                v-model='isChecked'></checkbox>
             <div class="right">
                 <img :src="cartMsg.shop_logo" alt="">
                 <p>
@@ -15,7 +15,13 @@
                 </p>
             </div>
         </div>
-        <product-item v-for="(item,index) in cartMsg.product" :productMsg="item" :key="index"></product-item>
+        <product-item 
+        v-on:productItemSelect="productItemSelect"
+         v-on="$listeners" 
+         v-for="(item,index) in cartMsg.product" 
+         :productMsg="item"
+         :checked="isAllSelect" 
+         :key="index"></product-item>
         <!-- product>item2   -->
         <!-- <div class="down" v-for="(item2,index2) in cartMsg.product" :key="index2">
             <div class="left">
@@ -68,6 +74,41 @@ import ProductItem from "@/components/ProductItem.vue"
                     return {}
                 }
             }
+        },
+        data(){
+            return {
+                shopIdList:[],
+                skuCodeList:[],
+                isChecked:false
+            }
+        },
+        computed:{
+            isAllSelect(){
+                return this.cartMsg.product.length===this.skuCodeList.length;
+            }
+        },
+        methods:{
+            isHasSkuCode(sku_code){
+                let pos = -1;
+                for(let i=0;i<this.skuCodeList.length;i++){
+                    if(this.skuCodeList[i] === sku_code){
+                        pos = i;
+                        break;
+                    }
+                }
+                return pos;
+            },
+            productItemSelect(data){
+                let sku_code = data.sku_code;
+                let index = this.isHasSkuCode(sku_code);
+                if(index<0){
+                    this.skuCodeList.push(sku_code);
+                }else{
+                    this.skuCodeList.splice(index,1);
+                }
+                
+                // this.isChecked = (this.cartMsg.product.length===this.skuCodeList.length);
+            },
         }
     }
 </script>

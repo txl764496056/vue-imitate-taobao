@@ -4,9 +4,10 @@
             <checkbox
             class="checkbox-btn"
             :disabled="false" 
-            :label="productMsg.is_checked"
-            :showLabel="false" 
-            v-model='productMsg.is_checked'></checkbox>
+            :label="productMsg.sku_code"
+            :showLabel="false"
+            @click.native="checkboxClick" 
+            v-model='isChecked'></checkbox>
             <img :src="productMsg.img" alt="">
         </div>
         <div class="right">
@@ -46,6 +47,37 @@ import BuyNum from "@/components/BuyNum.vue"
                 default(){
                     return {};
                 }
+            },
+            checked:{
+                type:Boolean,
+                default:false
+            }
+        },
+        data(){
+            return {
+                isChecked:false
+            }
+        },
+        methods:{
+            addNumClick(sku_code,num){
+                this.axios.get('/updateProductNum',{
+                    params:{
+                        sku_code,
+                        num
+                    }
+                });
+            },
+            showSelect(spu_code,sku_code){
+                this.$emit('showSelect',{spu_code,sku_code});
+            },
+            checkboxClick(){
+                let sku_code = this.productMsg.sku_code;
+                this.$emit('productItemSelect',{sku_code});
+            }
+        },
+        watch:{
+            checked(){
+                this.isChecked = this.checked; 
             }
         }
     }
@@ -107,6 +139,11 @@ import BuyNum from "@/components/BuyNum.vue"
                 display:inline-block;
                 margin-left:vm(10);
             }
+        }
+    }
+    .checkbox-btn{
+        ::v-deep .input{
+            border-radius:50%;
         }
     }
 }
