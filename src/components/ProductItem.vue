@@ -1,12 +1,12 @@
 <template>
     <div class="product-item">
         <div class="left">
+            <!-- @click.native="checkboxClick" -->
             <checkbox
             class="checkbox-btn"
             :disabled="false" 
             :label="productMsg.sku_code"
             :showLabel="false"
-            @click.native="checkboxClick" 
             v-model='isChecked'></checkbox>
             <img :src="productMsg.img" alt="">
         </div>
@@ -48,15 +48,21 @@ import BuyNum from "@/components/BuyNum.vue"
                     return {};
                 }
             },
-            checked:{
+            allChecked:{
                 type:Boolean,
                 default:false
+            },
+            isChildChecked:{
+                type:Number,
+                default:3  //1:选中  2:不选中 3：保持原有状态
             }
         },
         data(){
             return {
                 isChecked:false
             }
+        },
+        computed:{
         },
         methods:{
             addNumClick(sku_code,num){
@@ -70,14 +76,17 @@ import BuyNum from "@/components/BuyNum.vue"
             showSelect(spu_code,sku_code){
                 this.$emit('showSelect',{spu_code,sku_code});
             },
-            checkboxClick(){
-                let sku_code = this.productMsg.sku_code;
-                this.$emit('productItemSelect',{sku_code});
-            }
         },
         watch:{
-            checked(){
-                this.isChecked = this.checked; 
+            isChecked(){
+                this.$emit('productItemSelect',{sku_code:this.productMsg.sku_code});
+            },
+            isChildChecked(newVal){
+                if(newVal==1){
+                    this.isChecked = true;
+                }else if(newVal==2){
+                    this.isChecked = false;
+                }
             }
         }
     }

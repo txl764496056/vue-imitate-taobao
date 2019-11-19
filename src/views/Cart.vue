@@ -8,57 +8,6 @@
             </div>
             <p>共11件宝贝</p>
         </div>
-        <!-- <div class="cart-item"
-        v-for="(item,index) in cartList"
-        :key="index">
-            <div class="up">
-                <checkbox
-                 class="checkbox-btn"
-                 :disabled="false" 
-                 :label="item.is_checked"
-                 :showLabel="false"
-                 @click="checkClick" 
-                 v-model='item.is_checked'></checkbox>
-                 <div class="right">
-                     <img :src="item.shop_logo" alt="">
-                     <p>
-                         {{item.shop_name}}
-                        <span>></span>
-                     </p>
-                 </div>
-            </div>
-            <div class="down" v-for="(item2,index2) in item.product" :key="index2">
-                <div class="left">
-                    <checkbox
-                    class="checkbox-btn"
-                    :disabled="false" 
-                    :label="item2.is_checked"
-                    :showLabel="false" 
-                    v-model='item2.is_checked'></checkbox>
-                    <img :src="item2.img" alt="">
-                </div>
-                 <div class="right">
-                     <h2>{{item2.title}}</h2>
-                     <div class="select-attr" @click="showSelect(item2.spu_code,item2.sku_code)">
-                         <div class="left">
-                             <template v-for="(attr_item) in item2.attr">{{attr_item}}</template>
-                         </div>
-                         <i class="arrow-b iconfont icon-arrow-b"></i>
-                     </div>
-                     <div class="price-num">
-                         <p>
-                             ￥
-                            <span>{{item2.price}}</span>
-                         </p>
-                         <buy-num
-                          :max="item2.repertory" 
-                          v-on:addNumClick="addNumClick(item2.sku_code,$event)"
-                          v-model="item2.cart_num"></buy-num>
-                     </div>
-                 </div>
-            </div>
-        </div> -->
-        
         <cart-item
          v-for="(item,index) in cartList" 
          :cartMsg="item" 

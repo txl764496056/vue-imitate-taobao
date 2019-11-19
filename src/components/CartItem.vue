@@ -20,51 +20,18 @@
          v-on="$listeners" 
          v-for="(item,index) in cartMsg.product" 
          :productMsg="item"
-         :checked="isAllSelect" 
+         :isChildChecked="isChildChecked"
          :key="index"></product-item>
-        <!-- product>item2   -->
-        <!-- <div class="down" v-for="(item2,index2) in cartMsg.product" :key="index2">
-            <div class="left">
-                <checkbox
-                class="checkbox-btn"
-                :disabled="false" 
-                :label="item2.is_checked"
-                :showLabel="false" 
-                v-model='item2.is_checked'></checkbox>
-                <img :src="item2.img" alt="">
-            </div>
-            <div class="right">
-                <h2>{{item2.title}}</h2>
-                <div class="select-attr" @click="showSelect(item2.spu_code,item2.sku_code)">
-                    <div class="left">
-                        <template v-for="(attr_item) in item2.attr">{{attr_item}}</template>
-                    </div>
-                    <i class="arrow-b iconfont icon-arrow-b"></i>
-                </div>
-                <div class="price-num">
-                    <p>
-                        ￥
-                    <span>{{item2.price}}</span>
-                    </p>
-                    <buy-num
-                    :max="item2.repertory" 
-                    v-on:addNumClick="addNumClick(item2.sku_code,$event)"
-                    v-model="item2.cart_num"></buy-num>
-                </div>
-            </div>
-        </div> -->
     </div>
 </template>
 
 <script>
 import Checkbox from "@/components/Checkbox.vue"
-// import BuyNum from "@/components/BuyNum.vue"
 import ProductItem from "@/components/ProductItem.vue"
     export default {
         name:"CartItem",
         components:{
             Checkbox,
-            // BuyNum,
             ProductItem
         },
         props:{
@@ -79,13 +46,20 @@ import ProductItem from "@/components/ProductItem.vue"
             return {
                 shopIdList:[],
                 skuCodeList:[],
-                isChecked:false
+                isChecked:false,
+                isChildChecked:3, //1:选中  2:不选中 3：保持原有状态
             }
         },
         computed:{
             isAllSelect(){
-                return this.cartMsg.product.length===this.skuCodeList.length;
-            }
+                return (this.skuCodeList.length>0&&this.cartMsg.product.length===this.skuCodeList.length);
+            },
+            /* halfSelect(){
+                return this.skuCodeList.length>0&&(this.skuCodeList.length<this.cartMsg.product.length);
+            }, */
+            noSelected(){
+                return this.skuCodeList.length<=0;
+            },
         },
         methods:{
             isHasSkuCode(sku_code){
@@ -106,9 +80,32 @@ import ProductItem from "@/components/ProductItem.vue"
                 }else{
                     this.skuCodeList.splice(index,1);
                 }
-                
-                // this.isChecked = (this.cartMsg.product.length===this.skuCodeList.length);
+
             },
+        },
+        watch:{
+            isAllSelect(newVal){
+                this.isChecked = newVal;
+                if(newVal){
+                    this.isChildChecked = 1;
+                }
+            },
+            noSelected(newVal){
+                if(newVal){
+                    this.isChildChecked = 2;
+                }
+            },
+            isChecked(newVal){
+                if( newVal ){
+                    this.isChildChecked = 1;
+                }else{
+                    if(this.isAllSelect){
+                        this.isChildChecked = 2;
+                    }else{
+                        this.isChildChecked = 3;
+                    }
+                }
+            }
         }
     }
 </script>
