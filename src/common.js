@@ -101,7 +101,7 @@ const createProduct = function({product='',type=''}={product,type}){
                 ];
             },
             "collect":false,
-            "store|200-500":20,
+            "spu_store|200-500":20,
             "baseFn":function(){
                 color_list = [];
                 spu_code = Mock.mock({"code":"@increment()"}).code;

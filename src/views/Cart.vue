@@ -26,12 +26,13 @@
         <Menu></Menu>
         <select-type
         class="cart-select-type" 
-        v-if="isSelectType"
+        v-if="isSelectType=='open'"
         :goodImg="selectMsg.img"
-        :goodPrice="selectMsg.price"
-        :goodStore="selectMsg.store"
+        :spuPrice="selectMsg.spu_price"
+        :spuStore="selectMsg.spu_store"
         :skuList="selectMsg.sku_list"
         :spu_code="selectMsg.spu_code"
+        :selectedSkuCode="oldSkuCode"
         v-on:getSkuCode="getSelectSkuCode"
         v-on:closeSelect="closeSelect">
             <template>
@@ -44,7 +45,6 @@
 <script>
 import Menu from "@/components/Menu.vue"
 import Checkbox from "@/components/Checkbox.vue"
-// import BuyNum from "@/components/BuyNum.vue"
 import SelectType from "@/components/SelectType.vue"
 import CartItem from "@/components/CartItem.vue"
     export default {
@@ -60,13 +60,11 @@ import CartItem from "@/components/CartItem.vue"
             return {
                 isManage:true,
                 cartList:[],
-                // productIdList:[],
-                // shopIdList:[],
                 totalNum:0,
                 allSelect:false,
-                isSelectType:false,
+                isSelectType:'close', //是否打开selectType
                 selectMsg:{}, //当前被点击产品（购物车列表）的属性列表
-                cartItemSkuCode:"", //购物车列表每项产品，当前被点击产品的sku_code
+                oldSkuCode:"", //购物车列表每项产品，当前被点击产品的sku_code,也就是加入点击弹窗后都还未修正的
                 selectSkuCode:"", //属性选择弹窗选择的产品的sku_code
                 selectSpuCode:"" //当前被选择产品大类的spu_code
             }
@@ -87,16 +85,6 @@ import CartItem from "@/components/CartItem.vue"
                 let _this = this;
                 this.axios.get('/cartList').then(res=>{
                     _this.cartList = res.data;
-                    // _this.cartList = Object.assign({},res.data);
-                   /*  let list = res.data;
-                    for(let i=0;i<list.length;i++){
-                        let item = list[i].product;
-                        item.is_checked = false;
-                        for(let j=0;j<item.length;j++){
-                            item[j].is_checked = false;
-                        }
-                    }
-                    _this.cartList = list; */
                 })
             },
             hiddenManage() {
@@ -107,9 +95,9 @@ import CartItem from "@/components/CartItem.vue"
             },
             showSelect(data){
                 let {spu_code,sku_code} = data;
-                this.isSelectType = true;
+                this.isSelectType = "open";
                 this.selectSpuCode = spu_code;
-                this.cartItemSkuCode = sku_code;
+                this.oldSkuCode = sku_code;
             },
             closeSelect(data){
                 this.isSelectType = data;
@@ -121,24 +109,16 @@ import CartItem from "@/components/CartItem.vue"
                 let _this = this;
                 this.axios.get("/updateCartProduct",{
                     params:{
-                        sku_code:_this.cartItemSkuCode, //列表项的sku_code，更改前的
+                        sku_code:_this.oldSkuCode, //列表项的sku_code，更改前的
                         update_code:_this.selectSkuCode, //列表属性的sku_code,新的sku_code
                     }
                 }).then(res=>{
                     if(res.data=='success'){
-                        _this.closeSelect();
+                        _this.closeSelect('close');
                         _this.getCartList();
                     }
                 });
             },
-            /* addNumClick(sku_code,num){
-                this.axios.get('/updateProductNum',{
-                    params:{
-                        sku_code,
-                        num
-                    }
-                });
-            }, */
             checkClick(){
                 console.log("ddd");
             }

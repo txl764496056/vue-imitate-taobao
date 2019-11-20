@@ -109,9 +109,10 @@ Mock.mock(RegExp('/cartList'),'get',function(){
                 // sku下准确的price,attr,img
                 if( sku_product ){
                     temp.title = item.spu_name;
+                    temp.spu_price = item.spu_price;
                     temp.shop_id = item.shop_id;
                     temp.sku_list = item.sku_list;
-                    temp.store = item.store;
+                    temp.spu_store = item.spu_store;
 
                     temp.attr = sku_product.attr;
                     temp.img = sku_product.img;

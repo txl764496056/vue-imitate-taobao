@@ -37,7 +37,7 @@
                     购买数量
                     <buy-num class="num"
                     v-model="goodsNum"
-                    :max="goodStore"></buy-num>
+                    :max="spuStore"></buy-num>
                 </div> -->
                 <slot name="good-num"></slot>
             </div>
@@ -65,15 +65,20 @@
                 type:String,
                 default:""
             },
-            goodPrice:{
+            spuPrice:{
                 type:Number,
                 default:0
             },
-            goodStore:{
+            spuStore:{
                 type:Number,
-                default:0
+                default:15
             },
             spu_code:{
+                type:String,
+                default:""
+            },
+            // 已经选中的-在更改之前
+            selectedSkuCode:{
                 type:String,
                 default:""
             }
@@ -95,9 +100,10 @@
         },
         created(){
             this.attrList = this.skuList.attr;
-            this.price = this.goodPrice;
-            this.store = this.goodStore;
+            this.price = this.spuPrice;
+            this.store = this.spuStore;
             this.sku_items = this.skuList.sku_items;
+            this.initAttrItemSelected();
         },
         computed:{
             skuCode(){
@@ -123,6 +129,75 @@
             }
         },
         methods:{
+            initAttrItemSelected(){
+               /*  if(this.selectedSkuCode){
+                    let attr_arr = Object.keys(this.skuList.attr);
+                    for(let i=0;i<attr_arr.length;i++){
+                        for(let)
+                    }
+                    console.log()
+                } */
+                let obj = {
+                    color:{
+                        list:[{
+                            value:'红色',
+                            code:"c1"
+                        },{
+                            value:'蓝色',
+                            code:"c2"
+                        },{
+                            value:'绿色',
+                            code:"c3"
+                        }]
+                    },
+                    size:{
+                        list:[{
+                            value:"s",
+                            code:"s1",
+                        },{
+                            value:"m",
+                            code:"s2"
+                        },{
+                            value:"l",
+                            code:"s3"
+                        }]
+                    },
+                    material:{
+                        list:[{
+                            value:'磨砂',
+                            code:'m1'
+                        },{
+                            value:'平面',
+                            code:"m2"
+                        },{
+                            value:'塑料',
+                            code:"m3"
+                        }]
+                    }
+                }
+                let needCode = "c2s3m1";
+                let arr = Object.keys(obj);
+                let attr = {};
+                /* for(let i=0;i<obj[arr[0]].list.length;i++){
+                    attr[arr[0]]=Object.assign(obj[arr[0]].list[i],{index:i});
+
+                    for(let j=0;j<obj[arr[1]].list.length;j++){
+                        attr[arr[1]] = Object.assign(obj[arr[1]].list[j],{index:j});
+
+                        for(let k=0;k<obj[arr[2]].list.length;k++){
+                            attr[arr[2]] = Object.assign(obj[arr[2]].list[k],{index:k});
+
+                            if((attr[arr[0]].code+attr[arr[1]].code+attr[arr[2]].code)==needCode){
+                                console.log(attr[arr[0]].code+attr[arr[1]].code+attr[arr[2]].code)
+                                console.log(attr[arr[0]],attr[arr[1]],attr[arr[2]])
+                            }
+                            attr[arr[2]]={};
+                        }
+                        attr[arr[1]]={};
+                    }
+                    attr[arr[0]]={};
+                } */
+            },
             attrItemClick(key,obj,index){
                 if( this.attrItemSlected[key] && (this.attrItemSlected[key].code == obj.code) ){
                     this.$delete(this.attrItemSlected,key);
@@ -135,7 +210,7 @@
                 }
             },
             closeSelect(){
-                this.$emit('closeSelect',false);
+                this.$emit('closeSelect','close');
             },
         },
         watch:{
@@ -158,8 +233,8 @@
                         }
                     }
                 }else{
-                    price = this.goodMsg.spu_price;
-                    store = this.goodMsg.store;
+                    price = this.spuPrice;
+                    store = this.spuStore;
                 }
                 this.price = price;
                 this.store = store;

@@ -15,6 +15,7 @@
                 </p>
             </div>
         </div>
+        <!--  v-on="$listeners"  将cart父绑定的时间绑定到product-item上，这里指v-on:showSelect -->
         <product-item 
         v-on:productItemSelect="productItemSelect"
          v-on="$listeners" 
