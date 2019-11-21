@@ -197,6 +197,30 @@
                     }
                     attr[arr[0]]={};
                 } */
+                let index = 0;
+                
+                function group(arr,obj){
+                    // if( !arr[index] ){return;}
+                    let key = arr[index];
+                    let flag = -1;
+                    // 用key保留arr[index]，避免index引发程序没执行完，index值已经到最大
+                    for(let i=0;i<obj[key].list.length;i++){
+                        attr[key] = Object.assign(obj[key].list[i],{index:i});
+
+                        flag = i;
+                        console.log(flag,key);
+
+                        if(index<arr.length-1){
+                            ++index;
+                            group(arr,obj);
+                        }
+                    }
+                }
+                group(arr,obj)
+                /* setTimeout(function(){
+                    console.log(attr);
+                },500); */
+                // console.log();
             },
             attrItemClick(key,obj,index){
                 if( this.attrItemSlected[key] && (this.attrItemSlected[key].code == obj.code) ){
