@@ -14,7 +14,7 @@
             <h2>{{productMsg.title}}</h2>
             <div class="select-attr" @click="showSelect(productMsg.spu_code,productMsg.sku_code)">
                 <div class="left">
-                    <template v-for="(attr_item) in productMsg.attr">{{attr_item}}</template>
+                    <template v-for="(attr_item) in productMsg.attr">{{attr_item.value}}</template>
                 </div>
                 <i class="arrow-b iconfont icon-arrow-b"></i>
             </div>

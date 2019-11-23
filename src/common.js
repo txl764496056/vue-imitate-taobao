@@ -147,7 +147,17 @@ const createProduct = function({product='',type=''}={product,type}){
                                             "price|20-80.0-2":20,
                                             "store|0-100":50,
                                             "img":color_list[i].img,
-                                            "attr":[color_list[i].value,size_list[j].value],
+                                            // "attr":[color_list[i].value,size_list[j].value],
+                                            "attr":{
+                                                "color":{
+                                                    "value":color_list[i].value,
+                                                    "code":color_list[i].code
+                                                },
+                                                "size":{
+                                                    "value":size_list[j].value,
+                                                    "code":size_list[j].code
+                                                }
+                                            },
                                             "sku_code":spu_code+color_list[i].code+size_list[j].code,
                                         }
                                     }).temp;

@@ -72,9 +72,11 @@ import {stringPermutation} from "@/js/comon-method.js";
                 default:""
             },
             // 已经选中的-在更改之前
-            selectedSkuCode:{
-                type:String,
-                default:""
+            selectedType:{
+                type:Object,
+                default(){
+                    return {}
+                }
             }
         },
         components:{
@@ -82,7 +84,7 @@ import {stringPermutation} from "@/js/comon-method.js";
         data(){
             return {
                 attrList:{},
-                attrItemSlected:{},
+                attrItemSlected:this.selectedType,
                 compoleteChoice:"",
                 needSelected:"",
                 price:0,

@@ -33,6 +33,7 @@
         :skuList="selectMsg.sku_list"
         :spu_code="selectMsg.spu_code"
         :selectedSkuCode="oldSkuCode"
+        :selectedType="selectMsg.attr"
         v-on:getSkuCode="getSelectSkuCode"
         v-on:closeSelect="closeSelect">
             <template>
