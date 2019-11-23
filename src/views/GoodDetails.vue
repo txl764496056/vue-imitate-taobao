@@ -35,7 +35,7 @@
         </template>
         <div class="buy-btn">
             <div class="collect" 
-            :class="{'light':goodMsg.collect}"
+            :class="{'light':goodMsg&&goodMsg.collect}"
             @click="collectGoods">
                 <i class="iconfont icon-star"></i>
                 收藏

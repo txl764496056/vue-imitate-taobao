@@ -33,12 +33,6 @@
                         <span>{{sku_item.value}}</span>
                     </div>
                 </div>
-                <!-- <div class="good-num unit">
-                    购买数量
-                    <buy-num class="num"
-                    v-model="goodsNum"
-                    :max="spuStore"></buy-num>
-                </div> -->
                 <slot name="good-num"></slot>
             </div>
             <!-- 属性列表  end -->
@@ -51,7 +45,7 @@
 </template>
 
 <script>
-// import BuyNum from "@/components/BuyNum.vue";
+import {stringPermutation} from "@/js/comon-method.js";
     export default {
         name:"SelectType",
         props:{
@@ -84,18 +78,17 @@
             }
         },
         components:{
-            // BuyNum,
         },
         data(){
             return {
                 attrList:{},
-                // goodsNum:1,
                 attrItemSlected:{},
                 compoleteChoice:"",
                 needSelected:"",
                 price:0,
                 store:0,
-                sku_items:[]
+                sku_items:[],
+                allPermutation:[] //属性code组合的所有可能
             }
         },
         created(){
@@ -103,125 +96,25 @@
             this.price = this.spuPrice;
             this.store = this.spuStore;
             this.sku_items = this.skuList.sku_items;
-            this.initAttrItemSelected();
         },
         computed:{
             skuCode(){
-                let id = '';
-                let arr = [];
-                if(Object.keys(this.attrList).length==Object.keys(this.attrItemSlected).length){
-                    for(let key in this.attrItemSlected){
-                        arr.push(this.attrItemSlected[key].index);
-                    }
-                    arr.sort(function(a,b){ return a-b; });//排序
-                    // 拼接code
-                    for(let i=0;i<arr.length;i++){
-                        for(let key2 in this.attrItemSlected){
-                            if(arr[i]==this.attrItemSlected[key2].index){
-                                id += this.attrItemSlected[key2].code;
-                            }
-                        }
+                let _this = this;
+                let sku_code = "";
+                for(let i=0;i<this.allPermutation.length;i++){
+                    let code = this.allPermutation[i];
+                    let index = _.findIndex(_this.sku_items,function(o){ return o.sku_code==code ;});
+                    if(index>-1){
+                        sku_code = _this.sku_items[index].sku_code;
+                        break;
                     }
                 }
-                let sku_code = (id!='' ? (this.spu_code + id):'');
-                this.$emit("getSkuCode",sku_code)
+                this.$emit('getSkuCode',sku_code);
                 return sku_code;
             }
         },
         methods:{
-            initAttrItemSelected(){
-               /*  if(this.selectedSkuCode){
-                    let attr_arr = Object.keys(this.skuList.attr);
-                    for(let i=0;i<attr_arr.length;i++){
-                        for(let)
-                    }
-                    console.log()
-                } */
-                let obj = {
-                    color:{
-                        list:[{
-                            value:'红色',
-                            code:"c1"
-                        },{
-                            value:'蓝色',
-                            code:"c2"
-                        },{
-                            value:'绿色',
-                            code:"c3"
-                        }]
-                    },
-                    size:{
-                        list:[{
-                            value:"s",
-                            code:"s1",
-                        },{
-                            value:"m",
-                            code:"s2"
-                        },{
-                            value:"l",
-                            code:"s3"
-                        }]
-                    },
-                    material:{
-                        list:[{
-                            value:'磨砂',
-                            code:'m1'
-                        },{
-                            value:'平面',
-                            code:"m2"
-                        },{
-                            value:'塑料',
-                            code:"m3"
-                        }]
-                    }
-                }
-                let needCode = "c2s3m1";
-                let arr = Object.keys(obj);
-                let attr = {};
-                /* for(let i=0;i<obj[arr[0]].list.length;i++){
-                    attr[arr[0]]=Object.assign(obj[arr[0]].list[i],{index:i});
-
-                    for(let j=0;j<obj[arr[1]].list.length;j++){
-                        attr[arr[1]] = Object.assign(obj[arr[1]].list[j],{index:j});
-
-                        for(let k=0;k<obj[arr[2]].list.length;k++){
-                            attr[arr[2]] = Object.assign(obj[arr[2]].list[k],{index:k});
-
-                            if((attr[arr[0]].code+attr[arr[1]].code+attr[arr[2]].code)==needCode){
-                                console.log(attr[arr[0]].code+attr[arr[1]].code+attr[arr[2]].code)
-                                console.log(attr[arr[0]],attr[arr[1]],attr[arr[2]])
-                            }
-                            attr[arr[2]]={};
-                        }
-                        attr[arr[1]]={};
-                    }
-                    attr[arr[0]]={};
-                } */
-                let index = 0;
-                
-                function group(arr,obj){
-                    // if( !arr[index] ){return;}
-                    let key = arr[index];
-                    let flag = -1;
-                    // 用key保留arr[index]，避免index引发程序没执行完，index值已经到最大
-                    for(let i=0;i<obj[key].list.length;i++){
-                        attr[key] = Object.assign(obj[key].list[i],{index:i});
-
-                        flag = i;
-                        console.log(flag,key);
-
-                        if(index<arr.length-1){
-                            ++index;
-                            group(arr,obj);
-                        }
-                    }
-                }
-                group(arr,obj)
-                /* setTimeout(function(){
-                    console.log(attr);
-                },500); */
-                // console.log();
-            },
+            stringPermutation,
             attrItemClick(key,obj,index){
                 if( this.attrItemSlected[key] && (this.attrItemSlected[key].code == obj.code) ){
                     this.$delete(this.attrItemSlected,key);
@@ -236,14 +129,21 @@
             closeSelect(){
                 this.$emit('closeSelect','close');
             },
+            /* sku_code 组合（所有可能的） */
+            codePermutation(){
+                let _this = this;
+                let obj = this.attrItemSlected;
+                let code = _.values( _.mapValues(obj,function(o){
+                    return o.code;
+                }));
+                
+                let data = {arr:code,index:0,group:[]};
+                this.allPermutation = this.stringPermutation(data).map(function(item){
+                    return _this.spu_code+item;
+                })
+            }
         },
         watch:{
-            /* goodsNum:{
-                immediate:true,
-                handler(newVal){
-                    this.$emit("getGoodNum",newVal);
-                }
-            }, */
             skuCode(){
                 let price = 0;
                 let store = 0;
@@ -262,6 +162,12 @@
                 }
                 this.price = price;
                 this.store = store;
+            },
+            attrItemSlected:{
+                handler(){
+                    this.codePermutation();
+                },
+                deep:true
             }
         }
     }
