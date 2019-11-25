@@ -1,7 +1,6 @@
 <template>
     <div class="product-item">
         <div class="left">
-            <!-- @click.native="checkboxClick" -->
             <checkbox
             class="checkbox-btn"
             :disabled="false" 
