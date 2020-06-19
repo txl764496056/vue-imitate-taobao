@@ -45,7 +45,7 @@ export default {
   border:none;
   padding:vm(10) vm(15);
   position:fixed;
-  bottom:vm(150);
+  bottom:vm(400);
 }
 
 </style>

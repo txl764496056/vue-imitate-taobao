@@ -12,11 +12,12 @@
          v-for="(item,index) in cartList" 
          :cartMsg="item" 
          v-on:showSelect="showSelect"
+         @selectedShop="selectedShop"
          :key="index"></cart-item>
          
          <div class="count-btn-container">
             <div class="count-btn">
-                <checkbox class="checkbox-btn" :label="'全选'" :showLabel="true" v-model="allSelect"></checkbox>
+                <checkbox class="checkbox-btn" :label="'全选'" :showLabel="true" v-model="isAllSelect"></checkbox>
                 <div class="right">
                     <p>合计：<span>￥{{totalPrice}}</span></p>
                     <button class="red-linear">结算({{totalNum}})</button>
@@ -58,10 +59,11 @@ import CartItem from "@/components/CartItem.vue"
         },
         data() {
             return {
+                selectedShopId:[], //已选中店铺的id,以及改店铺下被选中的产品的sku_code列表
                 isManage:true,
                 cartList:[],
                 totalNum:0,
-                allSelect:false,
+                isAllSelect:false,
                 isSelectType:'close', //是否打开selectType
                 selectMsg:{}, //当前被点击产品（购物车列表）的属性列表
                 oldSkuCode:"", //购物车列表每项产品，当前被点击产品的sku_code,也就是加入点击弹窗后都还未修正的
@@ -78,9 +80,39 @@ import CartItem from "@/components/CartItem.vue"
         computed:{
             totalPrice(){
                 return 0;
-            }
+            },
         },
         methods: {
+            /**
+             * 查询已选择shop_id列表中是否含有当前选中的
+             * 返回索引值
+             */
+            getShopIdIndex(shop_id){
+                for(let i=0;i<this.selectedShopId.length;i++){
+                    if(this.selectedShopId[i]==shop_id){
+                        return i;
+                    }
+                }
+                return -1;
+            },
+            /**
+             * 存储或删除已选中shop_id
+             */
+            selectedShop(data){
+                let {shop_id,skuCodeList} = data;
+
+                if(this.selectedShopId.indexOf(shop_id)==-1){
+                    this.selectedShopId.push({
+                        skuCodeList,
+                        shop_id
+                    });
+                }else{
+                    let index = this.getShopIdIndex(shop_id);
+                    this.selectedShopId.splice(index,1);
+                }
+
+                this.isAllSelect = (this.selectedShopId.length==this.cartList.length);
+            },
             getCartList(){
                 let _this = this;
                 this.axios.get('/cartList').then(res=>{

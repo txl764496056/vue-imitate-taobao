@@ -6,6 +6,7 @@
             :disabled="false" 
             :label="productMsg.sku_code"
             :showLabel="false"
+            @change="handleClickSelect"
             v-model='isChecked'></checkbox>
             <img :src="productMsg.img" alt="">
         </div>
@@ -47,13 +48,13 @@ import BuyNum from "@/components/BuyNum.vue"
                     return {};
                 }
             },
-            allChecked:{
+            allSelect:{
                 type:Boolean,
                 default:false
             },
-            isChildChecked:{
-                type:Number,
-                default:3  //1:选中  2:不选中 3：保持原有状态
+            allNoneSelect:{
+                type:Boolean,
+                default:false
             }
         },
         data(){
@@ -75,15 +76,18 @@ import BuyNum from "@/components/BuyNum.vue"
             showSelect(spu_code,sku_code){
                 this.$emit('showSelect',{spu_code,sku_code});
             },
+            handleClickSelect(){
+                this.$emit('productItemSelect',{sku_code:this.productMsg.sku_code});
+            }
         },
         watch:{
-            isChecked(){
-                this.$emit('productItemSelect',{sku_code:this.productMsg.sku_code});
-            },
-            isChildChecked(newVal){
-                if(newVal==1){
+            allSelect(newVal){
+                if(newVal){
                     this.isChecked = true;
-                }else if(newVal==2){
+                }
+            },
+            allNoneSelect(newVal){
+               if(newVal){
                     this.isChecked = false;
                 }
             }
