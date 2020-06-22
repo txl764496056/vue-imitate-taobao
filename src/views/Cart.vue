@@ -12,7 +12,7 @@
          v-for="(item,index) in cartList" 
          :cartMsg="item" 
          v-on:showSelect="showSelect"
-         @selectedShop="selectedShop"
+         @selectedShop="handleSelectedShop"
          :key="index"></cart-item>
          
          <div class="count-btn-container">
@@ -89,8 +89,8 @@ import CartItem from "@/components/CartItem.vue"
              */
             getShopIdIndex(shop_id){
                 for(let i=0;i<this.selectedShopId.length;i++){
-                    if(this.selectedShopId[i]==shop_id){
-                        return i;
+                    if(this.selectedShopId[i].shop_id==shop_id){
+                      return i;
                     }
                 }
                 return -1;
@@ -98,16 +98,17 @@ import CartItem from "@/components/CartItem.vue"
             /**
              * 存储或删除已选中shop_id
              */
-            selectedShop(data){
+            handleSelectedShop(data){
                 let {shop_id,skuCodeList} = data;
+                
+                let index = this.getShopIdIndex(shop_id);
 
-                if(this.selectedShopId.indexOf(shop_id)==-1){
+                if(index==-1){
                     this.selectedShopId.push({
                         skuCodeList,
                         shop_id
                     });
                 }else{
-                    let index = this.getShopIdIndex(shop_id);
                     this.selectedShopId.splice(index,1);
                 }
 
