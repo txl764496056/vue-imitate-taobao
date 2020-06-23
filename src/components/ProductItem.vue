@@ -6,7 +6,6 @@
             :disabled="false" 
             :label="productMsg.sku_code"
             :showLabel="false"
-            @change="handleClickSelect"
             v-model='isChecked'></checkbox>
             <img :src="productMsg.img" alt="">
         </div>
@@ -52,17 +51,33 @@ import BuyNum from "@/components/BuyNum.vue"
                 type:Boolean,
                 default:false
             },
-            allNoneSelect:{
+            noneSelect:{
                 type:Boolean,
                 default:false
             }
         },
         data(){
             return {
-                isChecked:false
+                // isChecked:false
+                currChecked:false
             }
         },
         computed:{
+            isChecked:{
+                /**
+                 * 1、父的选择状态:返回true,
+                 * 2、全不选:返回false，
+                 * 3、选中部分，则返回当前原有状态，不根据父状态改变
+                 */
+                get(){
+                    return this.allSelect ? true:( this.noneSelect ? false:(this.currChecked) );
+                },
+                set(val){
+                    this.currChecked = val;
+                    // this.handleClickSelect();
+                    this.$emit('productItemSelect',{sku_code:this.productMsg.sku_code});
+                }
+            }
         },
         methods:{
             addNumClick(sku_code,num){
@@ -76,20 +91,19 @@ import BuyNum from "@/components/BuyNum.vue"
             showSelect(spu_code,sku_code){
                 this.$emit('showSelect',{spu_code,sku_code});
             },
-            handleClickSelect(){
-                this.$emit('productItemSelect',{sku_code:this.productMsg.sku_code});
-            }
+            // handleClickSelect(){
+            //     this.$emit('productItemSelect',{sku_code:this.productMsg.sku_code});
+            // }
         },
         watch:{
-            allSelect(newVal){
-                if(newVal){
-                    this.isChecked = true;
-                }
-            },
-            allNoneSelect(newVal){
-               if(newVal){
-                    this.isChecked = false;
-                }
+            // allSelect(newVal){
+            //         this.currChecked = newVal;
+            // },
+            // noneSelect(newVal){
+            //     this.isChecked = false;
+            // }
+            isChecked(val){
+                this.currChecked = val;
             }
         }
     }

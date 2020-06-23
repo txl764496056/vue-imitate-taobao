@@ -6,8 +6,8 @@
                 :disabled="false" 
                 :label="cartMsg.shop_id"
                 :showLabel="false"
-                @change="handleClickShop"
                 v-model='isChecked'></checkbox>
+                <!-- @change="handleClickShop" -->
             <div class="right">
                 <img :src="cartMsg.shop_logo" alt="">
                 <p>
@@ -22,8 +22,8 @@
          v-on="$listeners" 
          v-for="(item,index) in cartMsg.product" 
          :productMsg="item"
-         :allSelect="allSelect"
-         :allNoneSelect="allNoneSelect"
+         :allSelect="isAllSelect"
+         :noneSelect="allNoneSelect"
          :key="index"></product-item>
     </div>
 </template>
@@ -43,28 +43,47 @@ import ProductItem from "@/components/ProductItem.vue"
                 default(){
                     return {}
                 }
+            },
+            
+            allSelect:{
+                type:Boolean,
+                default(){
+                    return false
+                }
+            },
+            noneSelect:{
+                type:Boolean,
+                default(){
+                    return false;
+                }
             }
         },
         data(){
             return {
                 skuCodeList:[],
-                allSelect:false, //true:全部选中，false:不是全部选中
-                allNoneSelect:false, //true:全部没选中，false:不是全没选中
+                currChecked:false,
             }
         },
         computed:{
+            isAllSelect(){
+                return this.skuCodeList.length>0&&this.cartMsg.product.length===this.skuCodeList.length;
+            },
+            allNoneSelect(){
+                return this.skuCodeList.length==0;
+            },
             /**
              * 店铺是否选中
+             * 注意：只有在按钮被点击的时候才会触发
              */
             isChecked:{
                 get(){
-                    return this.allSelect;
+                    return this.allSelect ? true:(this.noneSelect ? false:(this.isAllSelect));
                 },
                 set(val){
-                    this.allSelect = val;
-                    this.allNoneSelect = !val;
+                    this.handleAllSelect(val);
+                    this.$emit("selectedShop",{shop_id:this.cartMsg.shop_id,skuCodeList:this.skuCodeList});
                 }
-            }
+            },
         },
         methods:{
             /**
@@ -79,16 +98,19 @@ import ProductItem from "@/components/ProductItem.vue"
                 return -1;
             },
             /**
-             * 店铺复选框点击事件
+             * 通知父
              */
-            handleClickShop(){
-                if(this.isChecked){
-                    let arr = this.cartMsg.product.map((item)=>{
+            /**
+             * 店铺产品全选/取消全选
+             */
+            handleAllSelect(val){
+                if(val){
+                   let arr = this.cartMsg.product.map((item)=>{
                         return item.sku_code;
                     });
-                    Object.assign(this.skuCodeList,arr);
+                    this.skuCodeList = arr;
                 }else{
-                    this.skuCodeList.length = 0;
+                    this.skuCodeList = [];
                 }
             },
             /**
@@ -103,21 +125,16 @@ import ProductItem from "@/components/ProductItem.vue"
                     let index = this.getSkuCodeIndex(sku_code);
                     this.skuCodeList.splice(index,1);
                 }
-
-                this.allSelect = (this.skuCodeList.length>0&&this.cartMsg.product.length===this.skuCodeList.length);
-                this.allNoneSelect = this.skuCodeList.length==0;
-
-            }
+                this.$emit("selectedShop",{shop_id:this.cartMsg.shop_id,skuCodeList:this.skuCodeList});
+            },
         },
         watch:{
-            /***
-             * 发送事件selectedShop，
-             * shop_id：店铺的shop_id
-             * skuCodeList：当前店铺选中的产品的sku_code
-             */
-           isChecked(){
-               this.$emit("selectedShop",{shop_id:this.cartMsg.shop_id,skuCodeList:this.skuCodeList});
+           isChecked(newVal){
+                // this.currChecked = newVal;
+                this.handleAllSelect(newVal);
+                // this.$emit("selectedShop",{shop_id:this.cartMsg.shop_id,skuCodeList:this.skuCodeList});
            }
+           
         }
     }
 </script>
