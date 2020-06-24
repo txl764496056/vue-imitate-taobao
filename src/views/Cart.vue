@@ -312,9 +312,7 @@ import CartItem from "@/components/CartItem.vue"
                     }
                 }
             },
-            // selectedProductType(){
-            //     this.updateTotalPriceAndNum();
-            // }
+           
         }
     }
 </script>
