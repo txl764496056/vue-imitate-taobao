@@ -47,10 +47,16 @@ import BuyNum from "@/components/BuyNum.vue"
                     return {};
                 }
             },
+            /**
+             * 父-全选
+             */
             allSelect:{
                 type:Boolean,
                 default:false
             },
+             /**
+             * 父-全不选（么有一个选中）
+             */
             noneSelect:{
                 type:Boolean,
                 default:false
@@ -58,8 +64,7 @@ import BuyNum from "@/components/BuyNum.vue"
         },
         data(){
             return {
-                // isChecked:false
-                currChecked:false
+                currChecked:false  //记录选中状态
             }
         },
         computed:{
@@ -67,14 +72,13 @@ import BuyNum from "@/components/BuyNum.vue"
                 /**
                  * 1、父的选择状态:返回true,
                  * 2、全不选:返回false，
-                 * 3、选中部分，则返回当前原有状态，不根据父状态改变
+                 * 3、（兄弟节点）选中部分，则返回当前原有状态，不根据父状态改变
                  */
                 get(){
                     return this.allSelect ? true:( this.noneSelect ? false:(this.currChecked) );
                 },
                 set(val){
                     this.currChecked = val;
-                    // this.handleClickSelect();
                     this.$emit('productItemSelect',{sku_code:this.productMsg.sku_code});
                 }
             }
@@ -91,17 +95,8 @@ import BuyNum from "@/components/BuyNum.vue"
             showSelect(spu_code,sku_code){
                 this.$emit('showSelect',{spu_code,sku_code});
             },
-            // handleClickSelect(){
-            //     this.$emit('productItemSelect',{sku_code:this.productMsg.sku_code});
-            // }
         },
         watch:{
-            // allSelect(newVal){
-            //         this.currChecked = newVal;
-            // },
-            // noneSelect(newVal){
-            //     this.isChecked = false;
-            // }
             isChecked(val){
                 this.currChecked = val;
             }

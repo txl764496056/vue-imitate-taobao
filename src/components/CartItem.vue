@@ -7,7 +7,6 @@
                 :label="cartMsg.shop_id"
                 :showLabel="false"
                 v-model='isChecked'></checkbox>
-                <!-- @change="handleClickShop" -->
             <div class="right">
                 <img :src="cartMsg.shop_logo" alt="">
                 <p>
@@ -16,7 +15,7 @@
                 </p>
             </div>
         </div>
-        <!--  v-on="$listeners"  将cart父绑定的时间绑定到product-item上，这里指v-on:showSelect -->
+        <!--  v-on="$listeners"  将cart父绑定的事件绑定到product-item上，这里指v-on:showSelect -->
         <product-item 
         v-on:productItemSelect="productItemSelect"
          v-on="$listeners" 
@@ -44,13 +43,18 @@ import ProductItem from "@/components/ProductItem.vue"
                     return {}
                 }
             },
-            
+            /**
+             * 父-全选
+             */
             allSelect:{
                 type:Boolean,
                 default(){
                     return false
                 }
             },
+            /**
+             * 父-全不选（么有一个选中）
+             */
             noneSelect:{
                 type:Boolean,
                 default(){
@@ -80,7 +84,11 @@ import ProductItem from "@/components/ProductItem.vue"
                     return this.allSelect ? true:(this.noneSelect ? false:(this.isAllSelect));
                 },
                 set(val){
-                    this.handleAllSelect(val);
+                    if(val){
+                        this.selectAll();
+                    }else{
+                        this.clearSelectAll();
+                    }
                     this.$emit("selectedShop",{shop_id:this.cartMsg.shop_id,skuCodeList:this.skuCodeList});
                 }
             },
@@ -98,20 +106,19 @@ import ProductItem from "@/components/ProductItem.vue"
                 return -1;
             },
             /**
-             * 通知父
+             * 全选，将所有产品sku_code存入
              */
+            selectAll(){
+                let arr = this.cartMsg.product.map((item)=>{
+                    return item.sku_code;
+                });
+                this.skuCodeList = arr;
+            },
             /**
-             * 店铺产品全选/取消全选
+             * 取消全选，产品id数组清空
              */
-            handleAllSelect(val){
-                if(val){
-                   let arr = this.cartMsg.product.map((item)=>{
-                        return item.sku_code;
-                    });
-                    this.skuCodeList = arr;
-                }else{
-                    this.skuCodeList = [];
-                }
+            clearSelectAll(){
+                this.skuCodeList = [];
             },
             /**
              * 添加或删除已选产品sku_code
@@ -129,10 +136,15 @@ import ProductItem from "@/components/ProductItem.vue"
             },
         },
         watch:{
-           isChecked(newVal){
-                // this.currChecked = newVal;
-                this.handleAllSelect(newVal);
-                // this.$emit("selectedShop",{shop_id:this.cartMsg.shop_id,skuCodeList:this.skuCodeList});
+           allSelect(newVal){
+               if(newVal){
+                   this.selectAll(); 
+               }
+           },
+           noneSelect(newVal){
+               if(newVal){
+                   this.clearSelectAll();
+               }
            }
            
         }
