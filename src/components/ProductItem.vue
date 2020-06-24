@@ -91,6 +91,7 @@ import BuyNum from "@/components/BuyNum.vue"
                         num
                     }
                 });
+                this.$emit("addProductNum");
             },
             showSelect(spu_code,sku_code){
                 this.$emit('showSelect',{spu_code,sku_code});

@@ -1,5 +1,7 @@
 <template>
     <div class="cart">
+
+        <!-- 标题/管理 -->
         <div class="title red-linear">
             <div class="up">
                 购物车
@@ -9,10 +11,12 @@
             <p>共11件宝贝</p>
         </div>
 
+        <!-- 产品列表 -->
         <cart-item
          v-for="(item,index) in cartList" 
          :cartMsg="item" 
          v-on:showSelect="showSelect"
+         @addProductNum="addProductNum"
          @selectedShop="handleSelectedShop"
          :allSelect="isAllSelect"
          :noneSelect="allNoneSelect"
@@ -20,6 +24,7 @@
          <!-- :allSelect="isAllSelect"
          :noneSelect="allNoneSelect" -->
          
+         <!-- 全选/计算/总金额 -->
          <div class="count-btn-container">
             <div class="count-btn">
                 <checkbox class="checkbox-btn"
@@ -32,7 +37,11 @@
                 </div>
             </div>
         </div>
+
+        <!-- 主菜单 -->
         <Menu></Menu>
+
+        <!--产品属性列表弹窗 -->
         <select-type
         class="cart-select-type" 
         v-if="isSelectType=='open'"
@@ -70,10 +79,13 @@ import CartItem from "@/components/CartItem.vue"
                 selectedShop:[], //已选中店铺的shop_id,以及改店铺下被选中的产品的sku_code列表
                 isManage:true,
                 cartList:[],
+
+                totalPrice:0,
                 
-                // 
                 allProductTypeNum:0, //购物车产品“类型”总数量
-                selectedProductTypeNum:0, //已选中产品“类型”数量
+                allProductType:[],
+                // selectedProductTypeNum:0, //已选中产品“类型”数量
+                selectedProductType:[],
                 totalNum:0, //已选择产品总数量（注意哦！同类型可能有多个）
 
                 isSelectType:'close', //是否打开selectType（产品属性弹窗）
@@ -87,23 +99,20 @@ import CartItem from "@/components/CartItem.vue"
             
         },
         mounted(){
-            this.getCartList();
+            this.init();
         },
         computed:{
-            totalPrice(){
-                return 0;
-            },
             /**
              * 产品是否全部选中，这个根据产品数量决定（不是店铺选中数量）
              */
             isAllSelect(){
-                return this.selectedProductTypeNum>0&&this.selectedProductTypeNum===this.allProductTypeNum;
+                return this.selectedProductType.length>0&&this.selectedProductType.length===this.allProductType.length;
             },
             /**
              * 产品是否都没选中，这个根据产品数量决定（不是店铺选中数量）
              */
             allNoneSelect(){
-                return this.selectedProductTypeNum==0;
+                return this.selectedProductType.length==0;
             },  
             /**
              * 全选按钮状态
@@ -118,30 +127,48 @@ import CartItem from "@/components/CartItem.vue"
                     }else{
                         this.clearSelectAll();
                     }
-                    this.updateSelectProductNum();
+                    this.updateSelectProductTypeNum();
                 }
             }
         },
         methods: {
             /**
+             * 数据初始化
+             */
+            init(){
+                let promise = new Promise((resolve,reject)=>{resolve();});
+                promise.then(()=>{
+                    return this.getCartList();
+                }).then(()=>{
+                    this.getAllProductType();
+                })
+            },
+            /**
+             * 产品数量添加
+             * 更新其他数据
+             */
+            addProductNum(){
+                this.getCartList();
+            },
+            /**
              * 获得购物车产品总数量
              */
-            getAllProduct(data){
-                let num = 0;
+            getAllProductType(){
+                let data = this.cartList;
                 for(let i=0;i<data.length;i++){
-                    num += data[i].product.length;
+                    this.allProductType.push(...(data[i].product));
                 }
-                this.allProductTypeNum = num;
             },
             /**
              * 获得已选择产品的数量
              */
-            updateSelectProductNum(){
-                let num = 0;
+            updateSelectProductTypeNum(){
+                let allArr = [];
                 for(let i=0;i<this.selectedShop.length;i++){
-                    num += this.selectedShop[i].skuCodeList.length;
+                    let arr = this.selectedShop[i].skuCodeList;
+                    allArr.push(...arr);
                 }
-                this.selectedProductTypeNum = num;
+                this.selectedProductType = allArr;
             },
             /**
              * 查询已选择shop_id列表中是否含有当前选中的店铺id
@@ -182,9 +209,11 @@ import CartItem from "@/components/CartItem.vue"
                         skuCodeList
                     }
                 }
-                // 更新当前被选中产品
-                this.updateSelectProductNum();
+                // 更新当前被选中产品类型数量
+                this.updateSelectProductTypeNum();
+                // 更新选中产品的数量和总价
             },
+            
             /**
              * 全选-将所有店铺id及店铺下的产品id存入列表
              */
@@ -208,9 +237,8 @@ import CartItem from "@/components/CartItem.vue"
                 this.selectedShop = [];
             },
             getCartList(){
-                this.axios.get('/cartList').then(res=>{
+                return this.axios.get('/cartList').then(res=>{
                     this.cartList = res.data;
-                    this.getAllProduct(res.data);
                 })
             },
             hiddenManage() {
