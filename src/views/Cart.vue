@@ -148,7 +148,6 @@ import CartItem from "@/components/CartItem.vue"
              * 更新其他数据
              */
             addProductNum(){
-                
                 this.getCartList();
                 this.getAllProductType(); //更新存放产品总类型的数组
                 this.updateSelectProductType();
@@ -158,10 +157,12 @@ import CartItem from "@/components/CartItem.vue"
              * 获得购物车产品总数量
              */
             getAllProductType(){
+                let arr = [];
                 let data = this.cartList;
                 for(let i=0;i<data.length;i++){
-                    this.allProductType.push(...(data[i].product));
+                    arr.push(...(data[i].product));
                 }
+                this.allProductType = arr;
             },
             /**
              * 获得已选择产品的数量
