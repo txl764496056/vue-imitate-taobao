@@ -90,8 +90,13 @@ import BuyNum from "@/components/BuyNum.vue"
                         sku_code,
                         num
                     }
+                // 添加成功在发送事件，否则会出现：后端更新数据慢一步，重新获得的是未更新的旧数据，从而导致页面不更新，偶尔页面数据会闪动
+                }).then(res=>{ 
+                    if(res.data=='success'){
+                        this.$emit("addProductNum");
+                    }
                 });
-                this.$emit("addProductNum");
+                
             },
             showSelect(spu_code,sku_code){
                 this.$emit('showSelect',{spu_code,sku_code});
