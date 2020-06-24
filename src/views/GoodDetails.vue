@@ -93,7 +93,7 @@ import SelectType from "@/components/SelectType.vue";
             return {
                 spu_code:"", //产品大类id
                 sku_code:"", //产品唯一id -- 已用skuCode计算属性代替
-                goodsType:"", //产品分类（搜索类...)
+                goodsType:"", //产品分类（搜索类...）
                 goodMsg:"", //产品所有信息
                 emptyMsg:"", //无此产品时的提示
                 addCartTips:"", //加入购入车的toast文本

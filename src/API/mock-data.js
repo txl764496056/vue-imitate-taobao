@@ -108,6 +108,7 @@ Mock.mock(RegExp('/cartList'),'get',function(){
                 // spu的title,shop_id,sku_list,
                 // sku下准确的price,attr,img
                 if( sku_product ){
+                    temp.product_type = key; //****购物车产品需要带上产品在productList里的类型名，进入详情页需要 */
                     temp.title = item.spu_name;
                     temp.spu_price = item.spu_price;
                     temp.shop_id = item.shop_id;
